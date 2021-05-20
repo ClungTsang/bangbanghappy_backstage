@@ -42,13 +42,13 @@
           <div  id="countChart" style="height: 400px;border:1px solid  #f1f1f1;border-radius: 5px" ></div>
         </a-card>
       </a-col>
-      <a-col :span="12" class="project-wrapper">
+      <!-- <a-col :span="12" class="project-wrapper">
         <a-card title="进行中的项目" class="project-card" v-if="loadRepo === 1">
           <a href="https://github.com/wuyouzhuguli?tab=repositories" target="_blank" slot="extra">所有项目</a>
           <running-task :projects="projects">
           </running-task>
         </a-card>
-      </a-col>
+      </a-col> -->
     </a-row>
   </div>
 </template>

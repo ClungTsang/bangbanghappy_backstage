@@ -1,0 +1,206 @@
+
+<template>
+  <div class="clearfix">
+    <!-- 上传组件 -->
+    <a-upload
+      accept="image/*"
+      listType="picture-card"
+      :fileList="fileList"
+      @preview="handlePreview"
+      :remove="remove"
+      :beforeUpload="beforeUpload"
+      :customRequest="handleUpload"
+    >
+      <div v-if="fileList.length < maxNum">
+        <a-icon type="plus" />
+        <div class="ant-upload-text">Upload</div>
+      </div>
+    </a-upload>
+    <!-- 图片预览 -->
+    <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+      <img alt="加载失败" style="width: 100%" :src="previewImage" />
+    </a-modal>
+    <!-- 图片排序 -->
+    <div style="margin-top: 10px" v-show="isShow">
+      <a-form>
+        <a-form-item label="排序">
+          <a-input-number v-model="rank.number" :min="0" :max="10" />
+        </a-form-item>
+      </a-form>
+    </div>
+  </div>
+</template>
+<script>
+import COS from "cos-js-sdk-v5";
+import uuid from "@/utils/uuid";
+export default {
+  name: "UploadImage",
+  props: {
+    files: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    sort: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      fileList: [],
+      cos: null,
+      previewVisible: false,
+      previewImage: "",
+      maxNum: 1,
+      rank: {
+        number: 0,
+      },
+      url: "",
+    };
+  },
+  computed: {
+    isShow() {
+      return this.sort;
+    },
+  },
+  watch: {
+    files(list) {
+      this.fileList = list;
+    },
+  },
+  async created() {
+    let res = await this.getKeyAndId();
+    this.cos = new COS({
+      getAuthorization: (options, callback) => {
+        const result = JSON.parse(res.data.data);
+        callback({
+          TmpSecretId: result.credentials.tmpSecretId,
+          TmpSecretKey: result.credentials.tmpSecretKey,
+          XCosSecurityToken: result.credentials.sessionToken,
+          ExpiredTime: result.expiredTime,
+        });
+      },
+    });
+  },
+  methods: {
+    // 获取key和id
+    getKeyAndId() {
+      return this.$get("backend/TemKeyAndID");
+    },
+    // 限制上传数量
+    changeNum(maxNum) {
+      this.maxNum = maxNum;
+    },
+    // 图片预览关闭
+    handleCancel() {
+      this.previewVisible = false;
+    },
+    // 图片预览开启
+    handlePreview() {
+      this.previewImage = this.url;
+      this.previewVisible = true;
+    },
+    // 上传之前判断文件类型
+    beforeUpload(file) {
+      let isJPG = false;
+      const picTypes = ["image/jpeg", "image/png", "image/bmp", "image/tif"];
+      picTypes.forEach((item) => {
+        if (file.type.toLocaleLowerCase() == item) {
+          isJPG = true;
+        }
+      });
+      if (!isJPG) {
+        this.$message.error("请上传图片类型：jpeg/png/bmp/tif");
+        return false;
+      }
+    },
+    // 删除图片
+    remove(file) {
+      let fileList = this.fileList.filter((item) => {
+        return item.uid != file.uid;
+      });
+      this.fileList = fileList;
+      this.$emit("change", fileList);
+    },
+    // 上传文件 返回腾讯云信息，通过事件将存储信息返回到父组件
+    handleUpload(info) {
+      const that = this;
+      const { file } = info;
+      const uid = uuid();
+      const extName = that.getExtName(file.name);
+      const fileName = file.name;
+      this.cos.putObject(
+        {
+          Bucket: that.$config.Bucket,
+          Region: that.$config.Region,
+          Key: fileName,
+          Body: file, // 上传文件对象
+          onProgress: () => {},
+        },
+        (err, data) => {
+          if (err) {
+            console.log(err);
+            that.$notification.error({
+              message: "文件上传错误",
+              description: err.Message,
+            });
+          } else {
+            this.$message.success("图片上传成功");
+
+            // 图片上传至腾讯cos云 返回图片地址
+            that.url = `http://${data["Location"]}`;
+            that.fileList.push({
+              uid,
+              name: file.name,
+              status: "done",
+              url: that.url,
+            });
+            // console.log("handleUpload", that.fileList);
+            // 调用父组件方法，并传递参数
+            that.$emit("change", that.fileList);
+          }
+        }
+      );
+    },
+    // 父组件后置上传
+    // 图片地址上传至后台数据库服务器
+    afterUpload() {
+      let params = {
+        carouselimgurl: this.url,
+        carouselstatus: 0,
+        ordernum: this.rank.number,
+      };
+      return this.$post("backend/carousel", {
+        ...params,
+      }).then((res) => {
+        this.$emit("uploadImage", res.data.data);
+        this.previewImage = "";
+        this.rank.number = 0;
+      });
+    },
+    /**
+     * 获取后缀名
+     */
+    getExtName(fileName) {
+      const index = fileName.lastIndexOf(".");
+      if (index > -1) {
+        return fileName.substring(index + 1);
+      } else {
+        return "";
+      }
+    },
+  },
+};
+</script>
+<style lang="less" scoped>
+.ant-upload-select-picture-card i {
+  font-size: 32px;
+  color: #999;
+}
+
+.ant-upload-select-picture-card .ant-upload-text {
+  margin-top: 8px;
+  color: #666;
+}
+</style>

@@ -10,6 +10,9 @@ import VueMeta from 'vue-meta'
 import 'ant-design-vue/dist/antd.css'
 import echarts from 'echarts'
 import 'utils/install'
+import Config from '../config/system.config'
+
+
 
 Vue.config.productionTip = false
 Vue.use(Antd)
@@ -17,11 +20,12 @@ Vue.use(db)
 Vue.use(VueMeta)
 Vue.prototype.$echarts = echarts
 Vue.use({
-  install (Vue) {
+  install(Vue) {
     Vue.prototype.$db = db
   }
 })
 
+Vue.prototype.$config = Config
 Vue.prototype.$post = request.post
 Vue.prototype.$get = request.get
 Vue.prototype.$put = request.put

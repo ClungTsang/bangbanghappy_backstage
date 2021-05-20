@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {message, Modal, notification} from 'ant-design-vue'
+import { message, Modal, notification } from 'ant-design-vue'
 import moment from 'moment'
 import store from '../store'
 import db from 'utils/localstorage'
@@ -7,9 +7,9 @@ moment.locale('zh-cn')
 
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: `http://${process.env.BACKEND_API_HOST}/`,
+  baseURL: `https://${process.env.BACKEND_API_HOST}/`,
   responseType: 'json',
-  validateStatus (status) {
+  validateStatus(status) {
     // 200 外的状态码都认定为失败
     return status === 200
   }
@@ -80,12 +80,12 @@ FEBS_REQUEST.interceptors.response.use((config) => {
 })
 
 const request = {
-  post (url, params) {
-    let contentType = (url.indexOf('login') > -1) || (url.indexOf('regist') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
+  post(url, params) {
+    let contentType = (url.indexOf('login') > -1) || (url.indexOf('regist') > -1) || (url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('regist') > -1) {
+        if (url.indexOf('login') > -1 || url.indexOf('regist') > -1 || url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1) {
           Object.keys(params).forEach((key) => {
             if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
               result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
@@ -101,12 +101,12 @@ const request = {
       }
     })
   },
-  put (url, params) {
-    let contentType = (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
+  put(url, params) {
+    let contentType = (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1 || url.indexOf('business/LantianStore') > -1 || url.indexOf('business/LantianDishmanagement') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.put(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1) {
+        if (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1 || url.indexOf('business/LantianStore') > -1 || url.indexOf('business/LantianDishmanagement') > -1) {
           Object.keys(params).forEach((key) => {
             if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
               result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
@@ -122,7 +122,7 @@ const request = {
       }
     })
   },
-  get (url, params) {
+  get(url, params) {
     let _params
     if (Object.is(params, undefined)) {
       _params = ''
@@ -136,7 +136,7 @@ const request = {
     }
     return FEBS_REQUEST.get(`${url}${_params}`)
   },
-  delete (url, params) {
+  delete(url, params) {
     let _params
     if (Object.is(params, undefined)) {
       _params = ''
@@ -150,7 +150,7 @@ const request = {
     }
     return FEBS_REQUEST.delete(`${url}${_params}`)
   },
-  export (url, params = {}) {
+  export(url, params = {}) {
     message.loading('导出数据中')
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
@@ -187,7 +187,7 @@ const request = {
       message.error('导出失败')
     })
   },
-  download (url, params, filename) {
+  download(url, params, filename) {
     message.loading('文件传输中')
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
@@ -220,14 +220,14 @@ const request = {
       message.error('下载失败')
     })
   },
-  upload (url, params) {
+  upload(url, params) {
     return FEBS_REQUEST.post(url, params, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
     })
   },
-  originalGet (url, params) {
+  originalGet(url, params) {
     let _params
     if (Object.is(params, undefined)) {
       _params = ''

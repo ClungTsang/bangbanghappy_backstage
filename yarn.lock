@@ -128,6 +128,14 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
+"@simonwep/pickr@~1.7.0":
+  version "1.7.4"
+  resolved "https://registry.nlark.com/@simonwep/pickr/download/@simonwep/pickr-1.7.4.tgz#b14fcd945890388b870cd6db4d6c78d531f25141"
+  integrity sha1-sU/NlFiQOIuHDNbbTWx41THyUUE=
+  dependencies:
+    core-js "^3.6.5"
+    nanopop "^2.1.0"
+
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.npm.taobao.org/@types/json5/download/@types/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
@@ -304,13 +312,14 @@ ansi-styles@^3.2.0, ansi-styles@^3.2.1:
   dependencies:
     color-convert "^1.9.0"
 
-ant-design-vue@1.5.2:
-  version "1.5.2"
-  resolved "https://registry.nlark.com/ant-design-vue/download/ant-design-vue-1.5.2.tgz#0943f17d7908de16e633da7ab7133fb856eedd2c"
-  integrity sha1-CUPxfXkI3hbmM9p6txM/uFbu3Sw=
+ant-design-vue@1.7.4:
+  version "1.7.4"
+  resolved "https://registry.nlark.com/ant-design-vue/download/ant-design-vue-1.7.4.tgz#854e90985dc0fa9ccc6d681c104560c00eaaf855"
+  integrity sha1-hU6QmF3A+pzMbWgcEEVgwA6q+FU=
   dependencies:
     "@ant-design/icons" "^2.1.1"
     "@ant-design/icons-vue" "^2.0.0"
+    "@simonwep/pickr" "~1.7.0"
     add-dom-event-listener "^1.0.2"
     array-tree-filter "^2.1.0"
     async-validator "^3.0.3"
@@ -1791,9 +1800,9 @@ camelcase-keys@^2.0.0:
     camelcase "^2.0.0"
     map-obj "^1.0.0"
 
-camelcase@^1.0.2:
+camelcase@^1.0.2, camelcase@^1.2.1:
   version "1.2.1"
-  resolved "https://registry.npm.taobao.org/camelcase/download/camelcase-1.2.1.tgz?cache=0&sync_timestamp=1603923709404&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcamelcase%2Fdownload%2Fcamelcase-1.2.1.tgz#9bb5304d2e0b56698b2c758b08a3eaa9daa58a39"
+  resolved "https://registry.npm.taobao.org/camelcase/download/camelcase-1.2.1.tgz?cache=0&sync_timestamp=1603921799543&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcamelcase%2Fdownload%2Fcamelcase-1.2.1.tgz#9bb5304d2e0b56698b2c758b08a3eaa9daa58a39"
   integrity sha1-m7UwTS4LVmmLLHWLCKPqqdqlijk=
 
 camelcase@^2.0.0:
@@ -2380,10 +2389,22 @@ core-js@^2.4.0, core-js@^2.5.0:
   resolved "https://registry.nlark.com/core-js/download/core-js-2.6.12.tgz#d9333dfa7b065e347cc5682219d6f690859cc2ec"
   integrity sha1-2TM9+nsGXjR8xWgiGdb2kIWcwuw=
 
+core-js@^3.6.5:
+  version "3.12.1"
+  resolved "https://registry.nlark.com/core-js/download/core-js-3.12.1.tgz#6b5af4ff55616c08a44d386f1f510917ff204112"
+  integrity sha1-a1r0/1VhbAikTThvH1EJF/8gQRI=
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.npm.taobao.org/core-util-is/download/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
   integrity sha1-tf1UIgqivFq1eqtxQMlAdUUDwac=
+
+cos-js-sdk-v5@^1.2.10:
+  version "1.2.10"
+  resolved "https://registry.nlark.com/cos-js-sdk-v5/download/cos-js-sdk-v5-1.2.10.tgz#60c1c5d23fb87da54c35b02fb20a15ffc2b4307b"
+  integrity sha1-YMHF0j+4faVMNbAvsgoV/8K0MHs=
+  dependencies:
+    xmldom "^0.1.31"
 
 cosmiconfig@^2.1.0, cosmiconfig@^2.1.1:
   version "2.2.2"
@@ -6525,6 +6546,11 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+nanopop@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.npm.taobao.org/nanopop/download/nanopop-2.1.0.tgz#23476513cee2405888afd2e8a4b54066b70b9e60"
+  integrity sha1-I0dlE87iQFiIr9LopLVAZrcLnmA=
+
 native-request@^1.0.5:
   version "1.0.8"
   resolved "https://registry.nlark.com/native-request/download/native-request-1.0.8.tgz#8f66bf606e0f7ea27c0e5995eb2f5d03e33ae6fb"
@@ -9670,6 +9696,13 @@ upper-case@^1.1.1:
   resolved "https://registry.npm.taobao.org/upper-case/download/upper-case-1.1.3.tgz#f6b4501c2ec4cdd26ba78be7222961de77621598"
   integrity sha1-9rRQHC7EzdJrp4vnIilh3ndiFZg=
 
+uppercamelcase@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npm.taobao.org/uppercamelcase/download/uppercamelcase-1.1.0.tgz#324d98a6b3afc7e8a8953e10641509b0e4e23f97"
+  integrity sha1-Mk2YprOvx+iolT4QZBUJsOTiP5c=
+  dependencies:
+    camelcase "^1.2.1"
+
 uri-js@^4.2.2:
   version "4.4.1"
   resolved "https://registry.nlark.com/uri-js/download/uri-js-4.4.1.tgz#9b1a52595225859e55f669d928f88c6c57f2a77e"
@@ -9797,6 +9830,13 @@ vm-browserify@^1.0.1:
   version "1.1.2"
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha1-eGQcSIuObKkadfUR56OzKobl3aA=
+
+vue-amap@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.npm.taobao.org/vue-amap/download/vue-amap-0.5.10.tgz#464516203af0c085d404bd8acabf2401e4a36ff6"
+  integrity sha1-RkUWIDrwwIXUBL2Kyr8kAeSjb/Y=
+  dependencies:
+    uppercamelcase "^1.1.0"
 
 vue-eslint-parser@^2.0.3:
   version "2.0.3"
@@ -10226,6 +10266,11 @@ xml-name-validator@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npm.taobao.org/xml-name-validator/download/xml-name-validator-3.0.0.tgz#6ae73e06de4d8c6e47f9fb181f78d648ad457c6a"
   integrity sha1-auc+Bt5NjG5H+fsYH3jWSK1FfGo=
+
+xmldom@^0.1.31:
+  version "0.1.31"
+  resolved "https://registry.nlark.com/xmldom/download/xmldom-0.1.31.tgz#b76c9a1bd9f0a9737e5a72dc37231cf38375e2ff"
+  integrity sha1-t2yaG9nwqXN+WnLcNyMc84N14v8=
 
 xregexp@2.0.0:
   version "2.0.0"
