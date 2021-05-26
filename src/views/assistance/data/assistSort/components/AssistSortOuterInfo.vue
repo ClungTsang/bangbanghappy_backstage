@@ -5,16 +5,16 @@
         >新增校外服务分类</a-button
       >
       <a-table bordered :data-source="outerDataSource" :columns="columns">
-        <template slot="sort" slot-scope="text, record">
+        <template slot="service" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeOuter(record.key, 'sort', $event)"
+            @change="onCellChangeOuter(record.key, 'service', $event)"
           />
         </template>
-        <template slot="fee" slot-scope="text, record">
+        <template slot="cost" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeOuter(record.key, 'fee', $event)"
+            @change="onCellChangeOuter(record.key, 'cost', $event)"
           />
         </template>
         <template slot="operation" slot-scope="text, record">
@@ -46,13 +46,13 @@ export default {
       columns: [
         {
           title: "分类名称",
-          dataIndex: "sort",
-          scopedSlots: { customRender: "sort" },
+          dataIndex: "service",
+          scopedSlots: { customRender: "service" },
         },
         {
           title: "建议服务费用",
-          dataIndex: "fee",
-          scopedSlots: { customRender: "sort" },
+          dataIndex: "cost",
+          scopedSlots: { customRender: "cost" },
         },
         {
           title: "操作",
@@ -65,11 +65,19 @@ export default {
   methods: {
     // 获取援助分类列表
     getAssistSort() {
-      let token = this.$db.get("USER_TOKEN");
-
-      this.$get("aidOrder", {
-        Authentication: token,
-      }).then((r) => console.log(r));
+      this.outerDataSource = [];
+      this.$get("aidServiceType").then((res) => {
+        const data = res.data.data;
+        data.forEach((item) => {
+          if (item.oncampus == 0) {
+            this.outerDataSource.push({
+              key: item.id,
+              service: item.service,
+              cost: item.cost,
+            });
+          }
+        });
+      });
     },
 
     onCellChangeOuter(key, dataIndex, value) {
@@ -78,21 +86,36 @@ export default {
       if (target) {
         target[dataIndex] = value;
         this.outerDataSource = outerDataSource;
+        this.onChangeInfo(key);
       }
     },
     onDeleteOuter(key) {
-      const outerDataSource = [...this.outerDataSource];
-      this.outerDataSource = outerDataSource.filter((item) => item.key !== key);
+      this.$get("/aidServiceType/delete", { id: key }).then(() => {
+        const outerDataSource = [...this.outerDataSource];
+        this.outerDataSource = outerDataSource.filter(
+          (item) => item.key !== key
+        );
+      });
     },
     handleAddOuter() {
-      const { outerCount, outerDataSource } = this;
       const newData = {
-        key: outerCount,
-        sort: `校外服务`,
-        fee: 3,
+        service: `校外服务${this.outerCount}`,
+        cost: 2,
+        oncampus: 0,
       };
-      this.outerDataSource = [...outerDataSource, newData];
-      this.outerCount = outerCount + 1;
+      this.$post("/aidServiceType", { ...newData }).then(() => {
+        this.outerCount += 1;
+        return this.getAssistSort()
+      });
+    },
+    onChangeInfo(key) {
+      const outerDataSource = [...this.outerDataSource];
+      const target = outerDataSource.find((item) => item.key === key);
+      this.$post("/aidServiceType/update", {
+        id: target.key,
+        service: target.service,
+        cost: target.cost,
+      });
     },
   },
 };

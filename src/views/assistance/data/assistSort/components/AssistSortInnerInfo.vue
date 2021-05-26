@@ -5,16 +5,16 @@
         >新增校内服务分类</a-button
       >
       <a-table bordered :data-source="innerDataSource" :columns="columns">
-        <template slot="sort" slot-scope="text, record">
+        <template slot="service" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeInner(record.key, 'sort', $event)"
+            @change="onCellChangeInner(record.key, 'service', $event)"
           />
         </template>
-        <template slot="fee" slot-scope="text, record">
+        <template slot="cost" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeInner(record.key, 'fee', $event)"
+            @change="onCellChangeInner(record.key, 'cost', $event)"
           />
         </template>
         <template slot="operation" slot-scope="text, record">
@@ -31,7 +31,7 @@
   </div>
 </template>
 <script>
-import EditableCell from '../../../../../components/editablecell/EditableCell';
+import EditableCell from "../../../../../components/editablecell/EditableCell";
 export default {
   components: {
     EditableCell,
@@ -46,13 +46,13 @@ export default {
       columns: [
         {
           title: "分类名称",
-          dataIndex: "sort",
-          scopedSlots: { customRender: "sort" },
+          dataIndex: "service",
+          scopedSlots: { customRender: "service" },
         },
         {
           title: "服务费用",
-          dataIndex: "fee",
-          scopedSlots: { customRender: "sort" },
+          dataIndex: "cost",
+          scopedSlots: { customRender: "cost" },
         },
         {
           title: "操作",
@@ -65,11 +65,19 @@ export default {
   methods: {
     // 获取援助分类列表
     getAssistSort() {
-      let token = this.$db.get("USER_TOKEN");
-
-      this.$get("aidOrder", {
-        Authentication: token,
-      }).then((r) => console.log(r));
+      this.innerDataSource = [];
+      this.$get("aidServiceType").then((res) => {
+        const data = res.data.data;
+        data.forEach((item) => {
+          if (item.oncampus == 1) {
+            this.innerDataSource.push({
+              key: item.id,
+              service: item.service,
+              cost: item.cost,
+            });
+          }
+        });
+      });
     },
     onCellChangeInner(key, dataIndex, value) {
       const innerDataSource = [...this.innerDataSource];
@@ -77,21 +85,36 @@ export default {
       if (target) {
         target[dataIndex] = value;
         this.innerDataSource = innerDataSource;
+        this.onChangeInfo(key);
       }
     },
     onDeleteInner(key) {
-      const innerDataSource = [...this.innerDataSource];
-      this.innerDataSource = innerDataSource.filter((item) => item.key !== key);
+      this.$get("/aidServiceType/delete", { id: key }).then(() => {
+        const innerDataSource = [...this.innerDataSource];
+        this.innerDataSource = innerDataSource.filter(
+          (item) => item.key !== key
+        );
+      });
     },
     handleAddInner() {
-      const { innerCount, innerDataSource } = this;
       const newData = {
-        key: innerCount,
-        sort: `校内服务`,
-        fee: 2,
+        service: `校内服务${this.innerCount}`,
+        cost: 2,
+        oncampus: 1,
       };
-      this.innerDataSource = [...innerDataSource, newData];
-      this.innerCount = innerCount + 1;
+      this.$post("/aidServiceType", { ...newData }).then(() => {
+        this.innerCount += 1;
+        return this.getAssistSort();
+      });
+    },
+    onChangeInfo(key) {
+      const innerDataSource = [...this.innerDataSource];
+      const target = innerDataSource.find((item) => item.key === key);
+      this.$post("/aidServiceType/update", {
+        id: target.key,
+        service: target.service,
+        cost: target.cost,
+      });
     },
   },
 };

@@ -7,7 +7,7 @@ moment.locale('zh-cn')
 
 // 统一配置
 let FEBS_REQUEST = axios.create({
-  baseURL: `https://${process.env.BACKEND_API_HOST}/`,
+  baseURL: `http://${process.env.BACKEND_API_HOST}/`,
   responseType: 'json',
   validateStatus(status) {
     // 200 外的状态码都认定为失败
@@ -81,11 +81,11 @@ FEBS_REQUEST.interceptors.response.use((config) => {
 
 const request = {
   post(url, params) {
-    let contentType = (url.indexOf('login') > -1) || (url.indexOf('regist') > -1) || (url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
+    let contentType = (url.indexOf('login') > -1) || (url.indexOf('regist') > -1) || (url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1 || url.indexOf('aidServiceType') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.post(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('regist') > -1 || url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1) {
+        if (url.indexOf('login') > -1 || url.indexOf('regist') > -1 || url.indexOf('carousel') > -1 || (url.indexOf('business/LantianStore') > -1) || (url.indexOf('business/LantianDishesclassificationtable') > -1) || url.indexOf('business/LantianDishmanagement') > -1 || url.indexOf('aidServiceType') > -1) {
           Object.keys(params).forEach((key) => {
             if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
               result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'

@@ -6,6 +6,7 @@
       accept="image/*"
       listType="picture-card"
       :fileList="fileList"
+      :multiple="true"
       @preview="handlePreview"
       :remove="remove"
       :beforeUpload="beforeUpload"
@@ -70,7 +71,9 @@ export default {
     },
   },
   async created() {
+    // 获取随机key和id
     let res = await this.getKeyAndId();
+    // 初始化cos
     this.cos = new COS({
       getAuthorization: (options, callback) => {
         const result = JSON.parse(res.data.data);
@@ -114,12 +117,38 @@ export default {
         this.$message.error("请上传图片类型：jpeg/png/bmp/tif");
         return false;
       }
+      const isLt2M = file.size / 1024 / 1024 < 1;
+      if (!isLt2M) {
+        this.$message.error("图片必须小于1MB!");
+        return false;
+      }
     },
     // 删除图片
     remove(file) {
+      // console.log("remove", file.name);
+      // console.log("fileList", this.fileList);
+      // debugger;
       let fileList = this.fileList.filter((item) => {
         return item.uid != file.uid;
       });
+      //TODO: cos端云删除
+      // this.cos.deleteObject(
+      //   {
+      //     Bucket: this.$config.Bucket,
+      //     Region: this.$config.Region,
+      //     Key: file.name,
+      //   },
+      //   (err, data) => {
+      //     if (err) {
+      //       this.$message.success(err);
+      //       return false;
+      //     }
+      //     if (data) {
+      //       this.$message.success("删除成功");
+      //       return false;
+      //     }
+      //   }
+      // );
       this.fileList = fileList;
       this.$emit("change", fileList);
     },
@@ -127,8 +156,9 @@ export default {
     handleUpload(info) {
       const that = this;
       const { file } = info;
+      // console.log("file", file);
       const uid = uuid();
-      const extName = that.getExtName(file.name);
+      // const extName = that.getExtName(file.name);
       const fileName = file.name;
       this.cos.putObject(
         {
@@ -140,7 +170,7 @@ export default {
         },
         (err, data) => {
           if (err) {
-            console.log(err);
+            // console.log(err);
             that.$notification.error({
               message: "文件上传错误",
               description: err.Message,
@@ -154,7 +184,6 @@ export default {
               uid,
               name: file.name,
               status: "done",
-              url: that.url,
             });
             // console.log("handleUpload", that.fileList);
             // 调用父组件方法，并传递参数
