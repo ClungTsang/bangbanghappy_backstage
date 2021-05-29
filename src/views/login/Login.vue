@@ -126,6 +126,7 @@ export default {
       setPermissions: 'account/setPermissions',
       setRoles: 'account/setRoles',
       setUser: 'account/setUser',
+      // setUserInfo: 'account/setUserInfo',
       setTheme: 'setting/setTheme',
       setLayout: 'setting/setLayout',
       setMultipage: 'setting/setMultipage',
@@ -138,6 +139,7 @@ export default {
       this.setToken(data.token)
       this.setExpireTime(data.exipreTime)
       this.setUser(data.user)
+      // this.setUserInfo(data.userInfo)
       this.setPermissions(data.permissions)
       this.setRoles(data.roles)
       this.setTheme(data.config.theme)
