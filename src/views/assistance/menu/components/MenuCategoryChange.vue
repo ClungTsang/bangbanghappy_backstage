@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setUserInfo:'account/setUserInfo',
+      setUserInfo: "account/setUserInfo",
     }),
     // TODO:后续优化一个显示全部，用于默认显示和点击全部查看
 
@@ -71,6 +71,11 @@ export default {
     async getMenuCategoryInfo() {
       // 用我们门店信息中的 门店id=storeid
       const res = await this.getStoreInfo();
+      if(res.data.data == null){
+        // 如果没有菜单信息
+        // 终止操作
+        return
+      }
       this.setUserInfo(res.data.data);
       this.storeId = res.data.data.id;
       const params = {
@@ -78,7 +83,9 @@ export default {
         // LantianDishmanagementstatus: 0,
         storeid: this.storeId,
       };
-      // 根据storeid全查菜品分类
+      //
+
+      // 通过门店 storeid 全查菜品分类
       // this.$get(`/backend/business/LantianDishmanagement/MapAllByStoreId`, {
       this.$get(
         `/backend/business/LantianDishesclassificationtable/MapAllByStoreId`,
@@ -97,7 +104,15 @@ export default {
     // 获取当前我的门店信息
     getStoreInfo() {
       const user = this.$db.get("USER");
-      return this.$get(`/business/LantianStore/getByPhone/${user.username}`);
+      return new Promise((resolve, reject) => {
+        this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(res=>{
+          // 有门店，返回数据
+          resolve(res)
+        }).catch(err=>{
+          // TODO: 无门店 返回错误信息
+          reject(err)
+        })
+      });
     },
     // 新增分类回调
     addItem() {
