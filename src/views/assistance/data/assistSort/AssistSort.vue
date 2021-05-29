@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-row type="flex" justify="center" align="top">
+    <a-row type="flex" justify="space-around" align="top">
       <a-col :span="12">
         <assist-sort-inner-info></assist-sort-inner-info>
       </a-col>

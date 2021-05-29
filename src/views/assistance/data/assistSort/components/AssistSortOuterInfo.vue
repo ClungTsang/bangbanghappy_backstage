@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card title="校外分类" :bordered="false" style="width: 800px">
+    <a-card title="校外分类" :bordered="false" >
       <a-button class="editable-add-btn" @click="handleAddOuter"
         >新增校外服务分类</a-button
       >
