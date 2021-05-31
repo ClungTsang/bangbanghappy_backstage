@@ -47,16 +47,22 @@ export default {
         {
           title: "分类名称",
           dataIndex: "service",
+          width:130,
+          align:'center',
           scopedSlots: { customRender: "service" },
         },
         {
           title: "建议服务费用",
           dataIndex: "cost",
+          align:'center',
+          width:150,
           scopedSlots: { customRender: "cost" },
         },
         {
           title: "操作",
           dataIndex: "operation",
+          align:'center',
+          width:130,
           scopedSlots: { customRender: "operation" },
         },
       ],
