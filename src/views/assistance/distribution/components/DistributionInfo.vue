@@ -1,39 +1,43 @@
 <template>
   <div>
-
-      <a-table
-        :columns="columns"
-        :dataSource="dataSource"
-        :pagination="pagination"
-        :loading="loading"
-        @change="handleTableChange"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
-        }"
+    <a-table
+      :columns="columns"
+      :dataSource="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+      :row-selection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+      }"
+    >
+      <span slot="storestatus" slot-scope="text, record">
+        <a-select
+          default-value="不营业"
+          style="width: 100px"
+          @change="
+            (e) => {
+              changeStatus(e, record);
+            }
+          "
+        >
+          <a-select-option value="0"> 不营业 </a-select-option>
+          <a-select-option value="1"> 关店 </a-select-option>
+          <a-select-option value="2"> 休店 </a-select-option>
+          <a-select-option value="3"> 开店 </a-select-option>
+          <a-select-option value="4"> 异常 </a-select-option>
+        </a-select>
+      </span>
+      <span slot="showInfo" slot-scope="text, record"
+        ><a @click="showInfoModal(record)">查看该门店</a></span
       >
-        <!-- <template slot="spendpercent" slot-scope="text, record">
-          <editable-cell
-            :text="text"
-            @change="onCellChange(record.key, 'spendpercent', $event)"
-          />
-        </template> -->
-        <span slot="storestatus" slot-scope="text, record">
-          <a-select
-            default-value="不营业"
-            style="width: 100px"
-            @change="onChange"
-          >
-            <a-select-option value="不营业"> 不营业 </a-select-option>
-            <a-select-option value="开店"> 开店 </a-select-option>
-            <a-select-option value="休店"> 休店 </a-select-option>
-            <a-select-option value="关店"> 关店 </a-select-option>
-            <a-select-option value="异常"> 异常 </a-select-option>
-          </a-select>
-        </span>
-        <span slot="showInfo"><a @click="showInfoModal(record.key)">查看该门店</a></span>
-      </a-table>
+    </a-table>
 
+    <distribution-store-info
+      :infoVisible="storeInfoVisible"
+      :info="storeInfo"
+      @close="onClose"
+    ></distribution-store-info>
   </div>
 </template>
 <script>
@@ -100,6 +104,7 @@ const columns = [
 ];
 import event from "@/utils/event.js";
 import EditableCell from "../../../../components/editablecell/EditableCell";
+import DistributionStoreInfo from "./DistributionStoreInfo.vue";
 export default {
   data() {
     return {
@@ -108,9 +113,12 @@ export default {
       selectedRowKeys: [],
       pagination: {},
       loading: false,
+
+      storeInfoVisible: false,
+      storeInfo: null,
     };
   },
-  components: { EditableCell },
+  components: { EditableCell, DistributionStoreInfo },
   computed: {
     hasSelected() {
       return this.selectedRowKeys.length > 0;
@@ -130,22 +138,14 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
       event.$emit("selectedRowKeys", this.selectedRowKeys);
     },
-    // 改变选择列属性
-    // onCellChange(key, dataIndex, value) {
-    //   console.log(key);
-    //   const dataSource = [...this.dataSource];
-    //   const target = dataSource.find((item) => item.key === key);
-    //   console.log(target);
-
-    //   if (target) {
-    //     target[dataIndex] = value;
-    //     this.dataSource = dataSource;
-    //   }
-    // },
     // 切换店铺状态
-    onChange(value) {
+    changeStatus(e, record) {
+      console.log(e, record);
+      const params = { storestatus: e, id: record.key };
+      this.$put("/business/LantianStore", { ...params }).then(() => {
+        this.$message.success("切换成功");
+      });
       //用record.key来确定门店id，从而改变门店的店铺状态
-      this.$message.success(`切换门店状态成为${value}成功`);
     },
     onStatusChange(key) {
       console.log(`修改的门店key值为${key}`);
@@ -171,8 +171,8 @@ export default {
       let user = this.$db.get("USER");
       // 超管和一级代理具备全查
       this.$get("/business/LantianStore/MapAll", {
-      // TODO:根据不同的角色请求旗下门店
-      // this.$get(`/business/LantianStore/${user.username}`, {
+        // TODO:根据不同的角色请求旗下门店
+        // this.$get(`/business/LantianStore/${user.username}`, {
         Authentication: token,
         pageSize: 10,
         ...params,
@@ -191,14 +191,24 @@ export default {
             bossmobilenumber: item.bossmobilenumber,
             storephone: item.storephone,
             spendpercent: item.spendpercent,
+            detailedintroduction: item.detailedintroduction,
+            openinghours: item.openinghours,
+            closinghours: item.closinghours,
             // storestatus: item.storestatus,
           });
         });
         this.pagination = pagination;
       });
     },
-    // TODO: 弹框显示该门户的详细信息 参照二级代理的 门店管理 模块
-    showInfoModal() {},
+    showInfoModal(record) {
+      this.storeInfoVisible = true;
+      // console.log(record);
+      this.storeInfo = record;
+    },
+    // 关闭门店信息
+    onClose() {
+      this.storeInfoVisible = false;
+    },
   },
 };
 </script>

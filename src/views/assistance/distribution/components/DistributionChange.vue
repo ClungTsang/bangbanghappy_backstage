@@ -69,7 +69,6 @@ export default {
       this.$message.success("修改抽成成功");
     },
     handleCancel() {
-      console.log("cancel");
       this.$emit("close");
     },
   },
