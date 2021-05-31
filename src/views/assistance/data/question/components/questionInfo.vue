@@ -90,7 +90,6 @@ export default {
     });
   },
   methods: {
-
     // 修改答疑modal
     onUpdateQuestion(record) {
       this.changeVisible = true;
@@ -109,15 +108,14 @@ export default {
       this.$post("/question/update", { ...value, id: id }).then(() => {
         this.changeVisible = false;
         this.dataSource = [];
-        this.getQuestion()
+        this.getQuestion();
       });
     },
     // 切换显示状态
     onChange(e, record) {
       const params = { isDelete: e, id: record.id };
-      this.$post("/question/update", { ...params }).then(()=>{
-        this.$message.success("切换成功")
-
+      this.$post("/question/update", { ...params }).then(() => {
+        this.$message.success("切换成功");
       });
     },
     // 取消修改答疑
@@ -133,14 +131,12 @@ export default {
     // 删除问题
     confirmDelete(record) {
       this.$get("/question/delete", { id: record.id }).then(() => {
-        let dataSource = [...this.dataSource];
-
-        this.dataSource = dataSource.filter((item) => {
-          item.id !== record.id;
+        let dataSource = this.dataSource.filter((item) => {
+          return item.id !== record.id;
         });
+        this.dataSource = dataSource
       });
     },
-
   },
 };
 </script>
