@@ -45,7 +45,6 @@ export default {
     //   this.setUserInfo(res.data.data);
     //   this.storeId = res.data.data.id;
     //   const params = {
-    //     // TODO:如果便携小程序 就传1
     //     // LantianDishmanagementstatus: 0,
     //     storeid: this.storeId,
     //   };

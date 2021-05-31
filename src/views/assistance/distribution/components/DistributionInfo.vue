@@ -144,7 +144,7 @@ export default {
     // },
     // 切换店铺状态
     onChange(value) {
-      // TODO:用record.key来确定门店id，从而改变门店的店铺状态
+      //用record.key来确定门店id，从而改变门店的店铺状态
       this.$message.success(`切换门店状态成为${value}成功`);
     },
     onStatusChange(key) {
