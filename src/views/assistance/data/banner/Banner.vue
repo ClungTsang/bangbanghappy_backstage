@@ -47,23 +47,6 @@
       <span slot="banner" slot-scope="text, record">
         <img style="width: 300px; heigth: auto" :src="record.banner" />
       </span>
-      <span slot="action" slot-scope="text, record">
-        <a-divider type="vertical" />
-
-        <a-dropdown>
-          <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
-            设置 <a-icon type="down" />
-          </a>
-          <a-menu slot="overlay">
-            <a-menu-item>
-              <a href="javascript:;">更换图片</a>
-            </a-menu-item>
-            <a-menu-item>
-              <a href="javascript:;">暂时下架</a>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown>
-      </span>
     </a-table>
     <banner-upload-modal
       :isVisible="isModalShow"
@@ -108,13 +91,13 @@ const columns = [
     width: 300,
   },
 
-  {
-    title: "操作",
-    align: "center",
-    key: "action",
-    width: 300,
-    scopedSlots: { customRender: "action" },
-  },
+  // {
+  //   title: "操作",
+  //   align: "center",
+  //   key: "action",
+  //   width: 200,
+  //   scopedSlots: { customRender: "action" },
+  // },
 ];
 export default {
   components: { BannerUploadModal },
