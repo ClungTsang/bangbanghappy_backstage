@@ -3,23 +3,41 @@
     <a-table
       :dataSource="dataSource"
       :columns="columns"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
+      :pagination="pagination"
       :loading="loading"
     >
-      <!-- 订单状态变更 -->
-      <span slot="status" slot-scope="text, record">
+      <!-- 求助状态变更 -->
+      <span slot="aidorderstatus" slot-scope="text, record">
         <a-select
-          default-value="待援助"
+          :default-value="
+            text == 1
+              ? '待付款'
+              : text == 2
+              ? '待援助'
+              : text == 3
+              ? '援助中'
+              : text == 4
+              ? '处理中'
+              : text == 5
+              ? '已完成'
+              : text == 6
+              ? '已取消'
+              : '已关闭'
+          "
           style="width: 100px"
-          @change="onChange"
+          @change="
+            (e) => {
+              onChange(e, record);
+            }
+          "
         >
-          <a-select-option value="待援助">待援助</a-select-option>
-          <a-select-option value="援助中">援助中</a-select-option>
-          <a-select-option value="已完成">已完成</a-select-option>
-          <a-select-option value="处理中">处理中</a-select-option>
+          <a-select-option value="1">待付款</a-select-option>
+          <a-select-option value="2">待援助</a-select-option>
+          <a-select-option value="3">援助中</a-select-option>
+          <a-select-option value="4">处理中</a-select-option>
+          <a-select-option value="5">已完成</a-select-option>
+          <a-select-option value="6">已取消</a-select-option>
+          <a-select-option value="7">已关闭</a-select-option>
         </a-select>
       </span>
       <!-- 操作控制 -->
@@ -28,105 +46,61 @@
           title="确定删除该订单"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="confirmDelete"
-          @cancel="cancel"
+          @confirm="confirmDelete(record)"
         >
-          <a @click="onDeleteAssistModal(record)">删除订单</a>
+          <a>删除订单</a>
         </a-popconfirm>
         <a-divider type="vertical" />
-        <a @click="onCheckAssistModal(record)">查看详细</a>
+        <a @click="showInfoModal(record)">查看详细</a>
       </span>
     </a-table>
 
-    <assist-info
-      :showVisible="assistInfoVisible"
-      @close="onCloseAssistShowModal"
-      @cancel="onCancelAssistShowModal"
-      :data="showData"
-    ></assist-info>
+    <assist-info-modal
+      :infoVisible="assistInfoShow"
+      :info="assistInfo"
+      @close="onClose"
+    ></assist-info-modal>
   </div>
 </template>
 <script>
-const dataSource = [
-  // {
-  //   orderid: "fc5efyev5656cs7aisd",
-  //   clientname: "罗冠聪",
-  //   clientphone: 13527889432,
-  //   createtime: "2021年4月20日 16:29:12",
-  //   tradetime: "2021年4月21日 16:30:12",
-  //   status: 0,
-  //   cost:20,
-  //   assistprice:100,
-  //   assistinfo: "想要喝水，请尽快送达到到我宿舍",
-  //   notice: "尽快送达",
-  // },
-  // {
-  //   orderid: "awq23dx34xqxxtaisd",
-  //   clientname: "许冠杰",
-  //   clientphone: 16602027350,
-  //   createtime: "2021年5月20日 16:29:12",
-  //   tradetime: "2021年5月31日 16:30:12",
-  //   status: 1,
-  //   cost:2,
-  //   assistprice:20,
-  //   assistor: "刘家俊",
-  //   assistorPhone: 16234123731,
-  //   assistinfo: "想要喝水，请尽快送达到到我宿舍",
-
-  //   notice: "尽快送达",
-  // },
-  {
-    orderid: "c357976rv25345isd",
-    clientname: "张学友",
-    clientphone: 18680271761,
-    createtime: "2021年5月25日 16:29:12",
-    tradetime: "2021年5月30日 16:30:12",
-    status: 2,
-    cost:20,
-    assistprice:12,
-    assistor: "刘家俊",
-    assistorPhone: 16602027351,
-    assistinfo: "想要喝水，请尽快送达到到我宿舍",
-    notice: "尽快送达",
-  },
-];
 const columns = [
   {
-    title: "订单编号",
-    dataIndex: "orderid",
+    title: "求助编号",
+    dataIndex: "outTradeNo",
     width: 100,
     align: "center",
   },
-  {
-    title: "客户名字",
-    width: 100,
-    dataIndex: "clientname",
-    align: "center",
-  },
+
   {
     title: "客户电话",
     width: 100,
-    dataIndex: "clientphone",
+    dataIndex: "publishUserNamemobile",
     align: "center",
   },
   {
-    title: "订单创建时间",
+    title: "求助分类",
+    width: 100,
+    dataIndex: "classifyName",
+    align: "center",
+  },
+  {
+    title: "求助标题",
+    width: 100,
+    dataIndex: "title",
+    align: "center",
+  },
+  {
+    title: "求助创建时间",
     width: 100,
     dataIndex: "createtime",
     align: "center",
   },
   {
-    title: "预计完成时间",
-    width: 100,
-    dataIndex: "tradetime",
-    align: "center",
-  },
-  {
     title: "状态更改",
     width: 100,
-    dataIndex: "status",
+    dataIndex: "aidorderstatus",
     align: "center",
-    scopedSlots: { customRender: "status" },
+    scopedSlots: { customRender: "aidorderstatus" },
   },
   {
     title: "操作",
@@ -136,94 +110,77 @@ const columns = [
     scopedSlots: { customRender: "action" },
   },
 ];
-import AssistInfo from "./AssistInfo";
-import event from "../../../../utils/event";
+import AssistInfoModal from "./AssistInfoModal";
 export default {
-  components: { AssistInfo },
+  components: { AssistInfoModal },
   data() {
     return {
       columns,
-      dataSource,
+      dataSource: [],
+      pagination: {},
       selectedRowKeys: [],
       loading: false,
-      show: false,
-      storeId: 0,
-      assistInfoVisible: false,
-      showData: {},
+      assistInfoShow: false,
+      assistInfo: null,
     };
   },
+  created() {},
   mounted() {
+    this.fetch();
     // 接受下拉框的分类storeid
-    event.$on("transferAssist", (res) => {
-      // console.log(`接收到下拉选项老哥传来的`, res);
-      console.log(res);
-      // this.storeId = res.storeId;
-      // 网络查询
-      // let result = await this.getAssistCategoryList(res);
-      // // 渲染数据
-      // if (result.data.data[res.category] !== "空") {
-      //   this.dataSource = result.data.data[res.category];
-      // } else {
-      //   this.dataSource = [];
-      // }
-      this.loading = false;
-    });
   },
   methods: {
-    // 网络获取分类信息
-    getAssistCategoryList(res) {
-      this.loading = true;
-      const params = {
-        // 小程序传1
-        // LantianDishmanagementstatus: 0,
-        storeid: res.storeId,
-      };
-      // 根据storeid全查菜品分类
-      return this.$get(
-        `/backend/business/LantianDishmanagement/MapAllByStoreId`,
-        {
-          ...params,
-        }
-      );
+    // 分页切换
+    handleTableChange(pagination, filters, sorter) {
+      console.log(pagination);
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch({
+        pageSize: pagination.pageSize,
+        pageNum: pagination.current,
+        ...filters,
+      });
     },
+    // 网络请求
+    fetch(params = {}) {
+      this.loading = true;
+      let token = this.$db.get("USER_TOKEN");
+      let user = this.$db.get("USER");
+      // 超管和一级代理具备全查
+      this.$get("/aidOrder/list", {
+        Authentication: token,
+        pageSize: 10,
+        ...params,
+      }).then((res) => {
+        let pagination = { ...this.pagination };
+        pagination.total = res.data.data.total;
+        this.loading = false;
+        // 遍历数组
+        let dataSourceList = res.data.data.rows;
+        dataSourceList.forEach((item) => {
+          item.key = item.id;
+          this.dataSource.push(item);
+        });
+        this.pagination = pagination;
+      });
+    },
+    // 切换显示状态
+    onChange(e, record) {
+      console.log(e, record);
+      const params = { aidorderstatus: e, id: record.key };
+      this.$post("/aidOrder/update", { ...params }).then(() => {
+        this.$message.success("切换成功");
+      });
+    },
+
     // 选择列
     onSelectChange(selectedRowKeys) {
       console.log("selectedRowKeys changed: ", selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
 
-    // 获取更换状态和更换对象
-    onSwitch(checked, record) {
-      const _this = this;
-      // console.log(this.dataSource);
-      const params = {
-        id: record.id,
-        // storeid: this.storeId,
-        dishstatus: checked ? 1 : 0,
-      };
-      this.$put("/backend/business/LantianDishmanagement", { ...params }).then(
-        () => {
-          _this.dataSource.forEach((item) => {
-            if (item.id === record.id) {
-              item.dishstatus = checked ? 1 : 0;
-              // debugger;
-            }
-          });
-          this.$message.success("修改成功");
-        },
-        () => {
-          this.$message.error("修改失败");
-        }
-      );
-      console.log(this.dataSource);
-    },
-    // 控制查看订单
-    onCheckAssistModal(record) {
-      this.showData = record;
-      this.assistInfoVisible = true;
-      // console.log(record);
-    },
-    // 删除订单
+    // 删除求助
     onDeleteAssistModal() {},
     onCloseAssistShowModal() {
       this.assistInfoVisible = false;
@@ -232,14 +189,24 @@ export default {
     onCancelAssistShowModal() {
       this.assistInfoVisible = false;
     },
-    // 切换订单状态
-    onChange(value) {
-      // TODO:用record.key来确定门店id，从而改变门店的店铺状态
-      this.$message.success(`切换订单状态为${value}成功`);
+    // 删除问题
+    confirmDelete(record) {
+      this.$get("/aidOrder/delete", { id: record.id }).then(() => {
+        let dataSource = this.dataSource.filter((item) => {
+          return item.id !== record.id;
+        });
+        this.dataSource = dataSource;
+      });
     },
-    confirmDelete() {
-      this.$message.success("删除订单成功");
-      this.dataSource = [];
+    // 查看求助详细
+    showInfoModal(record) {
+      this.assistInfoShow = true;
+      // console.log(record);
+      this.assistInfo = record;
+    },
+    // 关闭求助详细
+    onClose() {
+      this.assistInfoShow = false;
     },
   },
 };

@@ -2,7 +2,7 @@
   <a-card bordered="false">
     <div>
       <!-- 切换订单模块 -->
-      <assist-category-change></assist-category-change>
+      <!-- <assist-category-change></assist-category-change> -->
       <!-- 展示订单信息 -->
       <assist-category-info></assist-category-info>
     </div>
