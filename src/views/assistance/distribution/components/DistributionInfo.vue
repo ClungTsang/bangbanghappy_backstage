@@ -183,10 +183,8 @@ export default {
         // 遍历数组
         let dataSourceList = res.data.data.rows;
         dataSourceList.forEach((item) => {
-          let item1 = item;
-          delete item1["id"];
-          item1["key"] = item.id;
-          this.dataSource.push(item1);
+          item.key = item.id;
+          this.dataSource.push(item);
         });
         this.pagination = pagination;
       });
