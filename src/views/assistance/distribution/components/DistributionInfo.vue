@@ -183,19 +183,10 @@ export default {
         // 遍历数组
         let dataSourceList = res.data.data.rows;
         dataSourceList.forEach((item) => {
-          this.dataSource.push({
-            key: item.id,
-            companyname: item.companyname,
-            address: item.address,
-            storeowner: item.storeowner,
-            bossmobilenumber: item.bossmobilenumber,
-            storephone: item.storephone,
-            spendpercent: item.spendpercent,
-            detailedintroduction: item.detailedintroduction,
-            openinghours: item.openinghours,
-            closinghours: item.closinghours,
-            // storestatus: item.storestatus,
-          });
+          let item1 = item;
+          delete item1["id"];
+          item1["key"] = item.id;
+          this.dataSource.push(item1);
         });
         this.pagination = pagination;
       });
