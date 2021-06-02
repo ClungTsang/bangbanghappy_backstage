@@ -85,7 +85,6 @@ const columns = [
     title: "抽成比例",
     dataIndex: "spendpercent",
     align: "center",
-    // scopedSlots: { customRender: "spendpercent" },
   },
   {
     title: "门店状态",
@@ -106,6 +105,8 @@ import event from "@/utils/event.js";
 import EditableCell from "../../../../components/editablecell/EditableCell";
 import DistributionStoreInfo from "./DistributionStoreInfo.vue";
 export default {
+  components: { EditableCell, DistributionStoreInfo },
+
   data() {
     return {
       dataSource: [],
@@ -113,12 +114,10 @@ export default {
       selectedRowKeys: [],
       pagination: {},
       loading: false,
-
       storeInfoVisible: false,
       storeInfo: null,
     };
   },
-  components: { EditableCell, DistributionStoreInfo },
   computed: {
     hasSelected() {
       return this.selectedRowKeys.length > 0;
