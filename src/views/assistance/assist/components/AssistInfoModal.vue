@@ -29,10 +29,10 @@
         <a-descriptions-item label="援助佣金">{{
           assistInfo.aidAmout
         }}</a-descriptions-item>
-        <a-descriptions-item label="对求助者的抽成比例">{{
+        <a-descriptions-item label="求助者所得到的金额">{{
           assistInfo.aidPlatformIncome
         }}</a-descriptions-item>
-        <a-descriptions-item label="对援助者的抽成比例">{{
+        <a-descriptions-item label="援助者所得到的金额">{{
           assistInfo.aiderIncome
         }}</a-descriptions-item>
         <a-descriptions-item label="求助内容">
