@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <a-card :bordered="false">
     <move-into-info></move-into-info>
-  </div>
+  </a-card>
 </template>
 <script>
 import MoveIntoInfo from "./components/MoveIntoInfo.vue";

@@ -52,7 +52,7 @@ export default {
           scopedSlots: { customRender: "service" },
         },
         {
-          title: "建议服务费用",
+          title: "建议货物价值费用",
           dataIndex: "cost",
           align:'center',
           width:150,
