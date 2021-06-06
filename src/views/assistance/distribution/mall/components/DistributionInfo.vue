@@ -179,12 +179,7 @@ export default {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
         this.loading = false;
-        // 遍历数组
-        let dataSourceList = res.data.data.rows;
-        dataSourceList.forEach((item) => {
-          item.key = item.id;
-          this.dataSource.push(item);
-        });
+        this.dataSource = res.data.data.rows;
         this.pagination = pagination;
       });
     },
