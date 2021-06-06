@@ -13,7 +13,7 @@ export default {
     theme: db.get('THEME', 'light'),
     layout: db.get('LAYOUT', 'side'),
     systemName: '小小帮后台系统',
-    copyright: `${new Date().getFullYear()} <a href="https://mrbird.cc" target="_blank">小小帮后台管理系统</a>`,
+    copyright: `${new Date().getFullYear()} <a href="#" target="_blank">小小帮后台管理系统</a>`,
     multipage: getBooleanValue(db.get('MULTIPAGE'), true),
     fixSiderbar: getBooleanValue(db.get('FIX_SIDERBAR'), true),
     fixHeader: getBooleanValue(db.get('FIX_HEADER'), true),
