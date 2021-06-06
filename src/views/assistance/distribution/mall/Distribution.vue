@@ -32,8 +32,8 @@
 </template>
 <script>
 import DistributionChange from "./components/DistributionChange";
-import DistributionAdd from "../components/DistributionAdd.vue";
-import DistributionInfo from "../components/DistributionInfo.vue";
+import DistributionAdd from "./components/DistributionAdd.vue";
+import DistributionInfo from "./components/DistributionInfo.vue";
 export default {
   data() {
     return {
