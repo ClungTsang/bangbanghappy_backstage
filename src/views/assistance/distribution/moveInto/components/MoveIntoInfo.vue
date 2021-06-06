@@ -21,7 +21,7 @@ const columns = [
   { title: "id", dataIndex: "id" },
   { title: "申请人", dataIndex: "title", align: "center" },
   { title: "申请理由", dataIndex: "content", align: "center" },
-  { title: "创建时间", width: 200, dataIndex: "createTime", align: "center" },
+  { title: "创建时间", width: 200, dataIndex: "createtime", align: "center" },
   {
     title: "操作",
     width: 200,
@@ -40,41 +40,22 @@ export default {
     };
   },
   created() {
-    this.getQuestion();
+    this.getMoveInto();
   },
   methods: {
-    // 修改答疑modal
-    onUpdateQuestion(record) {
-      this.changeVisible = true;
-      this.form.getFieldDecorator("title");
-      this.form.getFieldDecorator("detail");
-      this.form.setFieldsValue({
-        title: record.title,
-        detail: record.detail,
-      });
-      this.question = record;
-    },
     // 获取所有入驻申请
-    getQuestion() {
-      this.$get("/backend/notice/selectAllByNoticeStatus").then((res) => {
-        this.dataSource = res.data.data;
+    getMoveInto() {
+      this.$get("/backend/notice/selectAllByNoticeStatus", {
+        noticestatus: 1,
+      }).then((res) => {
+        this.dataSource = res.data.data.rows;
       });
     },
     // 删除入驻申请
     confirmDelete(record) {
       this.$delete("/backend/notice", { id: record.id }).then(() => {
-        let dataSource = this.dataSource.filter((item) => {
-          return item.id !== record.id;
-        });
-        this.dataSource = dataSource;
-      });
-    },
-    onDeleteOuter(record) {
-      this.$get("/aidServiceType/delete", { id: record.id }).then(() => {
         const dataSource = [...this.dataSource];
-        this.dataSource = dataSource.filter(
-          (item) => item.id !== record.id
-        );
+        this.dataSource = dataSource.filter((item) => item.id !== record.id);
       });
     },
   },
