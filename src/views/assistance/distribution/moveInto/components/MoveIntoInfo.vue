@@ -15,16 +15,14 @@
   </div>
 </template>
 <script>
-import event from "@/utils/event";
-
 const columns = [
   { title: "id", dataIndex: "id" },
-  { title: "申请人", dataIndex: "title", align: "center" },
-  { title: "申请理由", dataIndex: "content", align: "center" },
+  { title: "申请人", width: 200, dataIndex: "title", align: "center" },
+  { title: "申请理由", width: 300, dataIndex: "content", align: "center" },
   { title: "创建时间", width: 200, dataIndex: "createtime", align: "center" },
   {
     title: "操作",
-    width: 200,
+    width: 120,
     dataIndex: "action",
     align: "center",
     scopedSlots: { customRender: "action" },
