@@ -5,6 +5,7 @@
       :columns="columns"
       :pagination="pagination"
       :loading="loading"
+      @change="handleTableChange"
     >
       <!-- 求助状态变更 -->
       <span slot="aidorderstatus" slot-scope="text, record">
@@ -42,16 +43,7 @@
       </span>
       <!-- 操作控制 -->
       <span slot="action" slot-scope="text, record">
-        <a-popconfirm
-          title="确定删除该订单"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="confirmDelete(record)"
-        >
-          <a>删除订单</a>
-        </a-popconfirm>
-        <a-divider type="vertical" />
-        <a @click="showInfoModal(record)">查看详细</a>
+        <a @click="showInfoModal(record)">查看订单信息</a>
       </span>
     </a-table>
 
@@ -99,6 +91,15 @@ const columns = [
     title: "状态更改",
     width: 100,
     dataIndex: "aidorderstatus",
+    filters: [
+      { text: "待付款", value: "1" },
+      { text: "待援助", value: "2" },
+      { text: "援助中", value: "3" },
+      { text: "处理中", value: "4" },
+      { text: "已完成", value: "5" },
+      { text: "已取消", value: "6" },
+      { text: "已关闭", value: "7" },
+    ],
     align: "center",
     scopedSlots: { customRender: "aidorderstatus" },
   },
@@ -118,13 +119,12 @@ export default {
       columns,
       dataSource: [],
       pagination: {},
-      selectedRowKeys: [],
       loading: false,
+      selectedRowKeys: [],
       assistInfoShow: false,
       assistInfo: null,
     };
   },
-  created() {},
   mounted() {
     this.fetch();
     // 接受下拉框的分类storeid
@@ -146,7 +146,7 @@ export default {
     fetch(params = {}) {
       this.loading = true;
       let token = this.$db.get("USER_TOKEN");
-      let user = this.$db.get("USER");
+      // let user = this.$db.get("USER");
       // 超管和一级代理具备全查
       this.$get("/aidOrder/list", {
         Authentication: token,
@@ -156,12 +156,7 @@ export default {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
         this.loading = false;
-        // 遍历数组
-        let dataSourceList = res.data.data.rows;
-        dataSourceList.forEach((item) => {
-          item.key = item.id;
-          this.dataSource.push(item);
-        });
+        this.dataSource = res.data.data.rows;
         this.pagination = pagination;
       });
     },

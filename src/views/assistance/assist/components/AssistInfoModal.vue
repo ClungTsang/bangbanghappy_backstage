@@ -8,44 +8,19 @@
       @cancel="handleCancel"
     >
       <a-descriptions bordered>
-        <a-descriptions-item label="订单编号">
+        <a-descriptions-item label="订单编号" :span="2">
           {{ assistInfo.outTradeNo }}
         </a-descriptions-item>
-        <a-descriptions-item label="所属范围">
+        <a-descriptions-item label="订单创建时间">
+          {{ assistInfo.createtime }}
+        </a-descriptions-item>
+        <a-descriptions-item label="订单分类">
           {{ assistInfo.oncampus == 0 ? "校外" : "校内" }}
         </a-descriptions-item>
         <a-descriptions-item label="分类名称">{{
           assistInfo.classifyName
         }}</a-descriptions-item>
-        <a-descriptions-item label="客户名字">{{
-          assistInfo.publishUserOpenid
-        }}</a-descriptions-item>
-        <a-descriptions-item label="客户电话">{{
-          assistInfo.publishUserNamemobile
-        }}</a-descriptions-item>
-        <a-descriptions-item label="客户地址">{{
-          assistInfo.addressDetail
-        }}</a-descriptions-item>
-        <a-descriptions-item label="援助佣金">{{
-          assistInfo.aidAmout
-        }}</a-descriptions-item>
-        <a-descriptions-item label="求助者所得到的金额">{{
-          assistInfo.aidPlatformIncome
-        }}</a-descriptions-item>
-        <a-descriptions-item label="援助者所得到的金额">{{
-          assistInfo.aiderIncome
-        }}</a-descriptions-item>
-        <a-descriptions-item label="求助内容">
-          {{ assistInfo.description }}
-        </a-descriptions-item>
-        <a-descriptions-item label="求助标题">
-          {{ assistInfo.title }}
-        </a-descriptions-item>
-        <a-descriptions-item label="商品价值">{{
-          assistInfo.assistprice
-        }}</a-descriptions-item>
-
-        <a-descriptions-item label="求助状态">
+        <a-descriptions-item label="订单状态">
           <a-badge
             status="warning"
             text="待付款"
@@ -83,14 +58,61 @@
           />
         </a-descriptions-item>
 
+        <a-descriptions-item label="客户名字">{{
+          orderUser.realname
+        }}</a-descriptions-item>
+        <a-descriptions-item label="客户电话">{{
+          assistInfo.publishUserNamemobile
+        }}</a-descriptions-item>
+        <a-descriptions-item label="客户地址">{{
+          assistInfo.addressDetail
+        }}</a-descriptions-item>
+        <!-- 自定义订单渲染 -->
+
+        <a-descriptions-item label="订单标题">
+          {{ assistInfo.description }}
+        </a-descriptions-item>
+        <a-descriptions-item label="订单内容">
+          {{ assistInfo.title }}
+        </a-descriptions-item>
+        <a-descriptions-item label="商品价值">
+          {{ assistInfo.assistprice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="援助佣金">{{
+          assistInfo.aidAmout
+        }}</a-descriptions-item>
+        <a-descriptions-item label="平台抽成比例">
+          {{ assistInfo.aidPlatformIncome }}
+        </a-descriptions-item>
+        <a-descriptions-item label="援助者得到的佣金">{{
+          assistInfo.aiderIncome
+        }}</a-descriptions-item>
+
+        <!-- 商铺渲染 -->
+
+        <a-descriptions-item label="商铺名称">{{
+          mallInfo.companyname
+        }}</a-descriptions-item>
+        <a-descriptions-item label="商铺联系人">
+          {{ mallInfo.storeowner }}
+        </a-descriptions-item>
+        <a-descriptions-item label="商铺电话">{{
+          mallInfo.storephone
+        }}</a-descriptions-item>
+        <a-descriptions-item label="订单标题">
+          {{ assistInfo.title }}
+        </a-descriptions-item>
+        <a-descriptions-item label="菜品内容">
+          {{ assistInfo.content }}
+        </a-descriptions-item>
+        <a-descriptions-item label="商品价值">
+          {{ assistInfo.materialsAmount }}
+        </a-descriptions-item>
         <a-descriptions-item label="援助者">{{
-          assistInfo.aidUserOpenid
+          assistor.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="援助者电话">{{
-          assistInfo.aidUserNamemobile
-        }}</a-descriptions-item>
-        <a-descriptions-item label="求助创建时间">{{
-          assistInfo.createtime
+          assistor.phonenum
         }}</a-descriptions-item>
       </a-descriptions>
     </a-modal>
@@ -110,7 +132,14 @@ export default {
   },
   data() {
     return {
+      // 订单信息
       assistInfo: {},
+      // 求助者信息
+      orderUser: {},
+      // 援助者信息
+      assistor: {},
+      // 商铺信息
+      mallInfo: {},
     };
   },
   computed: {
@@ -118,17 +147,52 @@ export default {
       return this.infoVisible;
     },
   },
+  created() {},
   watch: {
     info(val) {
+      this.getAssistorInfo();
+      this.getOrderUserInfo();
+      this.getMallInfo();
       this.assistInfo = val;
+      console.log(this.assistInfo);
     },
   },
   methods: {
+    // 控制开关
     handleOk() {
       this.$emit("close");
     },
     handleCancel() {
       this.$emit("close");
+    },
+    // 获取求助者信息
+    getOrderUserInfo() {
+      const params = { openid: this.assistInfo.publishUserOpenid };
+      this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
+        if (res.data.data) {
+          this.orderUser = res.data.data;
+        }
+      });
+    },
+    // 获取援助者信息
+    getAssistorInfo() {
+      const params = { openid: this.assistInfo.aidUserOpenid };
+      this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
+        if (res.data.data) {
+          this.assistor = res.data.data;
+        }
+      });
+    },
+    // 获取商铺信息
+    getMallInfo() {
+      if (this.assistInfo.blackboardId) {
+        let id = this.assistInfo.blackboardId;
+        this.$get(`/business/LantianStore/${id}`).then((res) => {
+          if (res.data.data) {
+            this.mallInfo = res.data.data;
+          }
+        });
+      }
     },
   },
 };
