@@ -1,9 +1,15 @@
 <template>
   <div>
     <a-card :bordered="false">
-      <a-table :columns="columns" :data-source="userData" :scroll="{ x: 1500 }">
-        <span slot="avatar" slot-scope="text, record">
-          <img style="width: 60px; heigth: 60px" :src="record.avatar" />
+      <a-table
+        :columns="columns"
+        :data-source="dataSource"
+        :pagination="pagination"
+        :loading="loading"
+        @change="handleTableChange"
+      >
+        <span slot="headimgurl" slot-scope="text, record">
+          <img style="width: 60px; heigth: 60px" :src="record.headimgurl" />
         </span>
         <span slot="action" slot-scope="text, record">
           <a href="javascript:;">操作</a>
@@ -16,20 +22,20 @@
 const columns = [
   {
     title: "头像",
-    dataIndex: "avatar",
-    scopedSlots: { customRender: "avatar" },
+    dataIndex: "headimgurl",
+    scopedSlots: { customRender: "headimgurl" },
     width: 100,
     align: "center",
   },
   {
     title: "用户姓名",
-    dataIndex: "name",
+    dataIndex: "customername",
     width: 150,
     align: "center",
   },
   {
     title: "电话号码",
-    dataIndex: "telephone",
+    dataIndex: "phonenum",
     width: 200,
     align: "center",
   },
@@ -41,7 +47,7 @@ const columns = [
   },
   {
     title: "更新时间",
-    dataIndex: "membership",
+    dataIndex: "updatetime",
     width: 200,
     align: "center",
   },
@@ -57,30 +63,46 @@ const columns = [
 export default {
   data() {
     return {
-      userData: [],
+      dataSource: [],
       columns,
+      pagination: {},
+      loading: false,
     };
   },
-  created() {
-    this.getUserCustomer();
+  mounted() {
+    this.fetch();
+    // 接受下拉框的分类storeid
   },
   methods: {
-    // 获取用户信息
-    getUserCustomer() {
-      this.$get("/wechatcustomer").then((res) => {
-        return this.setUserCustomer(res.data.data);
+    // 分页切换
+    handleTableChange(pagination, filters, sorter) {
+      console.log(pagination);
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch({
+        pageSize: pagination.pageSize,
+        pageNum: pagination.current,
+        ...filters,
       });
     },
-    // 设置用户信息
-    setUserCustomer(userDataList) {
-      userDataList.forEach((item) => {
-        this.userData.push({
-          avatar: item.headimgurl,
-          name: item.customername,
-          telephone: item.phonenum,
-          viplevel: item.viplevel,
-          membership: item.updatetime,
-        });
+    // 网络请求
+    fetch(params = {}) {
+      this.loading = true;
+      let token = this.$db.get("USER_TOKEN");
+      // let user = this.$db.get("USER");
+      // 超管和一级代理具备全查
+      this.$get("/wechatcustomer", {
+        Authentication: token,
+        pageSize: 10,
+        ...params,
+      }).then((res) => {
+        let pagination = { ...this.pagination };
+        pagination.total = res.data.data.total;
+        this.loading = false;
+        // 遍历数组
+        this.dataSource = res.data.data;
+        this.pagination = pagination;
       });
     },
   },
