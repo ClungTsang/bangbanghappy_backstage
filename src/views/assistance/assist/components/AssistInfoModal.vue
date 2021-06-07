@@ -102,9 +102,17 @@
         <a-descriptions-item label="平台抽成援助数额">
           {{ assistInfo.aidPlatformIncome }}
         </a-descriptions-item>
-        <a-descriptions-item label="援助者得到的佣金">{{
-          assistInfo.aiderIncome
-        }}</a-descriptions-item>
+        <a-descriptions-item label="援助者得到的佣金" :span="2">
+          {{ assistInfo.aiderIncome }}
+        </a-descriptions-item>
+        <a-descriptions-item label="凭证内容">
+          {{ assistInfo.certificateContent }}
+        </a-descriptions-item>
+        <a-descriptions-item label="凭证图片">
+          <div v-show="assistInfo.certificateUrls" v-for="(item, index) in JSON.parse(assistInfo.certificateUrls)" :key="index">
+            <img style="width: 400px; heigth: auto" :src="item" />
+          </div>
+        </a-descriptions-item>
       </a-descriptions>
     </a-modal>
   </div>
