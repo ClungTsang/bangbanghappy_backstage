@@ -19,19 +19,19 @@
             v-hasPermission="['incomeAssist:set']"
 
           >
-            援助抽成
+            全局押金抽成
           </a-button>
         </a-col>
       </a-row>
 
       <income-get
         :getVisible="incomeGetVisible"
-        @close="opCloseIncomeModal"
+        @close="onCloseIncomeModal"
       ></income-get>
 
       <income-assist-change
         :assistVisible="assistVisible"
-        @close="opCloseAssistModal"
+        @close="onCloseAssistModal"
       ></income-assist-change>
 
       <income-info></income-info>
@@ -54,13 +54,13 @@ export default {
     onOpenIncomeModal() {
       this.incomeGetVisible = true;
     },
-    opCloseIncomeModal() {
+    onCloseIncomeModal() {
       this.incomeGetVisible = false;
     },
     onOpenAssistModal() {
       this.assistVisible = true;
     },
-    opCloseAssistModal() {
+    onCloseAssistModal() {
       this.assistVisible = false;
     },
   },
