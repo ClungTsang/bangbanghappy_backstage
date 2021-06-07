@@ -1,5 +1,7 @@
 <template>
   <div>
+
+    <!-- 用户信息 -->
     <user-customer></user-customer>
   </div>
 </template>
