@@ -163,7 +163,7 @@ export default {
     // 切换显示状态
     onChange(e, record) {
       console.log(e, record);
-      const params = { aidorderstatus: e, id: record.key };
+      const params = { aidorderstatus: e, id: record.id };
       this.$post("/aidOrder/update", { ...params }).then(() => {
         this.$message.success("切换成功");
       });
@@ -175,8 +175,6 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
 
-    // 删除求助
-    onDeleteAssistModal() {},
     onCloseAssistShowModal() {
       this.assistInfoVisible = false;
       console.log("closeMenu");

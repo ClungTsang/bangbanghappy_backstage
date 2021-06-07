@@ -149,12 +149,15 @@ export default {
   },
   created() {},
   watch: {
-    info(val) {
-      this.getAssistorInfo();
-      this.getOrderUserInfo();
-      this.getMallInfo();
-      this.assistInfo = val;
-      console.log(this.assistInfo);
+    info: {
+      handler(val) {
+        console.log(val);
+        this.assistInfo = val;
+        this.getAssistorInfo();
+        this.getOrderUserInfo();
+        this.getMallInfo();
+      },
+      deep: true,
     },
   },
   methods: {
@@ -176,12 +179,16 @@ export default {
     },
     // 获取援助者信息
     getAssistorInfo() {
-      const params = { openid: this.assistInfo.aidUserOpenid };
-      this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
-        if (res.data.data) {
-          this.assistor = res.data.data;
-        }
-      });
+      if (this.assistInfo.aidUserOpenid) {
+        const params = { openid: this.assistInfo.aidUserOpenid };
+        this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
+          if (res.data.data) {
+            this.assistor = res.data.data;
+          }
+        });
+      } else {
+        this.assistor = {};
+      }
     },
     // 获取商铺信息
     getMallInfo() {
@@ -190,8 +197,11 @@ export default {
         this.$get(`/business/LantianStore/${id}`).then((res) => {
           if (res.data.data) {
             this.mallInfo = res.data.data;
+            console.log(this.mallInfo);
           }
         });
+      } else {
+        this.mallInfo = {};
       }
     },
   },
