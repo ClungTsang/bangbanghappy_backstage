@@ -14,7 +14,7 @@
     <a-descriptions-item label="门店状态">
       <a-badge status="default" text="未定义" v-if="this.storeInfo.storestatus == 4" />
       <a-badge status="success" text="开店" v-else-if="this.storeInfo.storestatus == 3" />
-      <a-badge status="warning" text="休业" v-else-if="this.storeInfo.storestatus == 2" />
+      <a-badge status="warning" text="休店" v-else-if="this.storeInfo.storestatus == 2" />
       <a-badge status="error" text="关店" v-else-if="this.storeInfo.storestatus == 1" />
       <a-badge status="processing" text="不营业" v-else="this.storeInfo.storestatus == 0" />
     </a-descriptions-item>
@@ -41,8 +41,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    info: {
-      default: {},
+    id: {
+      default: 0,
     },
   },
   data() {
@@ -56,8 +56,8 @@ export default {
     },
   },
   watch: {
-    info(val) {
-      this.storeInfo = val;
+    id(val) {
+      this.getMallInfo(val)
     },
   },
   methods: {
@@ -67,6 +67,12 @@ export default {
     handleCancel() {
       this.$emit("close");
     },
+    // 网络请求商铺信息
+    getMallInfo(id){
+this.$get(`/business/LantianStore/${id}`).then(res=>{
+  this.storeInfo = res.data.data
+})
+    }
   },
 };
 </script>

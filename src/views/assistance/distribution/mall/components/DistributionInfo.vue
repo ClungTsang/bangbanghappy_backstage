@@ -13,7 +13,16 @@
     >
       <span slot="storestatus" slot-scope="text, record">
         <a-select
-          default-value="不营业"
+          :default-value="
+            text == 0
+              ? '不营业'
+              : text == 1
+              ? '关店'
+              : text == 2
+              ? '休店'
+              : text == 3
+              ? '开店'
+              : '异常'"
           style="width: 100px"
           @change="
             (e) => {
@@ -35,19 +44,19 @@
 
     <distribution-store-info
       :infoVisible="storeInfoVisible"
-      :info="storeInfo"
+      :id="id"
       @close="onClose"
     ></distribution-store-info>
   </div>
 </template>
 <script>
 const columns = [
-  // {
-  //   title: "门店编号",
-  //   dataIndex: "id",
-  //   width: 100,
-  //   align: "center",
-  // },
+  {
+    title: "门店编号",
+    dataIndex: "id",
+    width: 100,
+    align: "center",
+  },
   {
     title: "门点名称",
     dataIndex: "companyname",
@@ -115,7 +124,7 @@ export default {
       pagination: {},
       loading: false,
       storeInfoVisible: false,
-      storeInfo: null,
+      id: null,
     };
   },
   computed: {
@@ -140,7 +149,7 @@ export default {
     // 切换店铺状态
     changeStatus(e, record) {
       console.log(e, record);
-      const params = { storestatus: e, id: record.key };
+      const params = { storestatus: e, id: record.id };
       this.$put("/business/LantianStore", { ...params }).then(() => {
         this.$message.success("切换成功");
       });
@@ -186,7 +195,7 @@ export default {
     showInfoModal(record) {
       this.storeInfoVisible = true;
       // console.log(record);
-      this.storeInfo = record;
+      this.id = record.id;
     },
     // 关闭门店信息
     onClose() {
