@@ -14,7 +14,7 @@
         <a-descriptions-item label="订单创建时间">
           {{ assistInfo.createtime }}
         </a-descriptions-item>
-        <a-descriptions-item label="订单分类">
+        <a-descriptions-item label="所属分类">
           {{ assistInfo.oncampus == 0 ? "校外" : "校内" }}
         </a-descriptions-item>
         <a-descriptions-item label="分类名称">{{
@@ -64,32 +64,20 @@
         <a-descriptions-item label="客户电话">{{
           assistInfo.publishUserNamemobile
         }}</a-descriptions-item>
-        <a-descriptions-item label="客户地址">{{
+        <a-descriptions-item label="收货地址">{{
           assistInfo.addressDetail
         }}</a-descriptions-item>
         <!-- 自定义订单渲染 -->
 
-        <a-descriptions-item label="订单标题">
-          {{ assistInfo.description }}
-        </a-descriptions-item>
-        <a-descriptions-item label="订单内容">
+        <a-descriptions-item label="求助标题">
           {{ assistInfo.title }}
         </a-descriptions-item>
-        <a-descriptions-item label="商品价值">
-          {{ assistInfo.assistprice }}
+        <a-descriptions-item label="求助说明">
+          {{ assistInfo.description }}
         </a-descriptions-item>
-        <a-descriptions-item label="援助佣金">{{
-          assistInfo.aidAmout
-        }}</a-descriptions-item>
-        <a-descriptions-item label="平台抽成比例">
-          {{ assistInfo.aidPlatformIncome }}
+        <a-descriptions-item label="货物价值">
+          {{ assistInfo.materialsAmount }}
         </a-descriptions-item>
-        <a-descriptions-item label="援助者得到的佣金">{{
-          assistInfo.aiderIncome
-        }}</a-descriptions-item>
-
-        <!-- 商铺渲染 -->
-
         <a-descriptions-item label="商铺名称">{{
           mallInfo.companyname
         }}</a-descriptions-item>
@@ -99,20 +87,23 @@
         <a-descriptions-item label="商铺电话">{{
           mallInfo.storephone
         }}</a-descriptions-item>
-        <a-descriptions-item label="订单标题">
-          {{ assistInfo.title }}
-        </a-descriptions-item>
-        <a-descriptions-item label="菜品内容">
+        <a-descriptions-item label="菜品内容" :span="4">
           {{ assistInfo.content }}
-        </a-descriptions-item>
-        <a-descriptions-item label="商品价值">
-          {{ assistInfo.materialsAmount }}
         </a-descriptions-item>
         <a-descriptions-item label="援助者">{{
           assistor.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="援助者电话">{{
-          assistor.publishUserNamemobile
+          assistor.phonenum
+        }}</a-descriptions-item>
+        <a-descriptions-item label="援助佣金">{{
+          assistInfo.aidAmout
+        }}</a-descriptions-item>
+        <a-descriptions-item label="平台抽成援助数额">
+          {{ assistInfo.aidPlatformIncome }}
+        </a-descriptions-item>
+        <a-descriptions-item label="援助者得到的佣金">{{
+          assistInfo.aiderIncome
         }}</a-descriptions-item>
       </a-descriptions>
     </a-modal>
@@ -148,16 +139,13 @@ export default {
     },
   },
   watch: {
-    id: {
-      async handler(id) {
-        // 获取订单信息
-        await this.getOrderInfo(id);
-        // this.assistInfo();
-        this.getAssistorInfo();
-        this.getOrderUserInfo();
-        this.getMallInfo();
-      },
-      deep: true,
+    id(id) {
+      this.getOrderInfo(id);
+    },
+    assistInfo() {
+      this.getAssistorInfo();
+      this.getOrderUserInfo();
+      this.getMallInfo();
     },
   },
   methods: {
@@ -185,6 +173,7 @@ export default {
     },
     // 获取援助者信息
     getAssistorInfo() {
+      console.log(this.assistInfo.aidUserOpenid);
       if (this.assistInfo.aidUserOpenid) {
         const params = { openid: this.assistInfo.aidUserOpenid };
         this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
