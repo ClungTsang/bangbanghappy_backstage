@@ -39,7 +39,7 @@
           <a-badge
             status="error"
             text="处理中"
-            v-else="this.assistInfo.aidorderstatus == 4"
+            v-else-if="this.assistInfo.aidorderstatus == 4"
           />
           <a-badge
             status="success"
@@ -48,12 +48,12 @@
           />
           <a-badge
             status="default"
-            text="已关闭"
+            text="已取消"
             v-else-if="this.assistInfo.aidorderstatus == 6"
           />
           <a-badge
             status="warning"
-            text="待援助"
+            text="已关闭"
             v-else="this.assistInfo.aidorderstatus == 7"
           />
         </a-descriptions-item>
@@ -112,7 +112,7 @@
           assistor.realname
         }}</a-descriptions-item>
         <a-descriptions-item label="援助者电话">{{
-          assistor.phonenum
+          assistor.publishUserNamemobile
         }}</a-descriptions-item>
       </a-descriptions>
     </a-modal>
@@ -126,8 +126,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    info: {
-      default: {},
+    id: {
+      default: 0,
     },
   },
   data() {
@@ -147,12 +147,12 @@ export default {
       return this.infoVisible;
     },
   },
-  created() {},
   watch: {
-    info: {
-      handler(val) {
-        console.log(val);
-        this.assistInfo = val;
+    id: {
+      async handler(id) {
+        // 获取订单信息
+        await this.getOrderInfo(id);
+        // this.assistInfo();
         this.getAssistorInfo();
         this.getOrderUserInfo();
         this.getMallInfo();
@@ -167,6 +167,12 @@ export default {
     },
     handleCancel() {
       this.$emit("close");
+    },
+    // 获取订单信息
+    getOrderInfo(id) {
+      this.$get("/aidOrderById", { id: id }).then((res) => {
+        this.assistInfo = res.data.data;
+      });
     },
     // 获取求助者信息
     getOrderUserInfo() {
@@ -197,7 +203,6 @@ export default {
         this.$get(`/business/LantianStore/${id}`).then((res) => {
           if (res.data.data) {
             this.mallInfo = res.data.data;
-            console.log(this.mallInfo);
           }
         });
       } else {
