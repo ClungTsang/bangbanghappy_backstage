@@ -29,7 +29,6 @@
         </a-form-item>
       </a-form>
     </div>
-    //TODO: 轮播图跳转
     <!-- <div style="margin-top: 10px">
        <a-form>
         <a-form-item label="url地址（可不填）">
