@@ -64,7 +64,7 @@ const columns = [
     align: "center",
   },
   {
-    title: "是否需要押金",
+    title: "是否需要交押金",
     dataIndex: "needdeposit",
     align: "center",
     width: 100,
