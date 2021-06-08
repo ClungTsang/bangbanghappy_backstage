@@ -17,9 +17,9 @@
         <a-descriptions-item label="所属分类">
           {{ assistInfo.oncampus == 0 ? "校外" : "校内" }}
         </a-descriptions-item>
-        <a-descriptions-item label="分类名称">{{
-          assistInfo.classifyName
-        }}</a-descriptions-item>
+        <a-descriptions-item label="分类名称">
+          {{ assistInfo.classifyName }}
+        </a-descriptions-item>
         <a-descriptions-item label="订单状态">
           <a-badge
             status="warning"
@@ -57,18 +57,15 @@
             v-else="this.assistInfo.aidorderstatus == 7"
           />
         </a-descriptions-item>
-
-        <a-descriptions-item label="客户名字">{{
-          orderUser.realname
-        }}</a-descriptions-item>
-        <a-descriptions-item label="客户电话">{{
-          assistInfo.publishUserNamemobile
-        }}</a-descriptions-item>
-        <a-descriptions-item label="收货地址">{{
-          assistInfo.addressDetail
-        }}</a-descriptions-item>
-        <!-- 自定义订单渲染 -->
-
+        <a-descriptions-item label="客户名字">
+          {{ orderUser.realname }}
+        </a-descriptions-item>
+        <a-descriptions-item label="客户电话">
+          {{ assistInfo.publishUserNamemobile }}
+        </a-descriptions-item>
+        <a-descriptions-item label="收货地址">
+          {{ assistInfo.addressDetail }}
+        </a-descriptions-item>
         <a-descriptions-item label="求助标题">
           {{ assistInfo.title }}
         </a-descriptions-item>
@@ -78,27 +75,41 @@
         <a-descriptions-item label="货物价值">
           {{ assistInfo.materialsAmount }}
         </a-descriptions-item>
-        <a-descriptions-item label="商铺名称">{{
-          mallInfo.companyname
-        }}</a-descriptions-item>
-        <a-descriptions-item label="商铺联系人">
-          {{ mallInfo.storeowner }}
+        <a-descriptions-item label="商铺名称">
+          <div v-if="mallInfo.companyname != null">
+            {{ mallInfo.companyname }}
+          </div>
+          <div v-else-if>无商铺</div>
         </a-descriptions-item>
-        <a-descriptions-item label="商铺电话">{{
-          mallInfo.storephone
-        }}</a-descriptions-item>
+        <a-descriptions-item label="商铺联系人">
+          <div v-if="mallInfo.storeowner != null">
+            {{ mallInfo.storeowner }}
+          </div>
+          <div v-else-if>无商铺联系人</div>
+        </a-descriptions-item>
+        <a-descriptions-item label="商铺电话">
+          <div v-if="mallInfo.storephone != null">
+          </div>
+          <div v-else>无商铺电话</div>
+        </a-descriptions-item>
         <a-descriptions-item label="菜品内容" :span="4">
           {{ assistInfo.content }}
         </a-descriptions-item>
-        <a-descriptions-item label="援助者">{{
-          assistor.realname
-        }}</a-descriptions-item>
-        <a-descriptions-item label="援助者电话">{{
-          assistor.phonenum
-        }}</a-descriptions-item>
-        <a-descriptions-item label="援助佣金">{{
-          assistInfo.aidAmout
-        }}</a-descriptions-item>
+        <a-descriptions-item label="援助者">
+          <div v-if="assistor.realname != null">
+            {{ assistor.realname }}
+          </div>
+          <div v-else>无援助者</div>
+        </a-descriptions-item>
+        <a-descriptions-item label="援助者电话">
+          <div v-if="assistor.phonenum != null">
+            {{ assistor.phonenum }}
+          </div>
+          <div v-else>无援助者电话</div>
+        </a-descriptions-item>
+        <a-descriptions-item label="援助佣金">
+          {{ assistInfo.aidAmout }}
+        </a-descriptions-item>
         <a-descriptions-item label="平台抽成援助数额">
           {{ assistInfo.aidPlatformIncome }}
         </a-descriptions-item>
@@ -106,12 +117,24 @@
           {{ assistInfo.aiderIncome }}
         </a-descriptions-item>
         <a-descriptions-item label="凭证内容">
-          {{ assistInfo.certificateContent }}
+          <div v-if="assistInfo.certificateContent != null">
+            {{ assistInfo.certificateContent }}
+          </div>
+          <div v-else>未填写凭证内容</div>
         </a-descriptions-item>
         <a-descriptions-item label="凭证图片">
-          <div v-show="assistInfo.certificateUrls" v-for="(item, index) in JSON.parse(assistInfo.certificateUrls)" :key="index">
-            <img style="width: 400px; heigth: auto" :src="item" />
+          <div v-if="assistInfo.certificateUrls != null">
+            <div
+              v-for="(item, index) in JSON.parse(assistInfo.certificateUrls)"
+              :key="index"
+            >
+              <img
+                style="width: 400px; heigth: auto; margin-bottom: 20px"
+                :src="item"
+              />
+            </div>
           </div>
+          <div v-else>未上传相关图片</div>
         </a-descriptions-item>
       </a-descriptions>
     </a-modal>
