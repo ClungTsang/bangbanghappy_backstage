@@ -17,8 +17,8 @@
 <script>
 const columns = [
   { title: "id", dataIndex: "id" },
-  { title: "申请人", width: 200, dataIndex: "title", align: "center" },
-  { title: "申请理由", width: 300, dataIndex: "content", align: "center" },
+  { title: "申请人与联系方式", width: 200, dataIndex: "title", align: "center" },
+  { title: "申请理由", width: 500, dataIndex: "content", align: "center" },
   { title: "创建时间", width: 200, dataIndex: "createtime", align: "center" },
   {
     title: "操作",
@@ -54,6 +54,7 @@ export default {
       this.$delete("/backend/notice", { id: record.id }).then(() => {
         const dataSource = [...this.dataSource];
         this.dataSource = dataSource.filter((item) => item.id !== record.id);
+        this.$message.success('删除成功')
       });
     },
   },
