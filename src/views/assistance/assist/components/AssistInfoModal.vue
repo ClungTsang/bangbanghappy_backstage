@@ -79,16 +79,17 @@
           <div v-if="mallInfo.companyname != null">
             {{ mallInfo.companyname }}
           </div>
-          <div v-else-if>无商铺</div>
+          <div v-else>无商铺</div>
         </a-descriptions-item>
         <a-descriptions-item label="商铺联系人">
           <div v-if="mallInfo.storeowner != null">
             {{ mallInfo.storeowner }}
           </div>
-          <div v-else-if>无商铺联系人</div>
+          <div v-else>无商铺联系人</div>
         </a-descriptions-item>
         <a-descriptions-item label="商铺电话">
           <div v-if="mallInfo.storephone != null">
+            {{ mallInfo.storephone }}
           </div>
           <div v-else>无商铺电话</div>
         </a-descriptions-item>
