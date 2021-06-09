@@ -1,5 +1,5 @@
 <template>
-  <a-card bordered="false">
+  <a-card :bordered="false">
     <div>
       <!-- 新建门店按钮 -->
       <a-button

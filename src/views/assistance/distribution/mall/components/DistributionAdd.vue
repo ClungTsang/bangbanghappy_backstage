@@ -30,7 +30,7 @@
               {
                 rules: [
                   {
-                    required: true
+                    required: true,
                   },
                 ],
               },
@@ -290,7 +290,7 @@ export default {
       });
     },
     // 上传门店信息服务器
-    onUploadData(formData) {
+    async onUploadData(formData) {
       const params = {
         bossmobilenumber: formData.bossmobilenumber,
         companyname: formData.storeName,
@@ -309,6 +309,14 @@ export default {
         spendpercent: formData.slider + "",
         localxy: this.point.lat + "," + this.point.lng,
       };
+
+      let user = this.$db.get("USER");
+      if (user.description == "一级代理" || user.roleName == "一级代理") {
+        await this.$get(`/business/LantianStore/${user.userId}`).then((res) => {
+          params["parentid"] = res.data.data.id;
+        });
+      }
+
       this.$post("/business/LantianStore", { ...params }).then(
         () => {
           this.$emit("close");

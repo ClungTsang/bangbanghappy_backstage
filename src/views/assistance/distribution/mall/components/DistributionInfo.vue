@@ -22,7 +22,8 @@
               ? '休店'
               : text == 3
               ? '开店'
-              : '异常'"
+              : '异常'
+          "
           style="width: 100px"
           @change="
             (e) => {
@@ -177,20 +178,36 @@ export default {
       this.loading = true;
       let token = this.$db.get("USER_TOKEN");
       let user = this.$db.get("USER");
-      // 超管和一级代理具备全查
-      this.$get("/business/LantianStore/MapAll", {
-        // TODO:根据不同的角色请求旗下门店
-        // this.$get(`/business/LantianStore/${user.username}`, {
-        Authentication: token,
-        pageSize: 10,
-        ...params,
-      }).then((res) => {
-        let pagination = { ...this.pagination };
-        pagination.total = res.data.data.total;
-        this.loading = false;
-        this.dataSource = res.data.data.rows;
-        this.pagination = pagination;
-      });
+      if (user.description == "一级代理" || user.roleName == "一级代理") {
+        //根据不同的角色请求旗下门店
+        this.$get(`/business/LantianStore/${user.userId}`).then((result) => {
+          console.log(result.data.data.id);
+          return this.$get("/business/LantianStore/MapAllByStoreid", {
+            Authentication: token,
+            pageSize: 10,
+            Parentid: result.data.data.id,
+            ...params,
+          }).then((res) => {
+            let pagination = { ...this.pagination };
+            pagination.total = res.data.data.total;
+            this.loading = false;
+            this.dataSource = res.data.data.rows;
+            this.pagination = pagination;
+          });
+        });
+      } else {
+        this.$get("/business/LantianStore/MapAll", {
+          Authentication: token,
+          pageSize: 10,
+          ...params,
+        }).then((res) => {
+          let pagination = { ...this.pagination };
+          pagination.total = res.data.data.total;
+          this.loading = false;
+          this.dataSource = res.data.data.rows;
+          this.pagination = pagination;
+        });
+      }
     },
     showInfoModal(record) {
       this.storeInfoVisible = true;
