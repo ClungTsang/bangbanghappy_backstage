@@ -184,7 +184,7 @@ export default {
     // 切换显示状态
     onChange(e, record) {
       const params = { aidorderstatus: e, id: record.id };
-      this.$post("/aidOrder/update", { ...params }).then(() => {
+      this.$post("/aidOrder/updateByAidorderstatus", { ...params }).then(() => {
         this.$message.success("切换成功");
         // return this.fetch()
       });
@@ -225,7 +225,7 @@ export default {
     // 改变订单为关闭状态
     confirmClose(record) {
       const params = { aidorderstatus: 7, id: record.id };
-      this.$post("/aidOrder/update", { ...params }).then(() => {
+      this.$post("/aidOrder/updateByAidorderstatus", { ...params }).then(() => {
         this.$message.success("关闭订单成功");
         // return this.fetch();
       });
@@ -233,7 +233,7 @@ export default {
     // 改变订单为完成状态
     confirmOk(record) {
       const params = { aidorderstatus: 5, id: record.id };
-      this.$post("/aidOrder/update", { ...params }).then(() => {
+      this.$post("/aidOrder/updateByAidorderstatus", { ...params }).then(() => {
         this.$message.success("完成订单成功");
         // return this.fetch();
       });
