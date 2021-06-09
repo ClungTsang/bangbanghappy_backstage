@@ -30,10 +30,7 @@
               {
                 rules: [
                   {
-                    required: true,
-                    pattern:
-                      '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$',
-                    message: '请输入正确的手机号',
+                    required: true
                   },
                 ],
               },
@@ -63,7 +60,8 @@
                 rules: [
                   {
                     required: true,
-                    pattern: '^0?(13[0-9]|15[012356789]|17[013678]|18[0-9]|14[57])[0-9]{8}$', message: '请输入正确的手机号'
+
+                    message: '请输入正确的手机号',
                   },
                 ],
               },
@@ -196,7 +194,7 @@
           <span>~</span>
           <a-time-picker v-decorator="['closeTime', config]" />
         </a-form-item>
-        <a-form-item label="滑动设置对该门店的抽成比例">
+        <a-form-item label="滑动调整对该门店的抽成比例">
           <a-row>
             <a-col :span="20">
               <a-slider v-model="slider.value" :min="1" :max="99" />
