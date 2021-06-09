@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <a-descriptions title="收益中心" layout="vertical" bordered>
-      <a-descriptions-item label="平台总收益" :span="2">
+  <a-card :bordered="false">
+    <a-descriptions layout="vertical" bordered>
+      <a-descriptions-item label="平台总收益" >
         {{ income.totalIncome }}元
       </a-descriptions-item>
       <!-- <a-descriptions-item label="押金总金额" :span="2">
         2000
       </a-descriptions-item> -->
-      <a-descriptions-item label="押金抽成总收益" :span="2">
+      <a-descriptions-item label="押金抽成总收益" >
         0
       </a-descriptions-item>
-      <a-descriptions-item label="代理抽成总收益" :span="2">
+      <a-descriptions-item label="代理抽成总收益" >
         0
       </a-descriptions-item>
     </a-descriptions>
-  </div>
+  </a-card>
 </template>
 
 <script>
