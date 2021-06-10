@@ -39,6 +39,8 @@
   </div>
 </template>
 <script>
+import event from "@/utils/event.js";
+
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
 export default {
@@ -63,9 +65,9 @@ export default {
       maxNum: 1,
       rank: {
         number: 0,
-        url: "",
+        bannerUrl: "",
       },
-      url: "",
+      bannerUrl: "",
     };
   },
   computed: {
@@ -109,7 +111,7 @@ export default {
     },
     // 图片预览开启
     handlePreview() {
-      this.previewImage = this.url;
+      this.previewImage = this.bannerUrl;
       this.previewVisible = true;
     },
     // 上传之前判断文件类型
@@ -185,24 +187,40 @@ export default {
             });
           } else {
             this.$message.success("图片上传成功");
-
+            // console.log(data);
             // 图片上传至腾讯cos云 返回图片地址
-            that.url = `http://${data["Location"]}`;
+            that.bannerUrl = `http://${data["Location"]}`;
             that.fileList.push({
               uid,
               name: file.name,
               status: "done",
+              url: `http://${data["Location"]}`,
             });
             // console.log("handleUpload", that.fileList);
             // 调用父组件方法，并传递参数
-            that.$emit("change", that.fileList);
+            event.$emit("change", that.fileList);
           }
         }
       );
     },
     // 父组件后置上传
-    // 图片地址上传至后台数据库服务器
+    // 轮播图地址上传至后台数据库服务器
     afterUpload() {
+      let params = {
+        carouselimgurl: this.bannerUrl,
+        carouselstatus: 0,
+        ordernum: this.rank.number,
+      };
+      return this.$post("backend/carousel", {
+        ...params,
+      }).then((res) => {
+        this.$emit("uploadImage", res.data.data);
+        this.previewImage = "";
+        this.rank.number = 0;
+      });
+    },
+    // 轮播图地址上传至后台数据库服务器
+    afterMallUpload() {
       let params = {
         carouselimgurl: this.url,
         carouselstatus: 0,
@@ -212,7 +230,7 @@ export default {
         ...params,
       }).then((res) => {
         this.$emit("uploadImage", res.data.data);
-        this.previewImage = "";
+        this.previewImage = [];
         this.rank.number = 0;
       });
     },
