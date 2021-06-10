@@ -318,15 +318,23 @@ export default {
         });
       }
 
-      this.$post("/business/LantianStore", { ...params }).then(
-        () => {
-          this.$emit("close");
-          this.$message.success("新增门店成功");
-        },
-        () => {
+      this.$post("/business/LantianStore", { ...params })
+        .then(
+          (res) => {
+            if (res.data.code == 200) {
+              this.$emit("close");
+              this.$message.success("新增门店成功");
+            } else {
+              this.$message.error("新增失败");
+            }
+          },
+          () => {
+            this.$message.error("新增失败");
+          }
+        )
+        .catch(() => {
           this.$message.error("新增失败");
-        }
-      );
+        });
     },
     // 上传图片到后台数据库
     uploadImage() {

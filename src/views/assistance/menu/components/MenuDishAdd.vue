@@ -32,22 +32,7 @@
           />
         </a-form-item>
         <a-form-item label="添加菜品图片">
-          <banner-upload-image
-            ref="UploadImage"
-            :sort="false"
-            v-on="$listeners"
-            v-decorator="[
-              'dishurl',
-              {
-                rules: [
-                  {
-                    required: true,
-                  },
-                ],
-              },
-            ]"
-            >上传菜品图片</banner-upload-image
-          >
+          <menu-dish-upload>上传菜品图片</menu-dish-upload>
         </a-form-item>
         <a-form-item label="分类选择" style="margin-bottom: 2rem">
           <a-radio-group button-style="solid" v-model="category.item">
@@ -66,12 +51,14 @@
   </div>
 </template>
 <script>
-import BannerUploadImage from "../../data/banner/components/BannerUploadImage";
+import MenuDishUpload from "./MenuDishUpload";
+// import BannerUploadImage from "../../data/banner/components/BannerUploadImage";
 import { mapState } from "vuex";
 import event from "../../../../utils/event";
 export default {
   components: {
-    BannerUploadImage,
+    MenuDishUpload,
+    // BannerUploadImage,
   },
   data() {
     return {
@@ -83,6 +70,8 @@ export default {
         item: "",
       },
       items: [],
+      // 菜品照片
+      dishUrl: "",
     };
   },
   props: {
@@ -101,6 +90,14 @@ export default {
   mounted() {
     event.$on("addCategroyOk", () => {
       this.getMenuCategoryInfo();
+    });
+    event.$on("dishUrl", (res) => {
+      let list = [];
+      res.forEach((item) => {
+        list.push(item.url);
+      });
+      console.log(1, list);
+      this.dishUrl = JSON.stringify(list);
     });
   },
   computed: {
@@ -137,7 +134,7 @@ export default {
         let params = this.menu;
         this.$post("/backend/business/LantianDishmanagement", {
           ...params,
-          dishurl: value.dishurl[0].url,
+          dishurl: this.dishUrl,
           storeid: this.category.item.storeid,
           dishclassificationid: this.category.item.id,
           dishclassificationname: this.category.item.text,
@@ -145,7 +142,6 @@ export default {
           this.$message.success("增加成功");
           this.$emit("close");
           this.form.resetFields();
-          // this.$refs.UploadImage.remove();
         });
       });
     },

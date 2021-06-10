@@ -11,7 +11,7 @@
     >
       <!-- 图片预览 -->
       <span slot="dishurl" slot-scope="text, record">
-        <img style="width: 200px; heigth: auto" :src="record.dishurl" />
+        <img style="width: 200px; heigth: auto" :src="JSON.parse(record.dishurl)" />
       </span>
       <!-- 显示控制 -->
       <span slot="dishstatus" slot-scope="text, record">
