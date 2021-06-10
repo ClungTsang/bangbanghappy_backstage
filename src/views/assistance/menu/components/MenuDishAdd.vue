@@ -24,7 +24,7 @@
           />
         </a-form-item>
         <a-form-item label="价格">
-          <a-input
+          <a-input-number
             v-decorator="[
               'dishprice',
               { rules: [{ required: true, message: '价格不能为空' }] },
