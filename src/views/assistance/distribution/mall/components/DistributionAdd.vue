@@ -122,40 +122,10 @@
           </baidu-map>
         </a-form-item>
         <a-form-item label="门店图标">
-          <banner-upload-image
-            ref="UploadImage"
-            :sort="isShowSort"
-            v-on="$listeners"
-            v-decorator="[
-              'storeLogo',
-              {
-                rules: [
-                  {
-                    required: false,
-                  },
-                ],
-              },
-            ]"
-            >上传门店logo</banner-upload-image
-          >
+          <store-logo-upload v-on="$listeners">上传门店logo</store-logo-upload>
         </a-form-item>
         <a-form-item label="门店照片">
-          <banner-upload-image
-            ref="UploadImage"
-            :sort="isShowSort"
-            v-on="$listeners"
-            v-decorator="[
-              'storePhoto',
-              {
-                rules: [
-                  {
-                    required: false,
-                  },
-                ],
-              },
-            ]"
-            >上传门店照片</banner-upload-image
-          >
+          <store-info-upload v-on="$listeners">上传门店照片</store-info-upload>
         </a-form-item>
         <a-form-item label="门店详细介绍">
           <a-textarea
@@ -214,16 +184,25 @@
   </div>
 </template>
 <script>
+import event from "@/utils/event.js";
 import { BmLocalSearch, BaiduMap, BmView } from "vue-baidu-map";
-import BannerUploadImage from "../../../data/banner/components/BannerUploadImage.vue";
+// import BannerUploadImage from "../../../data/banner/components/BannerUploadImage.vue";
+import StoreInfoUpload from "./StoreInfoUpload.vue";
+import StoreLogoUpload from "./StoreLogoUpload.vue";
 export default {
-  components: { BannerUploadImage, BmLocalSearch, BaiduMap, BmView },
+  components: {
+    StoreLogoUpload,
+    StoreInfoUpload,
+    BmLocalSearch,
+    BaiduMap,
+    BmView,
+  },
   data() {
     return {
       config: {
         rules: [{ type: "object", required: true, message: "请选择营业时间!" }],
       },
-      form: this.$form.createForm(this, { name: "dynamic_rule" }),
+      form: this.$form.createForm(this),
       // 是否显示排序按钮
       isShowSort: false,
       // 滑动设定抽成比例
@@ -246,6 +225,10 @@ export default {
       province: "",
       district: "",
       storeAddress: "",
+      // 门店logo
+      storeLogo: "",
+      // 门店照片
+      storeInfo: "",
     };
   },
   props: {
@@ -253,6 +236,24 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  mounted() {
+    event.$on("storeLogoUrl", (res) => {
+      let list = [];
+      res.forEach((item) => {
+        list.push(item.url);
+      });
+      console.log(1, list);
+      this.storeLogo = JSON.stringify(list);
+    });
+    event.$on("storeInfoUrl", (res) => {
+      let list = [];
+      res.forEach((item) => {
+        list.push(item.url);
+      });
+      console.log(2, list);
+      this.storeInfo = JSON.stringify(list);
+    });
   },
   computed: {
     visible() {
@@ -294,11 +295,11 @@ export default {
       const params = {
         bossmobilenumber: formData.bossmobilenumber,
         companyname: formData.storeName,
-        logo: formData.storeLogo[0].url,
+        logo: this.storeLogo,
         storeowner: formData.storeowner,
         storephone: formData.storephone,
         address: formData.storeAddress,
-        storeurl: formData.storePhoto[0].url,
+        storeurl: this.storeInfo,
         detailedintroduction: formData.storeIntroduce,
         // 默认传递 0-不营业 的状态
         storestatus: 0,
@@ -330,7 +331,7 @@ export default {
     // 上传图片到后台数据库
     uploadImage() {
       // 调用节点方法，上传图片至数据库
-      this.$refs.UploadImage.afterUpload();
+      this.$refs.UploadImage.afterMallUpload();
     },
     // 地区下拉更改
     onRegionChange(value) {
