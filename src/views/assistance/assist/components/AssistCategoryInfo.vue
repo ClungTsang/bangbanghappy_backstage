@@ -167,7 +167,6 @@ export default {
     fetch(params = {}) {
       this.loading = true;
       let token = this.$db.get("USER_TOKEN");
-      // let user = this.$db.get("USER");
       // 超管和一级代理具备全查
       this.$get("/aidOrder/list", {
         Authentication: token,
