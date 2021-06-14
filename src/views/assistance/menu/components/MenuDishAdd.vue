@@ -52,13 +52,11 @@
 </template>
 <script>
 import MenuDishUpload from "./MenuDishUpload";
-// import BannerUploadImage from "../../data/banner/components/BannerUploadImage";
 import { mapState } from "vuex";
 import event from "../../../../utils/event";
 export default {
   components: {
     MenuDishUpload,
-    // BannerUploadImage,
   },
   data() {
     return {

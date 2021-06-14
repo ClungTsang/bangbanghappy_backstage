@@ -5,9 +5,6 @@
         <a-descriptions-item label="平台总收益">
           {{ income.totalIncome }}元
         </a-descriptions-item>
-        <!-- <a-descriptions-item label="押金总金额" :span="2">
-        2000
-      </a-descriptions-item> -->
         <a-descriptions-item label="押金抽成总收益"> 0 </a-descriptions-item>
         <a-descriptions-item label="代理抽成总收益"> 0 </a-descriptions-item>
       </a-descriptions>
@@ -51,9 +48,6 @@ export default {
   },
   mounted() {
     this.judge();
-    // this.getRecordBySuper();
-    // this.getSuperTotalIncome();
-    // this.getRecordByBossPhone();
   },
   methods: {
     judge() {
@@ -87,18 +81,12 @@ export default {
     // 代理商获取记录
     getRecordByBossPhone() {
       let user = this.$db.get("USER");
-      // let params = {};
-      // if (user.description == "一级代理" || user.roleName == "一级代理") {
       //根据不同的角色请求旗下门店
-      this.$get(`/business/LantianStore/${user.userId}`)
-        .then((result) => {
-          let phone = result.data.data.bossmobilenumber;
-          return this.$get(`/business/LantianStore/getByPhone/${phone}`);
-        })
-        .then((res) => {
-          this.distribution = res.data.data;
-        });
-      // }
+      this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
+        (result) => {
+          this.distribution = result.data.data;
+        }
+      );
     },
   },
 };

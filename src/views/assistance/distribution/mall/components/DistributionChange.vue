@@ -34,7 +34,7 @@ export default {
       slider: {
         value: 20,
       },
-      rowList: null,
+      rowList: [],
     };
   },
   props: {
@@ -50,17 +50,17 @@ export default {
   },
   mounted() {
     // 接收到兄弟组件传值
-    event.$on("selectedRowKeys", (res) => {
+    event.$on("selectedRows", (res) => {
+      console.log(4,'selectedRows',res);
       this.rowList = res;
     });
   },
   methods: {
     // 复选修改抽成比例方法
     handleOk() {
-      const rowList = this.rowList;
-      rowList.forEach((item) => {
+      this.rowList.forEach((item) => {
         this.$put("business/LantianStore", {
-          id: item,
+          id: item.id,
           spendpercent: this.slider.value + "",
         });
       });

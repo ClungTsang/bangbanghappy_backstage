@@ -6,51 +6,59 @@
       :pagination="pagination"
       :loading="loading"
       @change="handleTableChange"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
+      :row-selection="rowSelection"
     >
       <span slot="storestatus" slot-scope="text, record">
-        <a-select
-          :default-value="
-            text == 0
-              ? '不营业'
-              : text == 1
-              ? '关店'
-              : text == 2
-              ? '休店'
-              : text == 3
-              ? '开店'
-              : '异常'
-          "
-          style="width: 100px"
-          @change="
-            (e) => {
-              changeStatus(e, record);
-            }
-          "
-        >
-          <a-select-option value="0"> 不营业 </a-select-option>
-          <a-select-option value="1"> 关店 </a-select-option>
-          <a-select-option value="2"> 休店 </a-select-option>
-          <a-select-option value="3"> 开店 </a-select-option>
-          <a-select-option value="4"> 异常 </a-select-option>
-        </a-select>
+        {{
+          text == 0
+            ? "不营业"
+            : text == 1
+            ? "关店"
+            : text == 2
+            ? "休店"
+            : text == 3
+            ? "开店"
+            : "异常"
+        }}
       </span>
-      <span slot="showInfo" slot-scope="text, record"
-        ><a @click="showInfoModal(record)">查看该门店</a></span
-      >
+      <span slot="showInfo" slot-scope="text, record">
+        <a @click="showInfoModal(record)">查看</a>
+        <a-divider type="vertical" />
+        <a @click="changeMallModal(record)">修改</a>
+      </span>
     </a-table>
 
+    <!-- 门店信息 -->
     <distribution-store-info
       :infoVisible="storeInfoVisible"
       :id="id"
       @close="onClose"
     ></distribution-store-info>
+    <!-- 创建门店 -->
+    <distribution-add
+      :addVisible="changeVisible"
+      @close="onClose"
+      :id="changeTarget"
+    ></distribution-add>
   </div>
 </template>
 <script>
+const rowSelection = {
+  onChange: (selectedRowKeys, selectedRows) => {
+    // console.log(1,`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    // console.log(1.1,selectedRows);
+  },
+  onSelect: (record, selected, selectedRows) => {
+    // console.log(2,record, selected, selectedRows);
+    // console.log(2.1,selectedRows);
+    event.$emit('selectedRows',selectedRows)
+  },
+  onSelectAll: (selected, selectedRows, changeRows) => {
+    // console.log(3,selected, selectedRows, changeRows);
+    event.$emit('selectedRows',selectedRows)
+
+  },
+};
 const columns = [
   {
     title: "门店编号",
@@ -112,10 +120,11 @@ const columns = [
   },
 ];
 import event from "@/utils/event.js";
-import EditableCell from "../../../../../components/editablecell/EditableCell";
+import EditableCell from "../../../../../components/editablecell/EditableCell.vue";
 import DistributionStoreInfo from "./DistributionStoreInfo.vue";
+import DistributionAdd from "./DistributionAdd.vue";
 export default {
-  components: { EditableCell, DistributionStoreInfo },
+  components: { EditableCell, DistributionStoreInfo, DistributionAdd },
 
   data() {
     return {
@@ -126,6 +135,9 @@ export default {
       loading: false,
       storeInfoVisible: false,
       id: null,
+      changeVisible: false,
+      changeTarget: 0,
+      rowSelection
     };
   },
   computed: {
@@ -139,29 +151,31 @@ export default {
     event.$on("cleanSelectedRow", () => {
       this.selectedRowKeys = [];
     });
+    event.$on("mallChangeDone", () => {
+      this.fetch();
+    });
   },
   methods: {
     // 选择列
-    onSelectChange(selectedRowKeys) {
-      // console.log("selectedRowKeys changed: ", selectedRowKeys);
-      this.selectedRowKeys = selectedRowKeys;
-      event.$emit("selectedRowKeys", this.selectedRowKeys);
-    },
+    // onSelectChange(selectedRowKeys) {
+    //   // console.log(selectedRowKeys);
+    //   this.selectedRowKeys = selectedRowKeys;
+    //   event.$emit("selectedRowKeys", this.selectedRowKeys);
+    // },
+    // onSelectedRows(selectedRows) {
+    //   console.log(selectedRows);
+    // },
     // 切换店铺状态
     changeStatus(e, record) {
-      console.log(e, record);
       const params = { storestatus: e, id: record.id };
       this.$put("/business/LantianStore", { ...params }).then(() => {
         this.$message.success("切换成功");
       });
       //用record.key来确定门店id，从而改变门店的店铺状态
     },
-    onStatusChange(key) {
-      console.log(`修改的门店key值为${key}`);
-    },
+    onStatusChange(key) {},
     // 分页切换
     handleTableChange(pagination, filters, sorter) {
-      console.log(pagination);
       const pager = { ...this.pagination };
       pager.current = pagination.current;
       this.pagination = pager;
@@ -180,21 +194,25 @@ export default {
       let user = this.$db.get("USER");
       if (user.description == "一级代理" || user.roleName == "一级代理") {
         //根据不同的角色请求旗下门店
-        this.$get(`/business/LantianStore/${user.userId}`).then((result) => {
-          console.log(result.data.data.id);
-          return this.$get("/business/LantianStore/MapAllByStoreid", {
-            Authentication: token,
-            pageSize: 10,
-            Parentid: result.data.data.id,
-            ...params,
-          }).then((res) => {
-            let pagination = { ...this.pagination };
-            pagination.total = res.data.data.total;
-            this.loading = false;
-            this.dataSource = res.data.data.rows;
-            this.pagination = pagination;
-          });
-        });
+        this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
+          (result) => {
+            if (result.data.data && result.data.code == 200) {
+              return this.$get("/business/LantianStore/MapAllByStoreid", {
+                Authentication: token,
+                pageSize: 10,
+                Parentid: result.data.data.id,
+                ...params,
+              }).then((res) => {
+                if (res.data.data) {
+                  let pagination = { ...this.pagination };
+                  pagination.total = res.data.data.total;
+                  this.dataSource = res.data.data.rows;
+                  this.pagination = pagination;
+                }
+              });
+            }
+          }
+        );
       } else {
         this.$get("/business/LantianStore/MapAll", {
           Authentication: token,
@@ -208,15 +226,21 @@ export default {
           this.pagination = pagination;
         });
       }
+      this.loading = false;
     },
     showInfoModal(record) {
       this.storeInfoVisible = true;
-      // console.log(record);
       this.id = record.id;
     },
     // 关闭门店信息
     onClose() {
       this.storeInfoVisible = false;
+      this.changeVisible = false;
+    },
+    // 修改门店信息
+    changeMallModal(record) {
+      this.changeTarget = record.id;
+      this.changeVisible = true;
     },
   },
 };

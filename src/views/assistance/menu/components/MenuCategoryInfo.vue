@@ -11,7 +11,10 @@
     >
       <!-- 图片预览 -->
       <span slot="dishurl" slot-scope="text, record">
-        <img style="width: 200px; heigth: auto" :src="JSON.parse(record.dishurl)" />
+        <img
+          style="width: 200px; heigth: auto"
+          :src="JSON.parse(record.dishurl)"
+        />
       </span>
       <!-- 显示控制 -->
       <span slot="dishstatus" slot-scope="text, record">
@@ -33,6 +36,15 @@
         <a @click="onOpenMenuChangeModal(record)">修改</a>
         <a-divider type="vertical" />
         <a @click="onOpenMenushowModal(record)">查看</a>
+        <a-divider type="vertical" />
+        <a-popconfirm
+          title="确定删除该菜品"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="onDeleteMenuDish(record)"
+        >
+          <a>删除</a>
+        </a-popconfirm>
       </span>
     </a-table>
     <menu-dish-change
@@ -134,10 +146,12 @@ export default {
       showData: {},
     };
   },
+  created() {},
   mounted() {
     // 接受下拉框的分类storeid
     event.$on("transferCategory", async (res) => {
       // console.log(`接收到下拉选项老哥传来的`, res);
+
       this.storeId = res.storeId;
       // 网络查询
       let result = await this.getMenuCategoryList(res);
@@ -214,9 +228,7 @@ export default {
     // 控制查看菜品
     onOpenMenushowModal(record) {
       this.showData = record;
-
       this.menuShowVisible = true;
-      // console.log(record);
     },
     onCloseMenuShowModal() {
       this.menuShowVisible = false;
@@ -224,6 +236,23 @@ export default {
     },
     onCancelMenuShowModal() {
       this.menuShowVisible = false;
+    },
+
+    // 控制删除菜品
+    onDeleteMenuDish(record) {
+      this.$delete(`/backend/business/LantianDishmanagement/${record.id}`).then(
+        (res) => {
+          if (res.data.code == 200) {
+            this.$message.success(`删除${record.dishname}成功`);
+            let item = this.dataSource.filter((item) => {
+              return item.id != record.id;
+            });
+            this.dataSource = item;
+          } else {
+            this.$message.success(`删除删除`);
+          }
+        }
+      );
     },
   },
 };

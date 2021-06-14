@@ -57,7 +57,7 @@ export default {
   },
   watch: {
     id(val) {
-      this.getMallInfo(val)
+      this.getMallInfo(val);
     },
   },
   methods: {
@@ -68,11 +68,11 @@ export default {
       this.$emit("close");
     },
     // 网络请求商铺信息
-    getMallInfo(id){
-this.$get(`/business/LantianStore/${id}`).then(res=>{
-  this.storeInfo = res.data.data
-})
-    }
+    getMallInfo(id) {
+      this.$get(`/business/LantianStore/${id}`).then((res) => {
+        this.storeInfo = res.data.data;
+      });
+    },
   },
 };
 </script>

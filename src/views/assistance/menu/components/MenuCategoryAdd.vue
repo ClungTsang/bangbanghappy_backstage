@@ -45,7 +45,7 @@ export default {
         rank: 1,
         isShow: 1,
       },
-      form: this.$form.createForm(this, { name: "dynamic_rule" }),
+      form: this.$form.createForm(this),
     };
   },
   props: {
@@ -95,12 +95,13 @@ export default {
         ...params,
       }).then((res) => {
         // 通知关闭并将分类名称返回给父类
-        this.$emit("close",res.data.data);
-        event.$emit('addCategroyOk')
-        this.$message.success("新增分类成功");
+        this.$emit("close", res.data.data);
+        event.$emit("addCategroyOk");
+        this.form.resetFields();
+
+        // this.$message.success("新增分类成功");
       });
     },
-
   },
 };
 </script>

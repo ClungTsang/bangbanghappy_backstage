@@ -50,21 +50,11 @@ export default {
   },
   mounted() {
     this.getStoreInfo();
-
-    // console.log(this.storeInfo);
-    // if(this.storeInfo ==null){
-    // }else{
-    //   this.storeInfo = this.userInfo
-    // }
   },
   methods: {
     // TODO:新增  快速修改 门店名称、公告内容 回调函数
     // 根据电话号码=登录名获取门店信息
     getStoreInfo() {
-      // if (this.userInfo !== null) {
-      //   this.storeInfo = this.userInfo;
-      //   debugger;
-      // } else {
       let user = this.$db.get("USER");
       this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
         (res) => {
@@ -76,7 +66,6 @@ export default {
     // 渲染数据到浏览器
     setStoreInfo(storeInfo) {
       this.storeInfo = storeInfo;
-      // console.log(this.storeInfo);
     },
   },
 };

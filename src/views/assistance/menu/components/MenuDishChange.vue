@@ -25,7 +25,7 @@
         <a-form-item label="限购数量"
           ><a-input v-model="menu.purchaselimit"></a-input
         ></a-form-item>
-        <a-form-item label="所属分类"
+        <!-- <a-form-item label="所属分类"
           ><a-select style="width: 100%" v-model="menu.dishclassificationname">
             <a-select-option
               v-for="item in items"
@@ -34,8 +34,8 @@
             >
               {{ item.text }}
             </a-select-option>
-          </a-select></a-form-item
-        >
+          </a-select>
+        </a-form-item> -->
       </a-form>
     </a-modal>
   </div>
@@ -79,12 +79,12 @@ export default {
     data(val) {
       this.menu = val;
     },
-    menu:{
-      deep:true,
-      handle(val){
+    menu: {
+      deep: true,
+      handle(val) {
         console.log(val);
-      }
-    }
+      },
+    },
   },
   methods: {
     // TODO:切换分类的时候出现id和名字不一致的问题

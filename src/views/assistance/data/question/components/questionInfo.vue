@@ -76,7 +76,7 @@ export default {
       columns,
       dataSource: [],
       changeVisible: false,
-      form: this.$form.createForm(this, { name: "dynamic_rule" }),
+      form: this.$form.createForm(this),
       question: null,
     };
   },
