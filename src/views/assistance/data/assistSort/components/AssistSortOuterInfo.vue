@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-card title="校外分类" :bordered="false" >
+    <a-card title="校外分类" :bordered="false">
       <a-button class="editable-add-btn" @click="handleAddOuter"
         >新增校外服务分类</a-button
       >
@@ -15,6 +15,12 @@
           <editable-cell
             :text="text"
             @change="onCellChangeOuter(record.key, 'cost', $event)"
+          />
+        </template>
+        <template slot="suggestionTime" slot-scope="text, record">
+          <editable-cell
+            :text="text"
+            @change="onCellChangeOuter(record.key, 'suggestionTime', $event)"
           />
         </template>
         <template slot="operation" slot-scope="text, record">
@@ -47,22 +53,29 @@ export default {
         {
           title: "分类名称",
           dataIndex: "service",
-          width:130,
-          align:'center',
+          width: 130,
+          align: "center",
           scopedSlots: { customRender: "service" },
         },
         {
           title: "建议货物价值费用",
           dataIndex: "cost",
-          align:'center',
-          width:150,
+          align: "center",
+          width: 150,
           scopedSlots: { customRender: "cost" },
+        },
+        {
+          title: "建议服务时间",
+          dataIndex: "suggestionTime",
+          align: "center",
+          width: 130,
+          scopedSlots: { customRender: "suggestionTime" },
         },
         {
           title: "操作",
           dataIndex: "operation",
-          align:'center',
-          width:130,
+          align: "center",
+          width: 130,
           scopedSlots: { customRender: "operation" },
         },
       ],
@@ -80,6 +93,7 @@ export default {
               key: item.id,
               service: item.service,
               cost: item.cost,
+              suggestionTime: item.suggestionTime,
             });
           }
         });
@@ -108,10 +122,11 @@ export default {
         service: `校外服务${this.outerCount}`,
         cost: 2,
         oncampus: 0,
+        suggestionTime: 10,
       };
       this.$post("/aidServiceType", { ...newData }).then(() => {
         this.outerCount += 1;
-        return this.getAssistSort()
+        return this.getAssistSort();
       });
     },
     onChangeInfo(key) {
@@ -121,6 +136,7 @@ export default {
         id: target.key,
         service: target.service,
         cost: target.cost,
+        suggestionTime: target.suggestionTime,
       });
     },
   },

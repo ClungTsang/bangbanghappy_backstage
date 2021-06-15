@@ -17,6 +17,12 @@
             @change="onCellChangeInner(record.key, 'cost', $event)"
           />
         </template>
+        <template slot="suggestionTime" slot-scope="text, record">
+          <editable-cell
+            :text="text"
+            @change="onCellChangeInner(record.key, 'suggestionTime', $event)"
+          />
+        </template>
         <template slot="operation" slot-scope="text, record">
           <a-popconfirm
             v-if="innerDataSource.length"
@@ -31,7 +37,7 @@
   </div>
 </template>
 <script>
-import EditableCell from "../../../../../components/editablecell/EditableCell";
+import EditableCell from "@/components/editablecell/EditableCell";
 export default {
   components: {
     EditableCell,
@@ -59,6 +65,13 @@ export default {
           scopedSlots: { customRender: "cost" },
         },
         {
+          title: "建议服务时间",
+          dataIndex: "suggestionTime",
+          align:'center',
+          width:130,
+          scopedSlots: { customRender: "suggestionTime" },
+        },
+        {
           title: "操作",
           dataIndex: "operation",
           align:'center',
@@ -80,6 +93,7 @@ export default {
               key: item.id,
               service: item.service,
               cost: item.cost,
+              suggestionTime: item.suggestionTime,
             });
           }
         });
@@ -107,6 +121,7 @@ export default {
         service: `校内服务${this.innerCount}`,
         cost: 2,
         oncampus: 1,
+        suggestionTime: 10,
       };
       this.$post("/aidServiceType", { ...newData }).then(() => {
         this.innerCount += 1;
@@ -120,6 +135,7 @@ export default {
         id: target.key,
         service: target.service,
         cost: target.cost,
+        suggestionTime: target.suggestionTime,
       });
     },
   },
