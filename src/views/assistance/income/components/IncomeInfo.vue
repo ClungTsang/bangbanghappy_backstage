@@ -72,8 +72,10 @@ export default {
     getRecordBySuper() {
       const params = {
         openid: "manger_bangbanghelper_boss",
+        analysisstatus: 5,
       };
       this.$get("/aidDataAnalysis", { ...params }).then((res) => {
+        console.log(res);
         // this.income.totalIncome = res.data.data[0].valuedata;
         // this.data.value = res.data.data
       });
