@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import event from "@/utils/event.js";
 export default {
   data() {
     return {
@@ -72,23 +73,38 @@ export default {
     judge() {
       let user = this.$db.get("USER");
 
-      if (user.description == "一级代理" || user.roleName == "一级代理" || user.description == "二级代理"|| user.roleName == "二级代理") {
+      if (user.roleName == "平台运营者") {
+        this.status = true;
+        console.log(user.roleName);
+        this.getRecordByAdmin();
+        this.getSuperTotalIncome();
+      } else {
+        console.log(user.roleName);
+
         this.status = false;
         this.getRecordByBossPhone();
-      } else {
-        this.status = true;
-        this.getRecordBySuper();
-        this.getSuperTotalIncome();
       }
+    },
+    // 代理商获取记录
+    getRecordByBossPhone() {
+      let user = this.$db.get("USER");
+      //根据不同的角色请求旗下门店
+      this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
+        (result) => {
+          this.distribution = result.data.data;
+          event.$emit("info", this.distribution);
+        }
+      );
     },
     // 获取最新平台总收益
     getSuperTotalIncome() {
       this.$get("/business/rootData").then((res) => {
         this.income.totalIncome = res.data.data[0].valuedata;
+        event.$emit("info", this.income.totalIncome);
       });
     },
     // 平台获取记录
-    getRecordBySuper() {
+    getRecordByAdmin() {
       let params = {
         openid: "manger_bangbanghelper_boss",
         analysisstatus: 4,
@@ -104,16 +120,6 @@ export default {
         this.income.getFromMallList = res.data.data.rows;
         // this.data.value = res.data.data
       });
-    },
-    // 代理商获取记录
-    getRecordByBossPhone() {
-      let user = this.$db.get("USER");
-      //根据不同的角色请求旗下门店
-      this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
-        (result) => {
-          this.distribution = result.data.data;
-        }
-      );
     },
   },
 };

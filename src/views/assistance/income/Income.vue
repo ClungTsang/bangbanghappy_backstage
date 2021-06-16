@@ -27,6 +27,7 @@
       <income-get
         :getVisible="incomeGetVisible"
         @close="onCloseIncomeModal"
+
       ></income-get>
 
       <income-assist-change
@@ -34,7 +35,7 @@
         @close="onCloseAssistModal"
       ></income-assist-change>
 
-      <income-info></income-info>
+      <income-info ref="income"></income-info>
     </div>
   </a-card>
 </template>
@@ -52,6 +53,7 @@ export default {
   components: { IncomeGet, IncomeInfo, IncomeAssistChange },
   methods: {
     onOpenIncomeModal() {
+      this.$refs.income.judge()
       this.incomeGetVisible = true;
     },
     onCloseIncomeModal() {

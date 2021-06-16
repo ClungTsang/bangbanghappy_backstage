@@ -28,6 +28,8 @@
   </div>
 </template>
 <script>
+import event from "@/utils/event.js";
+
 export default {
   data() {
     return {
@@ -48,6 +50,15 @@ export default {
     visible() {
       return this.getVisible;
     },
+  },
+  mounted() {
+    event.$on("info", (res) => {
+      if (parseFloat(res) > 10) {
+        this, (slider.value = parseInt(res));
+      } else {
+        this.$message.error("可提取金额不足10元");
+      }
+    });
   },
   methods: {
     // 复选修改抽成比例方法
