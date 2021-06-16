@@ -47,20 +47,44 @@
       <span slot="banner" slot-scope="text, record">
         <img style="width: 300px; heigth: auto" :src="record.banner" />
       </span>
+      <span slot="action" slot-scope="text, record">
+        <a-divider type="vertical"></a-divider>
+        <a-popconfirm
+          title="确定删除该轮播图"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="confirmDelete(record)"
+        >
+          <a>删除</a>
+        </a-popconfirm>
+        <a-divider type="vertical"></a-divider>
+        <a @click="changeInfoModal(record)">修改</a>
+      </span>
     </a-table>
     <banner-upload-modal
       :isVisible="isModalShow"
-      @changeIsVisible="
+      @uploadIsVisible="
         () => {
           this.isModalShow = false;
         }
       "
       @uploadImage="onUploadImage"
     ></banner-upload-modal>
+    <banner-change-modal
+      :isVisible="isModalChange"
+      :targetId="targetId"
+      @changeIsVisible="
+        () => {
+          this.isModalChange = false;
+        }
+      "
+      @changeImage="onUploadImage"
+    ></banner-change-modal>
   </div>
 </template>
 <script>
-import BannerUploadModal from "./components/BannerUploadModal";
+import BannerUploadModal from "./components/BannerUploadModal.vue";
+import BannerChangeModal from "./components/BannerChangeModal.vue";
 const columns = [
   {
     title: "排序",
@@ -91,23 +115,27 @@ const columns = [
     width: 300,
   },
 
-  // {
-  //   title: "操作",
-  //   align: "center",
-  //   key: "action",
-  //   width: 200,
-  //   scopedSlots: { customRender: "action" },
-  // },
+  {
+    title: "操作",
+    align: "center",
+    key: "action",
+    width: 200,
+    scopedSlots: { customRender: "action" },
+  },
 ];
 export default {
-  components: { BannerUploadModal },
+  components: { BannerUploadModal, BannerChangeModal },
   data() {
     return {
-      isModalShow: false,
       dataSource: [],
       columns,
-      selectedRowKeys: [],
+      // 上传modal
+      isModalShow: false,
+      // 修改modal
+      isModalChange: false,
+      targetId: 0,
       deleteVisible: false,
+      selectedRowKeys: [],
     };
   },
   created() {
@@ -164,6 +192,19 @@ export default {
       this.selectedRowKeys = [];
       this.deleteVisible = false;
       this.$message.success("删除成功");
+    },
+    // 删除轮播图
+    confirmDelete(record) {
+      this.$delete("backend/carousel", { id: record.key }).then(() => {
+        let dataSource = [...this.dataSource];
+        this.dataSource = dataSource.filter((item) => item.key !== id);
+        this.$message.success("删除成功");
+      });
+    },
+    // 修改轮播图
+    changeInfoModal(record) {
+      this.targetId = record.key;
+      this.isModalChange = true;
     },
   },
 };

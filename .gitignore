@@ -1,7 +1,6 @@
 /gradle/wrapper/gradle-wrapper.properties
 node_modules/
 config/dev.env.js
-src/utils/request.js
 ##----------Android----------
 # build
 *.apk

@@ -6,6 +6,7 @@
       accept="image/*"
       listType="picture-card"
       :fileList="fileList"
+      :multiple="false"
       @preview="handlePreview"
       :remove="remove"
       :beforeUpload="beforeUpload"
@@ -52,7 +53,14 @@ export default {
   },
   data() {
     return {
-      fileList: [],
+      fileList: [
+        {
+          uid: "",
+          name: "image.png",
+          status: "done",
+          url: "",
+        },
+      ],
       cos: null,
       previewVisible: false,
       previewImage: "",
@@ -71,7 +79,14 @@ export default {
   },
   watch: {
     files(list) {
-      this.fileList = list;
+      // this.fileList = list;
+      this.fileList[0].uid = list[0].id;
+      this.fileList[0].url = list[0].carouselimgurl;
+      this.ordernum = list[0].ordernum;
+      if (list[0].carouselurl) {
+        this.carouselurl = list[0].carouselurl;
+      }
+      console.log(this.fileList);
     },
   },
   async created() {
@@ -105,8 +120,8 @@ export default {
     },
     // 图片预览开启
     handlePreview() {
-      this.previewImage = this.fileList.url;
       this.previewVisible = true;
+      this.previewImage = this.fileList[0].carouselimgurl;
     },
     // 上传之前判断文件类型
     beforeUpload(file) {
@@ -212,7 +227,8 @@ export default {
           params["carouselurl"] = this.carouselurl;
           params["carouselstatus"] = 2;
         }
-        return this.$post("backend/carousel", {
+        return this.$put("backend/carousel", {
+          id:this.files[0].id,
           ...params,
         }).then((res) => {
           this.$emit("uploadImage", res.data.data);
@@ -221,10 +237,10 @@ export default {
           // this.carouselimgurl = "";
           this.carouselstatus = 0;
           this.carouselurl = "";
-          this.$message.success("图片上传成功");
+          this.$message.success("更新轮播图成功");
         });
       } else {
-        this.$message.error("未选择图片");
+        this.$message.error("取消更新");
       }
     },
     /**

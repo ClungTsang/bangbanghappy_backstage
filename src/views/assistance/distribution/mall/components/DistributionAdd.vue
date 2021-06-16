@@ -459,11 +459,6 @@ export default {
           this.$message.error("新增失败");
         });
     },
-    // 上传图片到后台数据库
-    uploadImage() {
-      // 调用节点方法，上传图片至数据库
-      this.$refs.UploadImage.afterMallUpload();
-    },
     // 地区下拉更改
     onRegionChange(value) {
       this.baiduMap.location = value;
