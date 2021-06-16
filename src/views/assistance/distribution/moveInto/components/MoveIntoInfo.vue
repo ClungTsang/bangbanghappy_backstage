@@ -21,7 +21,7 @@
       @ok="closePicModal"
       @cancel="closePicModal"
     >
-      <div v-for="(item, index) in JSON.parse(picList)" :key="index" >
+      <div v-for="(item, index) in JSON.parse(picList)" :key="index">
         <img
           style="width: 450px; heigth: auto; margin-bottom: 20px"
           :src="item"
@@ -87,10 +87,9 @@ export default {
         noticestatus: 1,
       }).then((res) => {
         let dataSource = res.data.data.rows;
-        // const dataSource = [...this.dataSource];
         dataSource.forEach((item) => {
           let content = JSON.parse(item.content);
-          let title = JSON.stringify(item.title).split(" ");
+          let title = item.title.split(" ");
           item.apply = content[0];
           item.address = content[1];
           item.name = title[0];
