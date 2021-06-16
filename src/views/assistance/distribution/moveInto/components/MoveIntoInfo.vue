@@ -23,7 +23,7 @@
     >
       <div v-for="(item, index) in JSON.parse(picList)" :key="index" >
         <img
-          style="width: 520px; heigth: auto; margin-bottom: 20px"
+          style="width: 450px; heigth: auto; margin-bottom: 20px"
           :src="item"
         />
       </div>
