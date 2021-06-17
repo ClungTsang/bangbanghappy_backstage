@@ -300,6 +300,7 @@ export default {
       res.forEach((item) => {
         list.push(item.url);
       });
+      // TODO: 再删除之后，需要将数组中的内容也删除
       this.storeurl = JSON.stringify(list);
     });
   },
@@ -418,7 +419,7 @@ export default {
         storeowner: formData.storeowner,
         storephone: formData.storephone,
         address: formData.storeAddress,
-        // storeurl: this.storeurl,
+        storeurl: this.storeurl,
         detailedintroduction: formData.detailedintroduction,
         // 默认传递 0-不营业 的状态
         storestatus: 0,

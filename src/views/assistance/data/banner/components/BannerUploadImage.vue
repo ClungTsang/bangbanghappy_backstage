@@ -6,6 +6,7 @@
       accept="image/*"
       listType="picture-card"
       :fileList="fileList"
+      :multiple="false"
       @preview="handlePreview"
       :remove="remove"
       :beforeUpload="beforeUpload"

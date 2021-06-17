@@ -6,7 +6,7 @@
       accept="image/*"
       listType="picture-card"
       :fileList="fileList"
-      :multiple="true"
+      :multiple="false"
       @preview="handlePreview"
       :remove="remove"
       :beforeUpload="beforeUpload"
@@ -24,6 +24,14 @@
   </div>
 </template>
 <script>
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 import event from "@/utils/event.js";
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
@@ -46,11 +54,7 @@ export default {
       previewVisible: false,
       previewImage: "",
       maxNum: 1,
-      rank: {
-        number: 0,
-        bannerUrl: "",
-      },
-      bannerUrl: "",
+      // bannerUrl: "",
     };
   },
   computed: {
@@ -93,8 +97,17 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    handlePreview() {
-      this.previewImage = this.bannerUrl;
+    // handlePreview() {
+    //   this.previewImage = this.fileList;
+    //   this.previewVisible = true;
+    // },
+    // 图片预览开启
+
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
     // 上传之前判断文件类型
@@ -171,7 +184,7 @@ export default {
             this.$message.success("图片上传成功");
             // console.log(data);
             // 图片上传至腾讯cos云 返回图片地址
-            that.bannerUrl = `http://${data["Location"]}`;
+            // that.bannerUrl = `http://${data["Location"]}`;
             that.fileList.push({
               uid,
               name: file.name,
