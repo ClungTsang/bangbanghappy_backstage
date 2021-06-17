@@ -97,10 +97,10 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    // handlePreview() {
-    //   this.previewImage = this.fileList;
-    //   this.previewVisible = true;
-    // },
+    handlePreview() {
+      this.previewImage = this.fileList;
+      this.previewVisible = true;
+    },
     // 图片预览开启
 
     async handlePreview(file) {
@@ -131,30 +131,32 @@ export default {
     },
     // 删除图片
     remove(file) {
+      const that = this;
+
       // console.log("remove", file.name);
       // console.log("fileList", this.fileList);
-      // debugger;
+      console.log(file);
       let fileList = this.fileList.filter((item) => {
         return item.uid != file.uid;
       });
       //TODO: cos端云删除
-      // this.cos.deleteObject(
-      //   {
-      //     Bucket: this.$config.Bucket,
-      //     Region: this.$config.Region,
-      //     Key: file.name,
-      //   },
-      //   (err, data) => {
-      //     if (err) {
-      //       this.$message.success(err);
-      //       return false;
-      //     }
-      //     if (data) {
-      //       this.$message.success("删除成功");
-      //       return false;
-      //     }
-      //   }
-      // );
+      this.cos.deleteObject(
+        {
+          Bucket: that.$config.Bucket,
+          Region: that.$config.Region,
+          Key: file.name,
+        },
+        (err, data) => {
+          if (err) {
+            this.$message.success(err);
+            return false;
+          }
+          if (data) {
+            this.$message.success("删除成功");
+            return false;
+          }
+        }
+      );
       this.fileList = fileList;
       this.$emit("storeLogoUrl", fileList);
     },

@@ -104,10 +104,10 @@ export default {
       this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
-    // handlePreview() {
-    //   this.previewImage = this.bannerUrl;
-    //   this.previewVisible = true;
-    // },
+    handlePreview() {
+      this.previewImage = this.fileList;
+      this.previewVisible = true;
+    },
     // 上传之前判断文件类型
     beforeUpload(file) {
       let isJPG = false;

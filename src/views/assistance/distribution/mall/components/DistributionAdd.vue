@@ -183,12 +183,16 @@
         </div>
         <div v-show="this.judge !== 0">
           <a-form-item label="门店状态" style="margin-bottom: 2rem">
-            <a-radio-group button-style="solid" @change="changeStatus" v-model="storestatus">
+            <a-radio-group
+              button-style="solid"
+              @change="changeStatus"
+              v-model="storestatus"
+            >
               <a-radio-button
                 style="margin: 5px"
-                v-for="(item,index) in storestatusItems"
+                v-for="(item, index) in storestatusItems"
                 :key="index"
-               :value="item.id"
+                :value="item.id"
               >
                 {{ item.text }}
               </a-radio-button>
@@ -267,7 +271,7 @@ export default {
       // 门店信息
       // storeInfo: {},
       // 门店状态
-      storestatus: '0',
+      storestatus: "0",
       storestatusItems: [
         { id: "0", text: "不营业" },
         { id: "1", text: "关店" },
@@ -441,24 +445,15 @@ export default {
         });
       }
 
-      this.$post("/business/LantianStore", { ...params })
-        .then(
-          (res) => {
-            if (res.data.code == 200) {
-              this.$message.success("新增门店成功");
-              this.$emit("close");
-              this.id = 0;
-            } else {
-              this.$message.error("新增失败");
-            }
-          },
-          () => {
-            this.$message.error("新增失败");
-          }
-        )
-        .catch(() => {
-          this.$message.error("新增失败");
-        });
+      this.$post("/business/LantianStore", { ...params }).then((res) => {
+        if (res.data.code == 200) {
+          this.$message.success("新增门店成功");
+          this.$emit("close");
+          this.id = 0;
+        } else {
+          this.$message.error("重复添加");
+        }
+      });
     },
     // 地区下拉更改
     onRegionChange(value) {
@@ -512,8 +507,8 @@ export default {
       );
     },
     // 改变分类选择
-    changeStatus(e){
-      this.storestatus = e.target.value
+    changeStatus(e) {
+      this.storestatus = e.target.value;
     },
     onMapClick(e) {
       this.center.lng = e.point.lng;
