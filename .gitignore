@@ -10,13 +10,11 @@ dist/
 *.class
 bin/
 gen/
-build/
 
 # gradle
 .gradle/
 gradle-app.setting
 !gradle-wrapper.jar
-build/
 
 local.properties
 
