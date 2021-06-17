@@ -1,6 +1,7 @@
 /gradle/wrapper/gradle-wrapper.properties
 node_modules/
 config/dev.env.js
+dist/
 ##----------Android----------
 # build
 *.apk
