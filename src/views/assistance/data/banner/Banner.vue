@@ -196,8 +196,10 @@ export default {
     // 删除轮播图
     confirmDelete(record) {
       this.$delete("backend/carousel", { id: record.key }).then(() => {
-        let dataSource = [...this.dataSource];
-        this.dataSource = dataSource.filter((item) => item.key !== id);
+        let dataSource = this.dataSource.filter((item) => {
+          return item.key !== record.key;
+        });
+        this.dataSource = dataSource;
         this.$message.success("删除成功");
       });
     },

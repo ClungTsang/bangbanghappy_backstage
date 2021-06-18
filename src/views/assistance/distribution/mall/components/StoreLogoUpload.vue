@@ -97,10 +97,10 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    handlePreview() {
-      this.previewImage = this.fileList;
-      this.previewVisible = true;
-    },
+    // handlePreview() {
+    //   this.previewImage = this.fileList;
+    //   this.previewVisible = true;
+    // },
     // 图片预览开启
 
     async handlePreview(file) {

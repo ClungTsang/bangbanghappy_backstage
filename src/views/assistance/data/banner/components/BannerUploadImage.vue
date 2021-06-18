@@ -39,6 +39,14 @@
   </div>
 </template>
 <script>
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 import event from "@/utils/event.js";
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
@@ -105,8 +113,11 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    handlePreview() {
-      this.previewImage = this.fileList.url;
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
     // 上传之前判断文件类型
