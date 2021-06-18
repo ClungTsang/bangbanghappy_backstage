@@ -25,6 +25,7 @@
         </a-form-item>
         <a-form-item label="价格">
           <a-input-number
+          :min="1"
             v-decorator="[
               'dishprice',
               { rules: [{ required: true, message: '价格不能为空' }] },
@@ -53,7 +54,7 @@
 <script>
 import MenuDishUpload from "./MenuDishUpload";
 import { mapState } from "vuex";
-import event from "../../../../utils/event";
+import event from "@/utils/event";
 export default {
   components: {
     MenuDishUpload,
