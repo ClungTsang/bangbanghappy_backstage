@@ -35,7 +35,7 @@
   </div>
 </template>
 <script>
-import event from "../../../../utils/event";
+import event from "@/utils/event";
 
 export default {
   data() {

@@ -120,13 +120,21 @@ export default {
           ...params,
         }
       ).then((res) => {
-        return this.setMenuCategoryInfo(res.data.data);
+        console.log("res", res);
+        if (!res.data.data) {
+          this.$message.error("无菜品数据");
+        } else {
+          return this.setMenuCategoryInfo(res.data.data);
+        }
       });
     },
 
     // 渲染数据到浏览器端
     setMenuCategoryInfo(category) {
-      this.items = category;
+      if (category) {
+        this.items = category;
+        console.log("items", this.items);
+      }
     },
     // 获取当前我的门店信息
     getStoreInfo() {
@@ -153,6 +161,7 @@ export default {
       this.$message.success(`新增${categoryData.text}成功`);
       this.items.push(categoryData);
       this.menuCategoryVisible = false;
+      console.log("done", this.menuCategoryVisible);
     },
     // 删除分类
     onOpenDelete() {
@@ -178,8 +187,8 @@ export default {
           });
           event.$emit("addCategroyOk");
           this.items = items;
-        }else{
-          this.$message.error('删除失败');
+        } else {
+          this.$message.error("删除失败");
         }
         this.deleteVisibel = false;
       });

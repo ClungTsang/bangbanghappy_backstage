@@ -84,9 +84,15 @@ export default {
   },
   created() {
     this.getMenuCategoryInfo();
+    event.$on("addCategroyOk", () => {
+      console.log("created:addCategroyOk");
+      this.getMenuCategoryInfo();
+    });
   },
   mounted() {
     event.$on("addCategroyOk", () => {
+      console.log("mounted:addCategroyOk");
+
       this.getMenuCategoryInfo();
     });
     event.$on("dishUrl", (res) => {
