@@ -10,8 +10,8 @@ import request from 'utils/request'
 
 // 全局Router异常处理
 const originalPush = Router.prototype.push
-Router.prototype.push = function push (location) {
-  return originalPush.call(this, location).catch(err => { if (typeof err !== 'undefined')console.log(err) })
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => { if (typeof err !== 'undefined') console.log(err) })
 }
 Vue.use(Router)
 
@@ -64,21 +64,21 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-function go (to, next) {
+function go(to, next) {
   asyncRouter = filterAsyncRouter(asyncRouter)
   router.addRoutes(asyncRouter)
-  next({...to, replace: true})
+  next({ ...to, replace: true })
 }
 
-function save (name, data) {
+function save(name, data) {
   localStorage.setItem(name, JSON.stringify(data))
 }
 
-function get (name) {
+function get(name) {
   return JSON.parse(localStorage.getItem(name))
 }
 
-function filterAsyncRouter (routes) {
+function filterAsyncRouter(routes) {
   return routes.filter((route) => {
     let component = route.component
     if (component) {
@@ -106,7 +106,7 @@ function filterAsyncRouter (routes) {
   })
 }
 
-function view (path) {
+function view(path) {
   return function (resolve) {
     import(`@/views/${path}.vue`).then(mod => {
       resolve(mod)
