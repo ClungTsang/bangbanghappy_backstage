@@ -58,10 +58,10 @@ export default {
           scopedSlots: { customRender: "service" },
         },
         {
-          title: "建议货物价值费用",
+          title: "建议服务费用",
           dataIndex: "cost",
           align: "center",
-          width: 150,
+          width: 100,
           scopedSlots: { customRender: "cost" },
         },
         {
@@ -127,7 +127,7 @@ export default {
       this.$post("/aidServiceType", { ...newData }).then(() => {
         this.outerCount += 1;
         return this.getAssistSort();
-      });
+      }).catch(this.$message.error('存在相同分类名称'));;
     },
     onChangeInfo(key) {
       const outerDataSource = [...this.outerDataSource];

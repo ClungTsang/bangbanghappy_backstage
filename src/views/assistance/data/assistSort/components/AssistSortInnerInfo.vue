@@ -126,7 +126,7 @@ export default {
       this.$post("/aidServiceType", { ...newData }).then(() => {
         this.innerCount += 1;
         return this.getAssistSort();
-      });
+      }).catch(this.$message.error('存在相同分类名称'));
     },
     onChangeInfo(key) {
       const innerDataSource = [...this.innerDataSource];
