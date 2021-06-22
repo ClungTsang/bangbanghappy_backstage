@@ -60,18 +60,19 @@ const rowSelection = {
   },
 };
 const columns = [
-  {
-    title: "门店编号",
-    dataIndex: "id",
-    width: 100,
-    align: "center",
-  },
+  // {
+  //   title: "门店编号",
+  //   dataIndex: "id",
+  //   width: 100,
+  //   align: "center",
+  // },
   {
     title: "门点名称",
     dataIndex: "companyname",
     width: 200,
     ellipsis: true,
     align: "center",
+    // fixed:"left"
   },
   {
     title: "门店地址",

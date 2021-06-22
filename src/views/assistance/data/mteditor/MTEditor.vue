@@ -11,7 +11,7 @@
   </div>
 </template>
 <script>
-import EditorBar from "./wangEnduit.vue";
+import EditorBar from "./components/wangEnduit.vue";
 export default {
   components: { EditorBar },
   data() {
