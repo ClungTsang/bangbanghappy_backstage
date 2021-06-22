@@ -59,6 +59,8 @@
         </a-popconfirm>
         <a-divider type="vertical"></a-divider>
         <a @click="changeInfoModal(record)">修改</a>
+        <!-- <a-divider type="vertical"></a-divider>
+        <a @click="changeInfoModal(record)">跳转页面</a> -->
       </span>
     </a-table>
     <banner-upload-modal
@@ -98,28 +100,28 @@ const columns = [
     align: "center",
     dataIndex: "banner",
     scopedSlots: { customRender: "banner" },
-    width: 400,
+    width: 300,
   },
   {
     title: "创建时间",
     align: "center",
     dataIndex: "createtime",
     key: "createindex",
-    width: 300,
+    width: 250,
   },
   {
     title: "修改时间",
     align: "center",
     dataIndex: "updatetime",
     key: "updatetime",
-    width: 300,
+    width: 250,
   },
 
   {
     title: "操作",
     align: "center",
     key: "action",
-    width: 200,
+    width: 300,
     scopedSlots: { customRender: "action" },
   },
 ];

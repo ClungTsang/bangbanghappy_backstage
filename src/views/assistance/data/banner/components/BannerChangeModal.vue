@@ -3,6 +3,8 @@
     <a-modal
       v-model="judge"
       title="填写相关内容"
+      :destroyOnClose="true"
+      :maskClosable="false"
       @ok="confirmToUpload"
       :confirm-loading="confirmLoading"
       @cancel="cancelToUpload"

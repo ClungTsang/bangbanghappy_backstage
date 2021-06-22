@@ -36,6 +36,17 @@
         </a-form-item>
       </a-form>
     </div>
+    <div style="margin-top: 10px">
+      <a-form>
+        <a-form-item label="自定义内容（可不填写）">
+          <editor-bar
+            v-model="MTE"
+            :isClear="isClear"
+            @change="change"
+          ></editor-bar>
+        </a-form-item>
+      </a-form>
+    </div>
   </div>
 </template>
 <script>
@@ -50,8 +61,13 @@ function getBase64(file) {
 import event from "@/utils/event.js";
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
+import EditorBar from "./wangEnduit.vue";
+
 export default {
   name: "UploadImage",
+  components: {
+    EditorBar,
+  },
   props: {
     files: {
       type: Array,
@@ -76,6 +92,10 @@ export default {
       carouselstatus: 0,
       // 跳转外链 非必传
       carouselurl: "",
+      // 清除文本
+      isClear: false,
+      // 富文本内容
+      MTE: "",
     };
   },
   watch: {
@@ -224,15 +244,23 @@ export default {
           params["carouselurl"] = this.carouselurl;
           params["carouselstatus"] = 2;
         }
+        // 自定义跳转内容
+        else if (this.MTE != "") {
+          params["carouselurl"] = JSON.stringify(this.MTE);
+          params["carouselstatus"] = 3;
+        } else {
+          console.log("未添加任何网址或自定义内容");
+        }
+
         return this.$post("backend/carousel", {
           ...params,
         }).then((res) => {
           this.$emit("uploadImage", res.data.data);
-          this.previewImage = "";
-          this.ordernum = 0;
+          // this.previewImage = "";
+          // this.ordernum = 0;
           // this.carouselimgurl = "";
-          this.carouselstatus = 0;
-          this.carouselurl = "";
+          // this.carouselstatus = 0;
+          // this.carouselurl = "";
           this.$message.success("图片上传成功");
         });
       } else {
@@ -249,6 +277,13 @@ export default {
       } else {
         return "";
       }
+    },
+    // 富文本内容
+    change(val) {
+      this.MTE = val;
+    },
+    post() {
+      console.log();
     },
   },
 };

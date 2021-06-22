@@ -2,6 +2,8 @@
   <div>
     <a-modal
       v-model="judge"
+      :destroyOnClose="true"
+      :maskClosable="false"
       title="填写相关内容"
       @ok="confirmToUpload"
       :confirm-loading="confirmLoading"
@@ -15,7 +17,6 @@
 </template>
 <script>
 import BannerUploadImage from "./BannerUploadImage.vue";
-
 export default {
   data() {
     return {
@@ -53,11 +54,11 @@ export default {
       this.$refs.UploadImage.changeNum(val);
     },
     // 获取图片本地url
-    getBase64(img, callback) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () => callback(reader.result));
-      reader.readAsDataURL(img);
-    },
+    // getBase64(img, callback) {
+    //   const reader = new FileReader();
+    //   reader.addEventListener("load", () => callback(reader.result));
+    //   reader.readAsDataURL(img);
+    // },
   },
 };
 </script>
