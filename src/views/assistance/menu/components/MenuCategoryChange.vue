@@ -146,7 +146,7 @@ export default {
             resolve(res);
           })
           .catch((err) => {
-            // TODO: 无门店 返回错误信息
+            // 无门店 返回错误信息
             reject(err);
           });
       });

@@ -52,7 +52,6 @@ export default {
     this.getStoreInfo();
   },
   methods: {
-    // TODO:新增  快速修改 门店名称、公告内容 回调函数
     // 根据电话号码=登录名获取门店信息
     getStoreInfo() {
       let user = this.$db.get("USER");

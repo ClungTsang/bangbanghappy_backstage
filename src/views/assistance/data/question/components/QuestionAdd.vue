@@ -44,7 +44,6 @@ export default {
   },
   methods: {
     handleOk() {
-      // TODO: 添加一个loading状态
       this.form.validateFields((err, values) => {
         if (!err) {
           this.$post("/question", { ...values }).then(() => {
