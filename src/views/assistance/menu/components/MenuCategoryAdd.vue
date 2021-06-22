@@ -64,7 +64,6 @@ export default {
   },
   methods: {
     handleOk() {
-      // TODO:该方法用到门店id 所以调通门店id再调该接口
       this.form.validateFields((err, fieldValue) => {
         if (err) {
           return;
