@@ -7,10 +7,11 @@
     ></editor-bar>
     <a-button type="" @click="post">发布</a-button>
     <a-button type="" @click="isClear = true">清除</a-button>
+
   </div>
 </template>
 <script>
-import EditorBar from "./components/wangEnduit.vue";
+import EditorBar from "./wangEnduit.vue";
 export default {
   components: { EditorBar },
   data() {
