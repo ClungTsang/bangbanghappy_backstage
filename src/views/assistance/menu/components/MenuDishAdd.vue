@@ -25,12 +25,15 @@
         </a-form-item>
         <a-form-item label="价格">
           <a-input-number
-          :min="1"
+            :min="1"
             v-decorator="[
               'dishprice',
               { rules: [{ required: true, message: '价格不能为空' }] },
             ]"
           />
+        </a-form-item>
+        <a-form-item label="限购数量">
+          <a-input-number :min="1" v-decorator="['purchaselimit']" />
         </a-form-item>
         <a-form-item label="添加菜品图片">
           <menu-dish-upload>上传菜品图片</menu-dish-upload>
@@ -84,7 +87,6 @@ export default {
     },
   },
   created() {
-    this.getMenuCategoryInfo();
     event.$on("addCategroyOk", () => {
       console.log("created:addCategroyOk");
       this.getMenuCategoryInfo();
@@ -103,6 +105,10 @@ export default {
       });
       console.log(1, list);
       this.dishUrl = JSON.stringify(list);
+    });
+    event.$on("addUserInfoDone", () => {
+      console.log("mounted:addUserInfoDone");
+      this.getMenuCategoryInfo();
     });
   },
   computed: {
@@ -170,6 +176,7 @@ export default {
         "dishname",
         "description",
         "dishprice",
+        "purchaselimit",
       ]);
       if (typeof values !== "undefined") {
         Object.keys(values).forEach((_key) => {

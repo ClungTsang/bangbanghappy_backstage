@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-    this.getMenuCategoryInfo();
+    // this.getMenuCategoryInfo();
   },
   props: {
     changeVisible: {
@@ -109,19 +109,19 @@ export default {
       this.$emit("cancel");
     },
     // 获取表单内容
-    setMenuFields() {
-      let values = this.form.getFieldsValue([
-        "dishname",
-        "description",
-        "dishprice",
-      ]);
-      if (typeof values !== "undefined") {
-        Object.keys(values).forEach((_key) => {
-          this.menu[_key] = values[_key];
-        });
-      }
-      console.log(this.menu);
-    },
+    // setMenuFields() {
+    //   let values = this.form.getFieldsValue([
+    //     "dishname",
+    //     "description",
+    //     "dishprice",
+    //   ]);
+    //   if (typeof values !== "undefined") {
+    //     Object.keys(values).forEach((_key) => {
+    //       this.menu[_key] = values[_key];
+    //     });
+    //   }
+    //   console.log(this.menu);
+    // },
     // 网络获取所有分类数据
     async getMenuCategoryInfo() {
       const params = {

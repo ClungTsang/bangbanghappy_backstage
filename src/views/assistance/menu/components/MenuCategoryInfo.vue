@@ -82,30 +82,18 @@ const columns = [
     width: 100,
     align: "center",
   },
-  // {
-  //   title: "是否显示",
-  //   width: 100,
-  //   dataIndex: "visible",
-  //   align: "center",
-  // },
   {
     title: "商品价格",
     width: 100,
     dataIndex: "dishprice",
     align: "center",
   },
-  // {
-  //   title: "活动价格",
-  //   width: 100,
-  //   dataIndex: "activityprice",
-  //   align: "center",
-  // },
-  // {
-  //   title: "会员价格",
-  //   width: 100,
-  //   dataIndex: "memberprice",
-  //   align: "center",
-  // },
+  {
+    title: "限购数量",
+    width: 100,
+    dataIndex: "purchaselimit",
+    align: "center",
+  },
   {
     title: "商品介绍",
     width: 100,
@@ -127,9 +115,10 @@ const columns = [
     scopedSlots: { customRender: "action" },
   },
 ];
-import MenuDishChange from "./MenuDishChange";
-import MenuDishInfo from "./MenuDishInfo";
-import event from "../../../../utils/event";
+import { mapState } from "vuex";
+import MenuDishChange from "./MenuDishChange.vue";
+import MenuDishInfo from "./MenuDishInfo.vue";
+import event from "@/utils/event";
 export default {
   components: { MenuDishChange, MenuDishInfo },
   data() {
@@ -140,22 +129,34 @@ export default {
       loading: false,
       switchLoading: false,
       show: false,
-      storeId: 0,
+      // storeId: 0,
       menuShowVisible: false,
       menuChangeVisible: false,
       showData: {},
     };
   },
-  created() {},
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.account.userInfo,
+    }),
+  },
+  created() {
+    event.$on("addUserInfoDone", () => {
+      this.showAllCategoryList();
+    });
+  },
   mounted() {
     // 接受下拉框的分类storeid
     event.$on("transferCategory", async (res) => {
-      // console.log(`接收到下拉选项老哥传来的`, res);
-
-      this.storeId = res.storeId;
+      console.log(`接收到下拉选项老哥传来的`, res);
       // 网络查询
-      let result = await this.getMenuCategoryList(res);
-      // 渲染数据
+      let result = await this.getMenuCategoryList(res.storeId);
+      // 显示全部
+      if (res.category == "显示全部") {
+        this.showAllCategoryList();
+        return;
+      }
+      // 渲染分类数据
       if (result.data.data[res.category] !== "空") {
         this.dataSource = result.data.data[res.category];
       } else {
@@ -166,12 +167,10 @@ export default {
   },
   methods: {
     // 网络获取分类信息
-    getMenuCategoryList(res) {
+    getMenuCategoryList(storeId) {
       this.loading = true;
       const params = {
-        // 小程序传1
-        // LantianDishmanagementstatus: 0,
-        storeid: res.storeId,
+        storeid: storeId,
       };
       // 根据storeid全查菜品分类
       return this.$get(
@@ -180,6 +179,31 @@ export default {
           ...params,
         }
       );
+    },
+    // 显示全部
+    showAllCategoryList() {
+      this.getMenuCategoryList(this.userInfo.id).then((res) => {
+        // 获取对象中的key数组
+        let keys = Object.keys(res.data.data);
+        // console.log(keys);
+        let items = res.data.data;
+        // 存放对象
+        let itemsList = [];
+        // 遍历键
+        keys.forEach((key) => {
+          // 如果该键的值为空，则删除该属性 并挑出该循环
+          if (items[key] == "空") {
+            delete items[key];
+            return;
+          }
+          // 遍历该键中 值是数组的对象 并压入栈中
+          items[key].forEach((item) => {
+            itemsList.push(item);
+          });
+        });
+        this.dataSource = itemsList;
+      });
+      this.loading = false;
     },
     // 选择列
     onSelectChange(selectedRowKeys) {
@@ -191,10 +215,8 @@ export default {
     onSwitch(checked, record) {
       const _this = this;
       this.switchLoading = true;
-      // console.log(this.dataSource);
       const params = {
         id: record.id,
-        // storeid: this.storeId,
         dishstatus: checked ? 1 : 0,
       };
       this.$put("/backend/business/LantianDishmanagement", { ...params }).then(
@@ -202,7 +224,6 @@ export default {
           _this.dataSource.forEach((item) => {
             if (item.id === record.id) {
               item.dishstatus = checked ? 1 : 0;
-              // debugger;
             }
           });
           this.switchLoading = false;
@@ -212,7 +233,23 @@ export default {
           this.$message.error("修改失败");
         }
       );
-      console.log(this.dataSource);
+    },
+
+    // 控制删除菜品
+    onDeleteMenuDish(record) {
+      this.$delete(`/backend/business/LantianDishmanagement/${record.id}`).then(
+        (res) => {
+          if (res.data.code == 200) {
+            this.$message.success(`删除${record.dishname}成功`);
+            let item = this.dataSource.filter((item) => {
+              return item.id != record.id;
+            });
+            this.dataSource = item;
+          } else {
+            this.$message.success(`删除删除`);
+          }
+        }
+      );
     },
     // 控制修改菜品
     onOpenMenuChangeModal(record) {
@@ -236,23 +273,6 @@ export default {
     },
     onCancelMenuShowModal() {
       this.menuShowVisible = false;
-    },
-
-    // 控制删除菜品
-    onDeleteMenuDish(record) {
-      this.$delete(`/backend/business/LantianDishmanagement/${record.id}`).then(
-        (res) => {
-          if (res.data.code == 200) {
-            this.$message.success(`删除${record.dishname}成功`);
-            let item = this.dataSource.filter((item) => {
-              return item.id != record.id;
-            });
-            this.dataSource = item;
-          } else {
-            this.$message.success(`删除删除`);
-          }
-        }
-      );
     },
   },
 };

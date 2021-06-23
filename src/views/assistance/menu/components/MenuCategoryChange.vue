@@ -51,8 +51,7 @@
 </template>
 <script>
 import { mapMutations } from "vuex";
-
-import event from "../../../../utils/event";
+import event from "@/utils/event";
 import MenuCategoryAdd from "./MenuCategoryAdd.vue";
 export default {
   data() {
@@ -86,6 +85,7 @@ export default {
       render: (h, ctx) => ctx.props.vnodes,
     },
   },
+
   created() {
     this.getMenuCategoryInfo();
   },
@@ -93,8 +93,6 @@ export default {
     ...mapMutations({
       setUserInfo: "account/setUserInfo",
     }),
-    // TODO:后续优化一个显示全部，用于默认显示和点击全部查看
-
     // 网络获取所有分类数据
     async getMenuCategoryInfo() {
       // 用我们门店信息中的 门店id=storeid
@@ -105,22 +103,20 @@ export default {
         return;
       }
       this.setUserInfo(res.data.data);
+      // 通知加载分类信息
+      event.$emit("addUserInfoDone");
       this.storeId = res.data.data.id;
       const params = {
-        // LantianDishmanagementstatus: 0,
         storeid: this.storeId,
       };
-      //
-
       // 通过门店 storeid 全查菜品分类
-      // this.$get(`/backend/business/LantianDishmanagement/MapAllByStoreId`, {
       this.$get(
         `/backend/business/LantianDishesclassificationtable/MapAllByStoreId`,
         {
           ...params,
         }
       ).then((res) => {
-        console.log("res", res);
+        // console.log("res", res);
         if (!res.data.data) {
           this.$message.error("无菜品数据");
         } else {
@@ -133,6 +129,7 @@ export default {
     setMenuCategoryInfo(category) {
       if (category) {
         this.items = category;
+        this.items.push({ id: 999, storeid: this.storeId, text: "显示全部" });
         console.log("items", this.items);
       }
     },

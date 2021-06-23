@@ -36,7 +36,6 @@
 
 <script>
 import { mapState } from "vuex";
-
 export default {
   data() {
     return {
@@ -55,11 +54,10 @@ export default {
     // 根据电话号码=登录名获取门店信息
     getStoreInfo() {
       let user = this.$db.get("USER");
-      this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
-        (res) => {
+      this.$get(`/business/LantianStore/getByPhone/${user.username}`)
+        .then((res) => {
           return this.setStoreInfo(res.data.data);
-        }
-      );
+        })
       // }
     },
     // 渲染数据到浏览器

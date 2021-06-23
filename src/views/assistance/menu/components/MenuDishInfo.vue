@@ -11,9 +11,9 @@
         <a-descriptions-item label="菜品名称">
           {{ menu.dishname }}
         </a-descriptions-item>
-        <a-descriptions-item label="所属分类">{{
-          menu.dishclassificationname
-        }}</a-descriptions-item>
+        <a-descriptions-item label="所属分类">
+          {{ menu.dishclassificationname }}
+        </a-descriptions-item>
         <a-descriptions-item label="商品状态">
           <a-badge
             status="warning"
@@ -26,19 +26,18 @@
             v-else="this.menu.dishstatus == 1"
           />
         </a-descriptions-item>
-        <a-descriptions-item label="菜品价格">{{
-          menu.dishprice
-        }}</a-descriptions-item>
-        <a-descriptions-item label="活动价格">{{
-          menu.activityprice
-        }}</a-descriptions-item>
-        <a-descriptions-item label="会员价格">{{
-          menu.memberprice
-        }}</a-descriptions-item>
-        <a-descriptions-item label="限购数量">{{
-          menu.purchaselimit
-        }}</a-descriptions-item>
-
+        <a-descriptions-item label="菜品价格">
+          {{ menu.dishprice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="活动价格">
+          {{ menu.activityprice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="会员价格">
+          {{ menu.memberprice }}
+        </a-descriptions-item>
+        <a-descriptions-item label="限购数量">
+          {{ menu.purchaselimit }}
+        </a-descriptions-item>
         <a-descriptions-item label="菜品介绍" :span="3">
           {{ menu.description }}
         </a-descriptions-item>
