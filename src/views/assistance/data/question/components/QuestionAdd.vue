@@ -28,7 +28,7 @@ import event from "@/utils/event";
 export default {
   data() {
     return {
-      form: this.$form.createForm(this, { name: "dynamic_rule" }),
+      form: this.$form.createForm(this),
     };
   },
   props: {
