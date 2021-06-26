@@ -81,7 +81,7 @@ const columns = [
   {
     title: "订单编号",
     dataIndex: "outTradeNo",
-    width: 130,
+    width: 150,
     align: "center",
   },
 
