@@ -59,8 +59,8 @@ export default {
       default: false,
     },
     data: {
-      type: Array,
-      default: {},
+      type: Object,
+      default: null
     },
   },
   computed: {

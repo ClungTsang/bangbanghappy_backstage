@@ -3,6 +3,7 @@
     <a-modal
       :visible="visible"
       title="新增菜品"
+      :destroyOnClose="true"
       @ok="handleOk"
       @cancel="handleCancel"
     >
@@ -149,6 +150,7 @@ export default {
           storeid: this.category.item.storeid,
           dishclassificationid: this.category.item.id,
           dishclassificationname: this.category.item.text,
+          // dishstatus:parseInt(0)
         }).then(() => {
           this.$message.success("增加成功");
           this.$emit("close");

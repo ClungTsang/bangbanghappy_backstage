@@ -2,7 +2,7 @@
   <div>
     <a-modal
       :visible="visible"
-      title="修改菜品详细信息"
+      title="复制菜品详细信息"
       @ok="handleOk"
       @cancel="handleCancel"
     >
@@ -58,7 +58,7 @@ export default {
     this.getMenuCategoryInfo();
   },
   props: {
-    changeVisible: {
+    copyVisible: {
       type: Boolean,
       default: false,
     },
@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     visible() {
-      return this.changeVisible;
+      return this.copyVisible;
     },
     ...mapState({
       userInfo: (state) => state.account.userInfo,
@@ -77,7 +77,7 @@ export default {
   },
   watch: {
     data(val) {
-      // TODO:渲染图片
+      // console.log(val);
       this.menu = val;
     },
     menu: {
@@ -95,11 +95,17 @@ export default {
         }
         let params = this.menu;
         console.log(params);
-        this.$put(`/backend/business/LantianDishmanagement`, {
+
+        this.$post("/backend/business/LantianDishmanagement", {
           ...params,
+          // dishurl: this.dishUrl,
+          // storeid: this.category.item.storeid,
+          // dishclassificationid: this.category.item.id,
+          // dishclassificationname: this.category.item.text,
         }).then(() => {
+          this.$message.success("复制成功");
           this.$emit("close");
-          this.$message.success("修改成功");
+          this.form.resetFields();
         });
       });
     },
@@ -109,9 +115,9 @@ export default {
       this.$emit("cancel");
     },
     select(e) {
-      let dishclass = this.items.filter(item=>{
-        return item.id == e
-      })
+      let dishclass = this.items.filter((item) => {
+        return item.id == e;
+      });
       this.menu.dishclassificationid = dishclass[0].id;
       this.menu.dishclassificationname = dishclass[0].text;
     },
@@ -141,7 +147,7 @@ export default {
         }
       ).then((res) => {
         this.items = res.data.data;
-        console.log(this.items);
+        // console.log(this.items);
       });
     },
   },

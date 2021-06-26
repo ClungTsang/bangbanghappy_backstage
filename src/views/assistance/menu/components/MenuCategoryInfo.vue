@@ -45,20 +45,31 @@
         >
           <a>删除</a>
         </a-popconfirm>
+        <a-divider type="vertical" />
+        <a @click="onCopyMenuModal(record)">复制</a>
       </span>
     </a-table>
+    <!-- 修改菜品modal -->
     <menu-dish-change
       :changeVisible="menuChangeVisible"
       @close="onCloseMenuChangeModal"
       @cancel="onCancelMenuChangeModal"
       :data="showData"
     ></menu-dish-change>
+    <!-- 菜品展示modal -->
     <menu-dish-info
       :showVisible="menuShowVisible"
       @close="onCloseMenuShowModal"
       @cancel="onCancelMenuShowModal"
       :data="showData"
     ></menu-dish-info>
+    <!-- 复制菜品信息 -->
+    <menu-dish-copy
+      :copyVisible="menuCopyVisible"
+      @close="onCloseCopyMenuModal"
+      @cancel="onCancelCopyMenuModal"
+      :data="showData"
+    ></menu-dish-copy>
   </div>
 </template>
 <script>
@@ -109,7 +120,7 @@ const columns = [
   },
   {
     title: "操作",
-    width: 100,
+    width: 150,
     dataIndex: "action",
     align: "center",
     scopedSlots: { customRender: "action" },
@@ -118,9 +129,10 @@ const columns = [
 import { mapState } from "vuex";
 import MenuDishChange from "./MenuDishChange.vue";
 import MenuDishInfo from "./MenuDishInfo.vue";
+import MenuDishCopy from "./MenuDishCopy.vue";
 import event from "@/utils/event";
 export default {
-  components: { MenuDishChange, MenuDishInfo },
+  components: { MenuDishChange, MenuDishInfo,MenuDishCopy },
   data() {
     return {
       columns,
@@ -130,8 +142,12 @@ export default {
       switchLoading: false,
       show: false,
       // storeId: 0,
+      // 菜品信息展示控制
       menuShowVisible: false,
+      // 修改菜品控制
       menuChangeVisible: false,
+      // 复制菜品控制
+      menuCopyVisible: false,
       showData: {},
     };
   },
@@ -219,6 +235,7 @@ export default {
         id: record.id,
         dishstatus: checked ? 1 : 0,
       };
+      // console.log(params);
       this.$put("/backend/business/LantianDishmanagement", { ...params }).then(
         () => {
           _this.dataSource.forEach((item) => {
@@ -253,8 +270,8 @@ export default {
     },
     // 控制修改菜品
     onOpenMenuChangeModal(record) {
-      this.menuChangeVisible = true;
       this.showData = record;
+      this.menuChangeVisible = true;
     },
     onCloseMenuChangeModal() {
       this.menuChangeVisible = false;
@@ -269,10 +286,21 @@ export default {
     },
     onCloseMenuShowModal() {
       this.menuShowVisible = false;
-      console.log("closeMenu");
+      // console.log("closeMenu");
     },
     onCancelMenuShowModal() {
       this.menuShowVisible = false;
+    },
+    // 控制复制菜品
+    onCopyMenuModal(record) {
+      this.showData = record;
+      this.menuCopyVisible = true;
+    },
+    onCloseCopyMenuModal() {
+      this.menuCopyVisible = false;
+    },
+    onCancelCopyMenuModal() {
+      this.menuCopyVisible = false;
     },
   },
 };
