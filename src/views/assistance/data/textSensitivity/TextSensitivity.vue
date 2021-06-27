@@ -7,9 +7,25 @@
       :data-source="dataSource"
       :titles="['不启用敏感词', '启用敏感词']"
       :target-keys="targetKeys"
+      :list-style="{
+        width: '250px',
+        height: '500px',
+      }"
       :render="(item) => item.title"
       @change="handleChange"
-    />
+      @selectChange="handleSelectChange"
+      @scroll="handleScroll"
+    >
+      <a-button
+        slot="footer"
+        slot-scope="props"
+        size="small"
+        style="float: right; margin: 5px"
+        @click="deleteText"
+      >
+        删除
+      </a-button>
+    </a-transfer>
     <text-sensitivity-add-modal
       :addTextVisible="addTextVisible"
       @close="closeAddModal"
@@ -25,6 +41,8 @@ export default {
       dataSource: [],
       targetKeys: [],
       addTextVisible: false,
+      moveKeys: [],
+      selectedKeys: [],
     };
   },
   created() {
@@ -51,6 +69,14 @@ export default {
         this.$post("/helpSensitiveWord/update", { ...params });
       }
     },
+    handleSelectChange(sourceSelectedKeys, targetSelectedKeys) {
+      // this.moveKeys = moveKeys;
+
+      this.selectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
+
+      // console.log("sourceSelectedKeys: ", sourceSelectedKeys);
+      // console.log("targetSelectedKeys: ", targetSelectedKeys);
+    },
     // 获取敏感词列表s
     async getTextSensitivityList() {
       this.dataSource = [];
@@ -64,6 +90,15 @@ export default {
           this.targetKeys.push(item.id);
         }
         this.dataSource.push(params);
+      });
+    },
+    deleteText() {
+      // console.log(this.selectedKeys);
+      this.selectedKeys.forEach((item) => {
+        this.$get("/helpSensitiveWord/delete", { id: item }).then(() => {
+          this.$message.success("删除敏感词成功");
+          this.getTextSensitivityList();
+        });
       });
     },
     // 新增敏感词

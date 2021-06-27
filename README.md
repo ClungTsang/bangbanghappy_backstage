@@ -9,3 +9,5 @@
 2、clone菜品，然后选择多个分类显示 done
 3、敏感词 done
 4、虚假订单 done
+5、删除敏感词 done
+6、清空虚拟订单 done

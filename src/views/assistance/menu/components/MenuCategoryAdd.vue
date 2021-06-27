@@ -84,7 +84,6 @@ export default {
       // console.log(menuInfo);
       // 获取当前用户信息
       // const user = this.$db.get("USER");
-      //TODO:后续增加需求，可以快速调节形参
       const params = {
         // id: user.userId,
         storeid: this.storeId,

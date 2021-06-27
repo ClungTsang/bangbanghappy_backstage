@@ -7,9 +7,14 @@
       @ok="confirm"
       @cancel="cancel"
     >
-      <a-form :form="form" layout="horizontal">
+      <a-form :form="form">
         <a-form-item label="已存在数据" v-model="fakeOrderTotal">
-          {{ fakeOrderTotal }}条模拟订单数据
+          已存在{{ fakeOrderTotal }}条模拟订单数据
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" @click="clearAllFake">
+            清除所有模拟数据
+          </a-button>
         </a-form-item>
         <a-form-item label="输入模拟姓名">
           <a-input v-decorator="['fakename']"></a-input>
@@ -18,7 +23,10 @@
           <a-input-number v-decorator="['fakeprice']"></a-input-number>
         </a-form-item>
         <a-form-item label="是否全局使用模拟订单数据">
-          <a-switch :defaultChecked="fakeToAll" @change="onChange"></a-switch>
+          <a-switch
+            :defaultChecked="fakeToAll"
+            @change="isAllMockData"
+          ></a-switch>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -78,12 +86,10 @@ export default {
             noticestatus: 2,
           })
             .then(() => {
-              if (res.data.code == 200) {
-                this.$message.success("添加成功");
-                this.$emit("close");
-                this.getFakeOrder();
-                this.form.resetFields();
-              }
+              this.$message.success("添加成功");
+              this.$emit("close");
+              this.getFakeOrder();
+              this.form.resetFields();
             })
             .catch(() => {
               this.$message.error("未添加任何数据");
@@ -95,7 +101,8 @@ export default {
     cancel() {
       this.$emit("close");
     },
-    onChange(checked) {
+    // 切换全局模拟订单数据
+    isAllMockData(checked) {
       this.fakeToAll = checked;
       const params = {
         id: 6,
@@ -105,6 +112,13 @@ export default {
         if (res.data.code == 200) {
           this.$message.success("切换成功");
         }
+      });
+    },
+    // 清除所有模拟订单数据
+    clearAllFake() {
+      this.$delete("/backend/notice/deleteall").then(() => {
+        this.fakeOrderTotal = 0;
+        this.$message.success("全部清除成功");
       });
     },
   },
