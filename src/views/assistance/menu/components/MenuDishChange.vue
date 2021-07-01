@@ -10,20 +10,21 @@
         <a-form-item label="菜品名称"
           ><a-input v-model="menu.dishname"></a-input>
         </a-form-item>
-        <a-form-item label="菜品价格"
-          ><a-input v-model="menu.dishprice"></a-input
-        ></a-form-item>
+
         <a-form-item label="菜品介绍"
           ><a-textarea v-model="menu.description"></a-textarea
         ></a-form-item>
-        <a-form-item label="活动价格"
+        <!-- <a-form-item label="活动价格"
           ><a-input v-model="menu.activityprice"></a-input
+        ></a-form-item> -->
+        <a-form-item label="菜品价格"
+          ><a-input-number v-model="menu.dishprice"></a-input-number
         ></a-form-item>
         <a-form-item label="会员价格"
-          ><a-input v-model="menu.memberprice"></a-input
+          ><a-input-number v-model="menu.memberprice"></a-input-number
         ></a-form-item>
         <a-form-item label="限购数量"
-          ><a-input v-model="menu.purchaselimit"></a-input
+          ><a-input-number v-model="menu.purchaselimit"></a-input-number
         ></a-form-item>
         <a-form-item label="所属分类">
           <a-select
@@ -55,7 +56,7 @@ export default {
     };
   },
   created() {
-    this.getMenuCategoryInfo();
+    // this.getMenuCategoryInfo();
   },
   props: {
     changeVisible: {

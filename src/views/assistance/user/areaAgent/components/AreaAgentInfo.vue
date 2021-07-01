@@ -1,12 +1,6 @@
 <template>
   <div>
-    <a-table
-      :columns="columns"
-      :data-source="dataSource"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+    <a-table :columns="columns" :data-source="dataSource">
       <span slot="action" slot-scope="text, record">
         <a-popconfirm
           title="确定删除该申请"
@@ -17,8 +11,9 @@
           <a>删除申请</a>
         </a-popconfirm>
         <a-divider type="vertical"></a-divider>
-
         <a @click="showPicModal(record)">查看图片</a>
+        <a-divider type="vertical"></a-divider>
+        <a @click="openDesModal(record)">申请通过</a>
       </span>
     </a-table>
     <a-modal
@@ -33,6 +28,21 @@
           :src="item"
         />
       </div>
+    </a-modal>
+    <a-modal
+      :visible="showDescription"
+      title="提示"
+      @ok="confirmDesModal"
+      @cancel="closeDesModal"
+    >
+      <a-form>
+        <a-form-item label="添加区域信息">
+          <a-input
+            v-model="agentdescription"
+            placeholder="填写相关区域内容，方便记忆"
+          ></a-input>
+        </a-form-item>
+      </a-form>
     </a-modal>
   </div>
 </template>
@@ -53,22 +63,24 @@ const columns = [
   },
   {
     title: "申请理由",
-    width: 150,
+    width: 200,
     dataIndex: "apply",
     align: "center",
+
     ellipsis: true,
   },
   {
-    title: "商家地址",
+    title: "申请区域",
     width: 200,
     dataIndex: "address",
     align: "center",
+
     ellipsis: true,
   },
   { title: "申请时间", width: 200, dataIndex: "createtime", align: "center" },
   {
     title: "操作",
-    width: 200,
+    width: 250,
     dataIndex: "action",
     align: "center",
     scopedSlots: { customRender: "action" },
@@ -79,12 +91,19 @@ export default {
     return {
       columns,
       dataSource: [],
+
       pagination: {},
       loading: false,
       form: this.$form.createForm(this),
       question: null,
       showPic: false,
+      showDescription: false,
+      // 当前图片
       picList: null,
+      // 区域信息
+      agentdescription: "",
+      // 当前用户
+      currentData: null,
     };
   },
   mounted() {
@@ -106,8 +125,9 @@ export default {
       this.loading = true;
       this.dataSource = [];
       this.$get("/backend/notice/selectAllByNoticeStatus", {
+        // Authentication: token,
         pageSize: 10,
-        noticestatus: 1,
+        noticestatus: 3,
         ...params,
       }).then((res) => {
         let pagination = { ...this.pagination };
@@ -127,7 +147,6 @@ export default {
         this.pagination = pagination;
       });
     },
-
     // 删除入驻申请
     confirmDelete(record) {
       this.$delete("/backend/notice", { id: record.id }).then(() => {
@@ -146,6 +165,32 @@ export default {
     closePicModal() {
       this.showPic = false;
       this.picList = null;
+    },
+    // 打开modal
+    openDesModal(record) {
+      this.showDescription = true;
+      this.currentData = record;
+    },
+    // 通过申请
+    async confirmDesModal() {
+      const params = {
+        id: this.currentData.id,
+        agent: 1,
+        agentdescription: this.agentdescription,
+      };
+      await this.$post("/wechatcustomer/update", { ...params });
+      this.$message.success("申请通过");
+      await this.$delete("/backend/notice", { id: this.currentData.id });
+      const dataSource = [...this.dataSource];
+      this.dataSource = dataSource.filter(
+        (item) => item.id !== this.currentData.id
+      );
+      this.closeDesModal;
+    },
+    // 关闭申请
+    closeDesModal() {
+      this.showDescription = false;
+      this.currentData = null;
     },
   },
 };

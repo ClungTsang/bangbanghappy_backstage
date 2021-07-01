@@ -24,7 +24,7 @@
             ]"
           />
         </a-form-item>
-        <a-form-item label="价格">
+        <a-form-item label="商品价格">
           <a-input-number
             :min="1"
             v-decorator="[
@@ -32,6 +32,9 @@
               { rules: [{ required: true, message: '价格不能为空' }] },
             ]"
           />
+        </a-form-item>
+        <a-form-item label="会员价格">
+          <a-input-number :min="1" v-decorator="['memberprice']" />
         </a-form-item>
         <a-form-item label="限购数量">
           <a-input-number :min="1" v-decorator="['purchaselimit']" />
@@ -65,8 +68,6 @@ export default {
   },
   data() {
     return {
-      // 是否显示排序
-      // isShowSort: false,
       form: this.$form.createForm(this),
       menu: {},
       category: {
@@ -88,10 +89,10 @@ export default {
     },
   },
   created() {
-    event.$on("addCategroyOk", () => {
-      console.log("created:addCategroyOk");
-      this.getMenuCategoryInfo();
-    });
+    // event.$on("addCategroyOk", () => {
+    //   console.log("created:addCategroyOk");
+    //   this.getMenuCategoryInfo();
+    // });
   },
   mounted() {
     event.$on("addCategroyOk", () => {
@@ -179,6 +180,7 @@ export default {
         "description",
         "dishprice",
         "purchaselimit",
+        "memberprice",
       ]);
       if (typeof values !== "undefined") {
         Object.keys(values).forEach((_key) => {

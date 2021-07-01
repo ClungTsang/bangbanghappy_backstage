@@ -11,6 +11,10 @@
         <span slot="headimgurl" slot-scope="text, record">
           <img style="width: 60px; heigth: 60px" :src="record.headimgurl" />
         </span>
+         <span slot="viplevel" slot-scope="text, record">
+           {{text == 0 ? '非会员' : '会员'}}
+          </a-select>
+        </span>
         <span slot="wechatcustomerStatus" slot-scope="text, record">
           <a-select
             :defaultValue="text == 0 ? '不限制' : '限制'"
@@ -77,23 +81,24 @@ const columns = [
     width: 200,
     align: "center",
   },
+  {
+    title: "会员等级",
+    dataIndex: "viplevel",
+    width: 100,
+    align: "center",
+    scopedSlots: { customRender: "viplevel" },
+  },
   // {
-  //   title: "会员等级",
-  //   dataIndex: "viplevel",
-  //   width: 100,
+  //   title: "更新时间",
+  //   dataIndex: "updatetime",
+  //   width: 200,
   //   align: "center",
   // },
-  {
-    title: "更新时间",
-    dataIndex: "updatetime",
-    width: 200,
-    align: "center",
-  },
   {
     title: "是否限制援助他人",
     dataIndex: "wechatcustomerStatus",
     align: "center",
-    width: 100,
+    width: 150,
     scopedSlots: { customRender: "wechatcustomerStatus" },
   },
   {
@@ -132,19 +137,14 @@ export default {
     // 网络请求
     fetch(params = {}) {
       this.loading = true;
-      let token = this.$db.get("USER_TOKEN");
-      // let user = this.$db.get("USER");
-      // 超管和一级代理具备全查
-      this.$get("/wechatcustomer", {
-        Authentication: token,
+      this.$get("/wechatcustomer/list", {
         pageSize: 10,
         ...params,
       }).then((res) => {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
+        this.dataSource = res.data.data.rows;
         this.loading = false;
-        // 遍历数组
-        this.dataSource = res.data.data;
         this.pagination = pagination;
       });
     },

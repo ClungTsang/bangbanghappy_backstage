@@ -11,3 +11,6 @@
 4、虚假订单 done
 5、删除敏感词 done
 6、清空虚拟订单 done
+7、会员判断 done
+8、区域代理审核 done
+9、区域代理操作 微信用户端操作 agent:1 和 agentdescription:1 字段 done

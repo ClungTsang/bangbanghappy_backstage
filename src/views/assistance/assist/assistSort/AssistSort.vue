@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 导出所有求助分类信息 -->
-    <a-button @click="exportExcel" v-hasPermission="['exportService:export']">导出求助表</a-button>
+    <a-button @click="exportExcel" v-hasPermission="['exportService:export']">导出分类表</a-button>
     <a-row type="flex" justify="space-around" align="top">
       <a-col :span="12">
         <assist-sort-inner-info></assist-sort-inner-info>

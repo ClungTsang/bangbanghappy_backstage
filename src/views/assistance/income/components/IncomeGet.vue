@@ -63,10 +63,11 @@ export default {
   methods: {
     // 复选修改抽成比例方法
     handleOk() {
+      // TODO: 完善提现
       this.confirmLoading = true;
       setTimeout(() => {
         this.$emit("close");
-        this.$message.success(`提取现金 ${this.slider.value}元 成功`);
+        this.$message.success(`申请提取 ${this.slider.value}元 成功`);
         this.confirmLoading = false;
       }, 1000);
     },
