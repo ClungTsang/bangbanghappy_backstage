@@ -1,6 +1,5 @@
 <template>
   <div>
-    <a-card :bordered="false">
       <a-table
         :columns="columns"
         :data-source="dataSource"
@@ -45,7 +44,6 @@
           </a-select>
         </span>
       </a-table>
-    </a-card>
   </div>
 </template>
 <script>

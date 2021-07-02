@@ -147,7 +147,7 @@ export default {
         this.pagination = pagination;
       });
     },
-    // 删除入驻申请
+    // 删除代理申请
     confirmDelete(record) {
       this.$delete("/backend/notice", { id: record.id }).then(() => {
         const dataSource = [...this.dataSource];
@@ -173,19 +173,23 @@ export default {
     },
     // 通过申请
     async confirmDesModal() {
+      let arr = this.currentData.title.split(" ");
       const params = {
-        id: this.currentData.id,
+        id: arr[2],
         agent: 1,
         agentdescription: this.agentdescription,
       };
       await this.$post("/wechatcustomer/update", { ...params });
       this.$message.success("申请通过");
-      await this.$delete("/backend/notice", { id: this.currentData.id });
-      const dataSource = [...this.dataSource];
-      this.dataSource = dataSource.filter(
+
+      this.$delete("/backend/notice", { id: this.currentData.id });
+      // const dataSource = [...this.dataSource];
+      let dataSource = this.dataSource.filter(
         (item) => item.id !== this.currentData.id
       );
-      this.closeDesModal;
+      this.showDescription = false;
+      this.currentData = null;
+      this.dataSource = dataSource;
     },
     // 关闭申请
     closeDesModal() {

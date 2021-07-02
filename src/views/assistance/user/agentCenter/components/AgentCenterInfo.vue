@@ -1,51 +1,26 @@
 <template>
   <div>
-    <a-card :bordered="false">
-      <a-table
-        :columns="columns"
-        :data-source="dataSource"
-        :pagination="pagination"
-        :loading="loading"
-        @change="handleTableChange"
-      >
-        <span slot="headimgurl" slot-scope="text, record">
-          <img style="width: 60px; heigth: 60px" :src="record.headimgurl" />
-        </span>
-         <span slot="viplevel" slot-scope="text, record">
-           {{text == 0 ? '非会员' : '会员'}}
-          </a-select>
-        </span>
-        <span slot="wechatcustomerStatus" slot-scope="text, record">
-          <a-select
-            :defaultValue="text == 0 ? '不限制' : '限制'"
-            style="width: 100px"
-            @change="
-              (e) => {
-                onChangeStatus(e, record);
-              }
-            "
-          >
-            <a-select-option value="0">不限制</a-select-option>
-            <a-select-option value="1">限制</a-select-option>
-          </a-select>
-        </span>
-
-        <span slot="needdeposit" slot-scope="text, record">
-          <a-select
-            :defaultValue="text == 1 ? '需要' : '不需要'"
-            style="width: 100px"
-            @change="
-              (e) => {
-                onChangeMoney(e, record);
-              }
-            "
-          >
-            <a-select-option value="1">需要</a-select-option>
-            <a-select-option value="0">不需要</a-select-option>
-          </a-select>
-        </span>
-      </a-table>
-    </a-card>
+    <a-table
+      :columns="columns"
+      :data-source="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+    >
+      <span slot="headimgurl" slot-scope="text, record">
+        <img style="width: 60px; heigth: 60px" :src="record.headimgurl" />
+      </span>
+      <span slot="action" slot-scope="text, record">
+        <a-popconfirm
+          title="确定删除该代理"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="confirmDelete(record)"
+        >
+          <a>删除申请</a>
+        </a-popconfirm>
+      </span>
+    </a-table>
   </div>
 </template>
 <script>
@@ -74,7 +49,6 @@ const columns = [
     dataIndex: "agentdescription",
     width: 200,
     align: "center",
-
     ellipsis: true,
   },
   {
@@ -82,6 +56,13 @@ const columns = [
     dataIndex: "updatetime",
     width: 200,
     align: "center",
+  },
+  {
+    title: "操作",
+    width: 250,
+    dataIndex: "action",
+    align: "center",
+    scopedSlots: { customRender: "action" },
   },
 ];
 export default {
@@ -112,16 +93,13 @@ export default {
     // 网络请求
     fetch(params = {}) {
       this.loading = true;
-      let token = this.$db.get("USER_TOKEN");
-      // let user = this.$db.get("USER");
-      // 超管和一级代理具备全查
+      // 设定1000个对象，不够后期再加
       this.$get("/wechatcustomer/list", {
-        Authentication: token,
-        pageSize: 10,
+        pageSize: 10000,
         ...params,
       }).then((res) => {
         let pagination = { ...this.pagination };
-        pagination.total = res.data.data.total;
+        // pagination.total = res.data.data.total;
         let dataSource = res.data.data.rows.filter((item) => {
           return item.agent == 1;
         });
@@ -141,6 +119,15 @@ export default {
       const params = { wechatcustomerStatus: e, id: record.id };
       this.$post("/wechatcustomer/update", { ...params }).then(() => {
         this.$message.success("切换成功");
+      });
+    },
+    // 删除代理
+    confirmDelete(record) {
+      const params = { agent: 0, agentdescription: "", id: record.id };
+      this.$post("/wechatcustomer/update", { ...params }).then(() => {
+        const dataSource = [...this.dataSource];
+        this.dataSource = dataSource.filter((item) => item.id !== record.id);
+        this.$message.success("删除成功");
       });
     },
   },
