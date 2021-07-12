@@ -119,7 +119,6 @@ export default {
   },
   mounted() {
     this.fetch();
-    // 接受下拉框的分类storeid
   },
   methods: {
     // 分页切换

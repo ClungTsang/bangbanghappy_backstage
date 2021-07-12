@@ -16,7 +16,7 @@
               <a-input-number
                 v-model="slider.value"
                 :min="1"
-                :max="99"
+                :max="500"
                 style="marginleft: 16px"
               />
             </a-col>

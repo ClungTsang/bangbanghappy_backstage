@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-card title="校外分类" :bordered="false">
+    <a-card title="自定义区服务分类" :bordered="false">
       <a-button class="editable-add-btn" @click="handleAddOuter"
-        >新增校外服务分类</a-button
+        >新增自定义区服务分类</a-button
       >
       <a-table bordered :data-source="outerDataSource" :columns="columns">
         <template slot="service" slot-scope="text, record">
@@ -119,15 +119,20 @@ export default {
     },
     handleAddOuter() {
       const newData = {
-        service: `校外服务${this.outerCount}`,
+        service: `自定义区服务${this.outerCount}`,
         cost: 2,
         oncampus: 0,
         suggestionTime: 10,
       };
-      this.$post("/aidServiceType", { ...newData }).then(() => {
-        this.outerCount += 1;
-        return this.getAssistSort();
-      }).catch(this.$message.error('存在相同分类名称'));;
+      this.$post("/aidServiceType", { ...newData }).then(
+        () => {
+          this.outerCount += 1;
+          return this.getAssistSort();
+        },
+        () => {
+          this.$message.error("存在相同分类名称");
+        }
+      );
     },
     onChangeInfo(key) {
       const outerDataSource = [...this.outerDataSource];

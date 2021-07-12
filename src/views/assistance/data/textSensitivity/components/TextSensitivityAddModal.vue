@@ -8,7 +8,7 @@
       @ok="confirm"
       @cancel="cancel"
     >
-      <a-input placeholder="添加关键词" v-model="text"></a-input>
+      <a-input placeholder="添加敏感词" v-model="text"></a-input>
     </a-modal>
   </div>
 </template>

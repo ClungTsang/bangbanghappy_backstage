@@ -1,8 +1,8 @@
 <template>
   <div>
-    <a-card title="校内分类" :bordered="false">
+    <a-card title="校园社区服务分类" :bordered="false">
       <a-button class="editable-add-btn" @click="handleAddInner"
-        >新增校内服务分类</a-button
+        >新增校园社区服务分类</a-button
       >
       <a-table bordered :data-source="innerDataSource" :columns="columns">
         <template slot="service" slot-scope="text, record">
@@ -53,29 +53,29 @@ export default {
         {
           title: "分类名称",
           dataIndex: "service",
-          width:130,
-          align:'center',
+          width: 130,
+          align: "center",
           scopedSlots: { customRender: "service" },
         },
         {
           title: "服务费用",
           dataIndex: "cost",
-          align:'center',
-          width:100,
+          align: "center",
+          width: 100,
           scopedSlots: { customRender: "cost" },
         },
         {
           title: "建议服务时间",
           dataIndex: "suggestionTime",
-          align:'center',
-          width:130,
+          align: "center",
+          width: 130,
           scopedSlots: { customRender: "suggestionTime" },
         },
         {
           title: "操作",
           dataIndex: "operation",
-          align:'center',
-          width:130,
+          align: "center",
+          width: 130,
           scopedSlots: { customRender: "operation" },
         },
       ],
@@ -118,15 +118,20 @@ export default {
     },
     handleAddInner() {
       const newData = {
-        service: `校内服务${this.innerCount}`,
+        service: `校园社区服务${this.innerCount}`,
         cost: 2,
         oncampus: 1,
         suggestionTime: 10,
       };
-      this.$post("/aidServiceType", { ...newData }).then(() => {
-        this.innerCount += 1;
-        return this.getAssistSort();
-      }).catch(this.$message.error('存在相同分类名称'));
+      this.$post("/aidServiceType", { ...newData }).then(
+        () => {
+          this.innerCount += 1;
+          return this.getAssistSort();
+        },
+        () => {
+          this.$message.error("存在相同分类名称");
+        }
+      );
     },
     onChangeInfo(key) {
       const innerDataSource = [...this.innerDataSource];

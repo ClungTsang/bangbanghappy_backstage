@@ -124,6 +124,7 @@ const columns = [
       { text: "已取消", value: "6" },
       { text: "已关闭", value: "7" },
     ],
+    filterMultiple: false,
     align: "center",
     scopedSlots: { customRender: "aidorderstatus" },
   },

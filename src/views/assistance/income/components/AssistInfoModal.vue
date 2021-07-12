@@ -6,6 +6,8 @@
       title="该订单详细信息"
       @ok="handleOk"
       @cancel="handleCancel"
+      :destroyOnClose="true"
+      :footer="null"
     >
       <a-descriptions bordered>
         <a-descriptions-item label="订单编号" :span="2">
@@ -171,8 +173,11 @@ export default {
     },
   },
   watch: {
-    id(id) {
-      this.getOrderInfo(id);
+    id: {
+      handler(id) {
+        console.log("接收id：", id);
+        this.getOrderInfo(id);
+      },
     },
     assistInfo() {
       this.getAssistorInfo();
@@ -190,8 +195,17 @@ export default {
     },
     // 获取订单信息
     getOrderInfo(id) {
-      this.$get("/aidOrderById", { id: id }).then((res) => {
-        this.assistInfo = res.data.data;
+      this.$get("/aidOrderByout_trade_no", { outTradeNo: id }).then((res) => {
+        // console.log(res.data.data);
+        if (res.data.data) {
+          this.assistInfo = res.data.data[0];
+        } else {
+          this.assistInfo = {};
+          this.$message.error("订单不存在");
+          setTimeout(() => {
+            this.$emit("close");
+          }, 1000);
+        }
       });
     },
     // 获取求助者信息
@@ -205,7 +219,7 @@ export default {
     },
     // 获取援助者信息
     getAssistorInfo() {
-      console.log(this.assistInfo.aidUserOpenid);
+      // console.log(this.assistInfo.aidUserOpenid);
       if (this.assistInfo.aidUserOpenid) {
         const params = { openid: this.assistInfo.aidUserOpenid };
         this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {

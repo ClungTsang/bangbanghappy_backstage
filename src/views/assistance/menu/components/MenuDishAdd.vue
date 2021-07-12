@@ -34,7 +34,13 @@
           />
         </a-form-item>
         <a-form-item label="会员价格">
-          <a-input-number :min="1" v-decorator="['memberprice']" />
+          <a-input-number
+            :min="1"
+            v-decorator="[
+              'memberprice',
+              { rules: [{ required: true, message: '会员价格不能为空' }] },
+            ]"
+          />
         </a-form-item>
         <a-form-item label="限购数量">
           <a-input-number :min="1" v-decorator="['purchaselimit']" />
@@ -56,6 +62,15 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-modal
+      title="提示"
+      :visible="priceNoticeVisible"
+      @ok="priceNoticeOk"
+      @cancel="priceNoticeOk"
+      :width=240
+    >
+      <p>会员价格不能超过商品价格</p>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -76,6 +91,8 @@ export default {
       items: [],
       // 菜品照片
       dishUrl: "",
+      // 会员价格限制弹窗
+      priceNoticeVisible: false,
     };
   },
   props: {
@@ -139,8 +156,12 @@ export default {
 
     // 确定回调
     handleOk() {
-      this.form.validateFields((err, value) => {
+      this.form.validateFields(["dishprice", "memberprice"], (err, value) => {
         if (err) {
+          return;
+        }
+        if (parseFloat(value.memberprice) > parseFloat(value.dishprice)) {
+          this.priceNoticeVisible = true
           return;
         }
         this.setMenuFields();
@@ -188,6 +209,9 @@ export default {
         });
       }
       console.log(this.menu);
+    },
+    priceNoticeOk() {
+      this.priceNoticeVisible = false;
     },
   },
 };

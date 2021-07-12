@@ -34,6 +34,7 @@
       title="提示"
       @ok="confirmDesModal"
       @cancel="closeDesModal"
+      :destroyOnClose="true"
     >
       <a-form>
         <a-form-item label="添加区域信息">

@@ -11,8 +11,8 @@
   </div>
 </template>
 <script>
-import questionAdd from "./components/QuestionAdd";
-import questionInfo from "./components/QuestionInfo";
+import questionAdd from "./components/QuestionAdd.vue";
+import questionInfo from "./components/QuestionInfo.vue";
 export default {
   components: { questionAdd, questionInfo },
   data() {

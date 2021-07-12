@@ -43,6 +43,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+import event from "@/utils/event";
 export default {
   data() {
     return {
@@ -55,9 +56,6 @@ export default {
       form: this.$form.createForm(this),
     };
   },
-  created() {
-    // this.getMenuCategoryInfo();
-  },
   props: {
     copyVisible: {
       type: Boolean,
@@ -67,6 +65,11 @@ export default {
       type: Object,
       default: null,
     },
+  },
+  created() {
+    event.$on("addUserInfoDone", () => {
+      this.getMenuCategoryInfo();
+    });
   },
   computed: {
     visible() {

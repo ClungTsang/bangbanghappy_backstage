@@ -14,3 +14,11 @@
 7、会员判断 done
 8、区域代理审核 done
 9、区域代理操作 微信用户端操作 agent:1 和 agentdescription:1 字段 done
+10、收益记录改为table组件 done
+11、一级新增二级没有绑定权限 done
+新增服务分类报错 done
+审核代理报错 done
+复制商品未出现分类 done
+super收益中心展示 done
+无收益loading结束判定 done
+super隐藏两个页面 done

@@ -52,8 +52,8 @@
             ]"
           ></a-input>
         </a-form-item>
-        <div v-show="this.judge == 0">
-          <a-form-item label="老板手机号">
+        <div>
+          <a-form-item label="公众号绑定电话（谨慎填写）">
             <a-input
               v-decorator="[
                 'bossmobilenumber',
@@ -62,7 +62,7 @@
                     {
                       required: true,
 
-                      message: '请输入正确的手机号',
+                      message: '请谨慎填写公众号的绑定电话',
                     },
                   ],
                 },
@@ -451,7 +451,7 @@ export default {
           this.$emit("close");
           this.id = 0;
         } else {
-          this.$message.error("重复添加");
+          this.$message.error(res.data.message);
         }
       });
     },

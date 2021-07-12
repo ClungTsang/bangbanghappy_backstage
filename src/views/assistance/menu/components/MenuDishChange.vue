@@ -39,6 +39,15 @@
         </a-form-item>
       </a-form>
     </a-modal>
+    <a-modal
+      title="提示"
+      :visible="priceNoticeVisible"
+      @ok="priceNoticeOk"
+      @cancel="priceNoticeOk"
+      :width="240"
+    >
+      <p>会员价格不能超过商品价格</p>
+    </a-modal>
   </div>
 </template>
 <script>
@@ -53,6 +62,9 @@ export default {
       },
       items: [],
       form: this.$form.createForm(this),
+
+      // 会员价格限制弹窗
+      priceNoticeVisible: false,
     };
   },
   created() {
@@ -94,6 +106,12 @@ export default {
         if (err) {
           return;
         }
+        if (
+          parseFloat(this.menu.memberprice) > parseFloat(this.menu.dishprice)
+        ) {
+          this.priceNoticeVisible = true;
+          return;
+        }
         let params = this.menu;
         console.log(params);
         this.$put(`/backend/business/LantianDishmanagement`, {
@@ -110,9 +128,9 @@ export default {
       this.$emit("cancel");
     },
     select(e) {
-      let dishclass = this.items.filter(item=>{
-        return item.id == e
-      })
+      let dishclass = this.items.filter((item) => {
+        return item.id == e;
+      });
       this.menu.dishclassificationid = dishclass[0].id;
       this.menu.dishclassificationname = dishclass[0].text;
     },
@@ -144,6 +162,9 @@ export default {
         this.items = res.data.data;
         console.log(this.items);
       });
+    },
+    priceNoticeOk() {
+      this.priceNoticeVisible = false;
     },
   },
 };
