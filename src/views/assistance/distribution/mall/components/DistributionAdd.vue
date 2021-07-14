@@ -349,7 +349,7 @@ export default {
             ...fieldsValue,
             openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
-            slider: this.slider.value,
+            spendpercent: this.slider.value,
           };
           await this.onUploadData(value);
         });
@@ -366,7 +366,7 @@ export default {
             storestatus: this.storestatus,
             // openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             // closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
-            slider: this.slider.value,
+            spendpercent: this.slider.value,
           };
           // console.log(this.storestatus);
 
@@ -396,7 +396,7 @@ export default {
       this.form.getFieldDecorator("bossmobilenumber");
       this.form.getFieldDecorator("storeAddress");
       this.form.getFieldDecorator("detailedintroduction");
-      // this.form.getFieldDecorator("openinghours");
+      // this.form.getFieldDecorator("spendpercent");
       // this.form.getFieldDecorator("closinghours");
       this.form.setFieldsValue({
         companyname: storeInfo.companyname,
@@ -408,8 +408,9 @@ export default {
         // closinghours: storeInfo.closinghours,
         storeAddress: storeInfo.address,
       });
+      this.slider.value = storeInfo.spendpercent;
       this.storestatus = storeInfo.storestatus;
-      console.log(this.storestatus);
+      // console.log(this.storestatus);
       this.baiduMap.keyword = storeInfo.address;
       // this.openinghours = storeInfo.openinghours;
       // this.closinghours = storeInfo.closinghours;

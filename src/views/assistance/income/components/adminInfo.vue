@@ -36,7 +36,13 @@
 import AssistInfoModal from "./AssistInfoModal.vue";
 
 const columns = [
-  { title: "订单编号", dataIndex: "outTradeNo", align: "center" },
+  {
+    title: "订单编号",
+    dataIndex: "outTradeNo",
+    align: "center",
+    width: 300,
+    ellipsis: true,
+  },
   { title: "描述", dataIndex: "contentLog", align: "center" },
   {
     title: "类型",
@@ -59,7 +65,6 @@ const columns = [
   { title: "日期", width: 200, dataIndex: "createtime", align: "center" },
   {
     title: "操作",
-    width: 200,
     dataIndex: "action",
     align: "center",
     scopedSlots: { customRender: "action" },

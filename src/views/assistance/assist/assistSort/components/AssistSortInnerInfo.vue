@@ -53,19 +53,19 @@ export default {
         {
           title: "分类名称",
           dataIndex: "service",
-          width: 130,
+          width: 300,
           align: "center",
           scopedSlots: { customRender: "service" },
         },
         {
-          title: "服务费用",
+          title: "服务费用（元）",
           dataIndex: "cost",
           align: "center",
-          width: 100,
+          width: 170,
           scopedSlots: { customRender: "cost" },
         },
         {
-          title: "建议服务时间",
+          title: "建议服务时间（分钟）",
           dataIndex: "suggestionTime",
           align: "center",
           width: 130,
@@ -141,6 +141,8 @@ export default {
         service: target.service,
         cost: target.cost,
         suggestionTime: target.suggestionTime,
+      }).then(() => {
+        this.$message.success("更新成功");
       });
     },
   },

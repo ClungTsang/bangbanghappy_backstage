@@ -4,7 +4,7 @@
       <a-row type="flex">
         <a-col>
           <a-button
-            @click="closeStoreIncomeVisible"
+            @click="openAdminIncomeVisible"
             type="primary"
             v-hasPermission="['adminTotolIncome:check']"
           >
@@ -31,12 +31,7 @@
           </a-button>
         </a-col>
       </a-row>
-      <!-- 更改对援助的抽成 -->
-      <income-assist-change
-        :assistVisible="assistVisible"
-        @close="onCloseAssistModal"
-      >
-      </income-assist-change>
+
       <!-- 根据当前用户渲染不同收益情况 -->
       <div v-if="status">
         <!-- 平台收益流水 -->
@@ -47,10 +42,21 @@
         <store-info></store-info>
       </div>
     </div>
+    <!-- 查看商家收益情况 -->
     <store-info-modal
       :storeIncomeVisible="storeIncomeVisible"
       @close="closeStoreIncomeVisible"
     ></store-info-modal>
+    <!-- 查看平台收益情况 -->
+    <admin-info-modal
+      :adminIncomeVisible="adminIncomeVisible"
+      @close="closeAdminIncomeVisible"
+    ></admin-info-modal>
+    <!-- 更改对援助的抽成 -->
+    <income-assist-change
+      :assistVisible="assistVisible"
+      @close="onCloseAssistModal"
+    ></income-assist-change>
   </a-card>
 </template>
 <script>
@@ -58,14 +64,18 @@ import AdminInfo from "./components/adminInfo.vue";
 import StoreInfo from "./components/storeInfo.vue";
 import IncomeAssistChange from "./components/IncomeAssistChange.vue";
 import StoreInfoModal from "./components/StoreInfoModal.vue";
+import AdminInfoModal from "./components/AdminInfoModal.vue";
 export default {
   data() {
     return {
-      incomeGetVisible: false,
-      assistVisible: false,
+      // 判断用户角色
       status: false,
+      // 控制援助抽成信息展示
+      assistVisible: false,
       // 控制商家收益信息展示
       storeIncomeVisible: false,
+      // 控制超管和平台收益信息展示
+      adminIncomeVisible: false,
     };
   },
   components: {
@@ -73,6 +83,7 @@ export default {
     StoreInfo,
     AdminInfo,
     StoreInfoModal,
+    AdminInfoModal,
   },
   mounted() {
     this.judge();
@@ -86,17 +97,21 @@ export default {
       }
       console.log(user.roleName);
     },
-
-    onCloseIncomeModal() {
-      this.incomeGetVisible = false;
-    },
+    // 超管和平台控制援助抽成
     onOpenAssistModal() {
       this.assistVisible = true;
     },
     onCloseAssistModal() {
       this.assistVisible = false;
     },
-    // 控制商家流水信息
+    // 控制超管和平台收益信息
+    closeAdminIncomeVisible() {
+      this.adminIncomeVisible = false;
+    },
+    openAdminIncomeVisible() {
+      this.adminIncomeVisible = true;
+    },
+    // 控制商家收益信息
     closeStoreIncomeVisible() {
       this.storeIncomeVisible = false;
     },

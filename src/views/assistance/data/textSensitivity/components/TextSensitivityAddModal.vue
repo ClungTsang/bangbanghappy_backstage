@@ -3,7 +3,6 @@
     <a-modal
       :visible="visible"
       title="添加敏感词"
-      :destroyOnClose="true"
       :maskClosable="false"
       @ok="confirm"
       @cancel="cancel"
@@ -41,11 +40,12 @@ export default {
         ...params,
       }).then(() => {
         this.$message.success("增加敏感词成功");
-        this.$emit("close",'ok');
+        this.$emit("close", "ok");
+        this.text = "";
       });
     },
     cancel() {
-      this.$emit("close",'cancel');
+      this.$emit("close", "cancel");
     },
   },
 };

@@ -11,7 +11,6 @@
         <div v-if="text">{{ text }}</div>
         <div v-else>该订单为提现操作 , 不存在订单编号</div>
       </span>
-
       <span slot="amount" slot-scope="text, record"> {{ text }}元 </span>
       <span slot="analysisstatus" slot-scope="analysisstatus">
         <a-tag
@@ -52,6 +51,8 @@ const columns = [
     title: "订单编号",
     dataIndex: "outTradeNo",
     align: "center",
+    width: 150,
+    ellipsis: true,
     scopedSlots: { customRender: "outTradeNo" },
   },
   {

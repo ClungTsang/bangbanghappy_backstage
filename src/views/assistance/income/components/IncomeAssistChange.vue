@@ -46,8 +46,13 @@ export default {
       return this.assistVisible;
     },
   },
-  mounted() {
-    this.getTotallyIncome();
+  watch: {
+    visible: {
+      handler() {
+        this.getTotallyIncome();
+      },
+      immediate: true,
+    },
   },
   methods: {
     // 复选修改抽成比例方法

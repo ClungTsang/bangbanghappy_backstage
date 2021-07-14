@@ -95,11 +95,12 @@ export default {
     deleteText() {
       // console.log(this.selectedKeys);
       this.selectedKeys.forEach((item) => {
-        this.$get("/helpSensitiveWord/delete", { id: item }).then(() => {
-          this.$message.success("删除敏感词成功");
-          this.getTextSensitivityList();
-        });
+        this.$get("/helpSensitiveWord/delete", { id: item }).then(() => {});
       });
+      this.$message.success("删除敏感词成功");
+      setTimeout(() => {
+        this.getTextSensitivityList();
+      }, 500);
     },
     // 新增敏感词
     addText() {

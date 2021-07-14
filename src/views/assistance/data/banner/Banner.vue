@@ -155,8 +155,9 @@ export default {
     },
     // 渲染轮播图信息到浏览器
     setBanner(banner) {
+      let dataSource = [];
       banner.forEach((item) => {
-        this.dataSource.push({
+        dataSource.push({
           key: item.id,
           ordernum: item.ordernum,
           banner: item.carouselimgurl,
@@ -164,6 +165,7 @@ export default {
           updatetime: item.updatetime,
         });
       });
+      this.dataSource = dataSource;
     },
 
     // 新增轮播图

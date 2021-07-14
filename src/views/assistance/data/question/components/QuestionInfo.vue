@@ -51,9 +51,21 @@
 import event from "@/utils/event";
 
 const columns = [
-  { title: "id", dataIndex: "id" },
-  { title: "标题", dataIndex: "title", align: "center" },
-  { title: "内容", dataIndex: "detail", align: "center" },
+  // { title: "id", dataIndex: "id" },
+  {
+    title: "标题",
+    dataIndex: "title",
+    align: "center",
+    width: 200,
+    ellipsis: true,
+  },
+  {
+    title: "内容",
+    dataIndex: "detail",
+    align: "center",
+    width: 500,
+    ellipsis: true,
+  },
   {
     title: "是否显示",
     dataIndex: "isDelete",
@@ -134,7 +146,7 @@ export default {
         let dataSource = this.dataSource.filter((item) => {
           return item.id !== record.id;
         });
-        this.dataSource = dataSource
+        this.dataSource = dataSource;
       });
     },
   },

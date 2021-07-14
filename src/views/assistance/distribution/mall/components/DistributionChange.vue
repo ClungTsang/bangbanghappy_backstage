@@ -51,7 +51,7 @@ export default {
   mounted() {
     // 接收到兄弟组件传值
     event.$on("selectedRows", (res) => {
-      console.log(4,'selectedRows',res);
+      // console.log('selectedRows',res);
       this.rowList = res;
     });
   },
@@ -64,9 +64,9 @@ export default {
           spendpercent: this.slider.value + "",
         });
       });
-      event.$emit("cleanSelectedRow");
+      this.$message.success("批量修改抽成成功");
       this.$emit("close");
-      this.$message.success("修改抽成成功");
+      event.$emit("cleanSelectedRow");
     },
     handleCancel() {
       this.$emit("close");

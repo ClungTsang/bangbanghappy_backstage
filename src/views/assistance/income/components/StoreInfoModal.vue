@@ -4,7 +4,6 @@
     title="查看"
     @ok="handleClose"
     @cancel="handleClose"
-    :footer="null"
   >
     <a-descriptions layout="vertical" bordered>
       <a-descriptions-item label="商家盈利">
@@ -50,9 +49,17 @@ export default {
       return this.storeIncomeVisible;
     },
   },
-  mounted() {
-    this.getRecordByBossPhone();
+  watch: {
+    visible: {
+      handler() {
+        this.getRecordByBossPhone();
+      },
+      immediate: true,
+    },
   },
+  // mounted() {
+  //   this.getRecordByBossPhone();
+  // },
   methods: {
     // 代理商获取记录
     async getRecordByBossPhone() {

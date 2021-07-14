@@ -51,12 +51,11 @@ const rowSelection = {
   onSelect: (record, selected, selectedRows) => {
     // console.log(2,record, selected, selectedRows);
     // console.log(2.1,selectedRows);
-    event.$emit('selectedRows',selectedRows)
+    event.$emit("selectedRows", selectedRows);
   },
   onSelectAll: (selected, selectedRows, changeRows) => {
     // console.log(3,selected, selectedRows, changeRows);
-    event.$emit('selectedRows',selectedRows)
-
+    event.$emit("selectedRows", selectedRows);
   },
 };
 const columns = [
@@ -78,7 +77,6 @@ const columns = [
     title: "门店地址",
     dataIndex: "address",
     width: 300,
-    // 宽度自动省略
     ellipsis: true,
     align: "center",
   },
@@ -138,7 +136,7 @@ export default {
       id: null,
       changeVisible: false,
       changeTarget: 0,
-      rowSelection
+      rowSelection,
     };
   },
   computed: {
@@ -146,12 +144,18 @@ export default {
       return this.selectedRowKeys.length > 0;
     },
   },
-  mounted() {
+  created() {
     this.fetch();
+  },
+  mounted() {
     // 被告知已经修改抽成完成
     event.$on("cleanSelectedRow", () => {
-      this.selectedRowKeys = [];
+      // 延迟执行
+      setTimeout(() => {
+        this.fetch();
+      }, 600);
     });
+    // 被告知需要刷新页面
     event.$on("mallChangeDone", () => {
       this.fetch();
     });
@@ -215,6 +219,8 @@ export default {
           }
         );
       } else {
+        // this.dataSource = [];
+        // this.selectedRowKeys = [];
         this.$get("/business/LantianStore/MapAll", {
           Authentication: token,
           pageSize: 10,
@@ -222,7 +228,7 @@ export default {
         }).then((res) => {
           let pagination = { ...this.pagination };
           pagination.total = res.data.data.total;
-          this.loading = false;
+          // this.loading = false;
           this.dataSource = res.data.data.rows;
           this.pagination = pagination;
         });

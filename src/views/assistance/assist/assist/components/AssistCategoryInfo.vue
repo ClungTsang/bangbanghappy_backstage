@@ -81,9 +81,8 @@ const columns = [
   {
     title: "订单编号",
     dataIndex: "outTradeNo",
-    width: 70,
+    width: 150,
     align: "center",
-
     ellipsis: true,
   },
 
@@ -101,9 +100,10 @@ const columns = [
   },
   {
     title: "订单标题",
-    width: 100,
     dataIndex: "title",
     align: "center",
+    width: 150,
+    ellipsis: true,
   },
   {
     title: "订单创建时间",

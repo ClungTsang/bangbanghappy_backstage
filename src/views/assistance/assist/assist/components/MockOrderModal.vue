@@ -111,6 +111,7 @@ export default {
       this.$post("/business/rootData/update", { ...params }).then((res) => {
         if (res.data.code == 200) {
           this.$message.success("切换成功");
+          this.$emit("close");
         }
       });
     },
@@ -119,6 +120,7 @@ export default {
       this.$delete("/backend/notice/deleteall").then(() => {
         this.fakeOrderTotal = 0;
         this.$message.success("全部清除成功");
+        this.$emit("close");
       });
     },
   },

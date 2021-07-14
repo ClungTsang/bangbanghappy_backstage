@@ -7,7 +7,7 @@
       @cancel="handleCancel"
     >
       <a-form>
-        <a-form-item label="滑动修改会员缴费金额">
+        <a-form-item label="滑动修改会员缴费金额（元）">
           <a-row>
             <a-col :span="20">
               <a-slider v-model="slider.value" :min="1" :max="500" />

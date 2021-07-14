@@ -26,6 +26,7 @@
       title="查看图片"
       @ok="closePicModal"
       @cancel="closePicModal"
+      :footer="null"
     >
       <div v-for="(item, index) in JSON.parse(picList)" :key="index">
         <img
@@ -53,14 +54,14 @@ const columns = [
   },
   {
     title: "申请理由",
-    width: 150,
+    width: 200,
     dataIndex: "apply",
     align: "center",
     ellipsis: true,
   },
   {
     title: "商家地址",
-    width: 200,
+    width: 300,
     dataIndex: "address",
     align: "center",
     ellipsis: true,

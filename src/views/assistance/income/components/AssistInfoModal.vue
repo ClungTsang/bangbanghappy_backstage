@@ -175,7 +175,7 @@ export default {
   watch: {
     id: {
       handler(id) {
-        console.log("接收id：", id);
+        // console.log("接收id：", id);
         this.getOrderInfo(id);
       },
     },
