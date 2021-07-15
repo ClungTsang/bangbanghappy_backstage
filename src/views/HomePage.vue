@@ -16,7 +16,7 @@
             <div class="head-info-time">上次登录时间：{{user.lastLoginTime ? user.lastLoginTime : '第一次访问系统'}}</div>
           </div>
         </a-col>
-        <a-col :span="12">
+        <!-- <a-col :span="12">
           <div>
             <a-row class="more-info">
               <a-col :span="4"></a-col>
@@ -33,15 +33,15 @@
               </a-col>
             </a-row>
           </div>
-        </a-col>
+        </a-col> -->
       </a-card>
     </a-row>
     <a-row :gutter="8" class="count-info">
-      <a-col :span="12" class="visit-count-wrapper">
+      <!-- <a-col :span="12" class="visit-count-wrapper">
         <a-card class="visit-count">
           <div  id="countChart" style="height: 400px;border:1px solid  #f1f1f1;border-radius: 5px" ></div>
         </a-card>
-      </a-col>
+      </a-col> -->
       <!-- <a-col :span="12" class="project-wrapper">
         <a-card title="进行中的项目" class="project-card" v-if="loadRepo === 1">
           <a href="https://github.com/wuyouzhuguli?tab=repositories" target="_blank" slot="extra">所有项目</a>
@@ -97,7 +97,7 @@ export default {
         '要不要和朋友打局LOL',
         '要不要和朋友打局王者荣耀',
         '几天没见又更好看了呢😍',
-        '今天又写了几个Bug🐞呢',
+        '今天有没有继续努力赚钱呢',
         '今天在群里吹水了吗',
         '今天吃了什么好吃的呢',
         '今天您微笑了吗😊',

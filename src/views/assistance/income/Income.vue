@@ -2,6 +2,7 @@
   <a-card :bordered="false" class="card-area">
     <div>
       <a-row type="flex">
+        <!-- 查看平台总收益 -->
         <a-col>
           <a-button
             @click="openAdminIncomeVisible"
@@ -11,6 +12,7 @@
             查看平台总收益
           </a-button>
         </a-col>
+        <!-- 查看门店收益情况 -->
         <a-col>
           <a-button
             @click="openStoreIncomeVisible"
@@ -20,6 +22,7 @@
             查看门店收益情况
           </a-button>
         </a-col>
+        <!-- 全局援助抽成 -->
         <a-col style="margin-left: 5px">
           <a-button
             @click="onOpenAssistModal"

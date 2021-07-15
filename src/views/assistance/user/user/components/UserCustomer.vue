@@ -43,6 +43,16 @@
             <a-select-option value="0">不需要</a-select-option>
           </a-select>
         </span>
+        <span slot="action" slot-scope="text, record">
+        <a-popconfirm
+          title="确定删除该用户"
+          ok-text="确定"
+          cancel-text="取消"
+          @confirm="confirmDelete(record)"
+        >
+          <a>删除用户</a>
+        </a-popconfirm>
+      </span>
       </a-table>
   </div>
 </template>
@@ -86,12 +96,12 @@ const columns = [
     align: "center",
     scopedSlots: { customRender: "viplevel" },
   },
-  // {
-  //   title: "更新时间",
-  //   dataIndex: "updatetime",
-  //   width: 200,
-  //   align: "center",
-  // },
+  {
+    title: "更新时间",
+    dataIndex: "updatetime",
+    width: 200,
+    align: "center",
+  },
   {
     title: "是否限制援助他人",
     dataIndex: "wechatcustomerStatus",
@@ -103,8 +113,15 @@ const columns = [
     title: "是否需要交押金",
     dataIndex: "needdeposit",
     align: "center",
-    width: 100,
+    width: 150,
     scopedSlots: { customRender: "needdeposit" },
+  },
+  {
+    title: "操作",
+    width: 100,
+    dataIndex: "action",
+    align: "center",
+    scopedSlots: { customRender: "action" },
   },
 ];
 export default {
@@ -153,11 +170,23 @@ export default {
         this.$message.success("切换成功");
       });
     },
+    // 切换用户援助状态
     onChangeStatus(e, record) {
       console.log(e, record);
       const params = { wechatcustomerStatus: e, id: record.id };
       this.$post("/wechatcustomer/update", { ...params }).then(() => {
         this.$message.success("切换成功");
+      });
+    },
+    // 删除用户
+    // 删除问题
+    confirmDelete(record) {
+      this.$get("/wechatcustomer/delete", { id: record.id }).then(() => {
+        let dataSource = this.dataSource.filter((item) => {
+          return item.id !== record.id;
+        });
+        this.$message.success("删除用户成功");
+        this.dataSource = dataSource;
       });
     },
   },

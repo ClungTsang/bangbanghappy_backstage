@@ -146,6 +146,7 @@ export default {
         let dataSource = this.dataSource.filter((item) => {
           return item.id !== record.id;
         });
+        this.$message.success("删除问题成功");
         this.dataSource = dataSource;
       });
     },
