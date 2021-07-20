@@ -29,16 +29,33 @@
         </a-form-item>
       </a-form>
     </div>
-    <div style="margin-top: 10px">
+    <a-form>
+      <a-form-item>
+        <a-radio-group
+          @change="radioChange"
+          v-decorator="[
+            'modifier',
+            {
+              initialValue: '0',
+            },
+          ]"
+        >
+          <a-radio value="0">url地址跳转</a-radio>
+          <a-radio value="1">富文本跳转</a-radio>
+        </a-radio-group>
+      </a-form-item>
+    </a-form>
+
+    <div style="margin-top: 10px" v-if="jumpWay == 0">
       <a-form>
-        <a-form-item label="url地址（可不填写）">
+        <a-form-item label="url地址">
           <a-input v-model="carouselurl" />
         </a-form-item>
       </a-form>
     </div>
-    <div style="margin-top: 10px">
+    <div style="margin-top: 10px" v-else-if="jumpWay == 1">
       <a-form>
-        <a-form-item label="自定义内容（可不填写）">
+        <a-form-item label="富文本内容">
           <editor-bar
             v-model="MTE"
             :isClear="isClear"
@@ -83,7 +100,6 @@ export default {
       previewImage: "",
       // 图片上传数量
       maxNum: 1,
-
       // 顺序号 必传
       ordernum: 0,
       // 图片地址
@@ -96,6 +112,8 @@ export default {
       isClear: false,
       // 富文本内容
       MTE: "",
+      // 跳转方式
+      jumpWay: 0,
     };
   },
   watch: {
@@ -230,6 +248,7 @@ export default {
         }
       );
     },
+
     // 父组件后置上传
     // 轮播图地址上传至后台数据库服务器
     afterUpload() {
@@ -282,8 +301,10 @@ export default {
     change(val) {
       this.MTE = val;
     },
-    post() {
-      console.log();
+    // 切换轮播图的点击跳转方式
+    radioChange(e) {
+      // console.log(e.target.value);
+      this.jumpWay = e.target.value;
     },
   },
 };

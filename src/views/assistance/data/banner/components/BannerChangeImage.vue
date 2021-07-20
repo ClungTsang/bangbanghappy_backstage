@@ -29,16 +29,33 @@
         </a-form-item>
       </a-form>
     </div>
-    <div style="margin-top: 10px">
+    <a-form>
+      <a-form-item>
+        <a-radio-group
+          @change="radioChange"
+          v-decorator="[
+            'modifier',
+            {
+              initialValue: '0',
+            },
+          ]"
+        >
+          <a-radio value="0">url地址跳转</a-radio>
+          <a-radio value="1">富文本跳转</a-radio>
+        </a-radio-group>
+      </a-form-item>
+    </a-form>
+
+    <div style="margin-top: 10px" v-if="jumpWay == 0">
       <a-form>
-        <a-form-item label="url地址（可不填写）">
+        <a-form-item label="url地址">
           <a-input v-model="carouselurl" />
         </a-form-item>
       </a-form>
     </div>
-    <div style="margin-top: 10px">
+    <div style="margin-top: 10px" v-else-if="jumpWay == 1">
       <a-form>
-        <a-form-item label="自定义内容（可不填写）">
+        <a-form-item label="富文本内容">
           <editor-bar
             v-model="MTE"
             :isClear="isClear"
@@ -54,7 +71,14 @@ import event from "@/utils/event.js";
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
 import EditorBar from "./wangEnduit.vue";
-
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 export default {
   name: "UploadImage",
   components: {
@@ -95,6 +119,8 @@ export default {
       isClear: false,
       // 富文本内容
       MTE: "",
+      // 跳转方式
+      jumpWay: 0,
     };
   },
   watch: {
@@ -143,9 +169,12 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    handlePreview() {
+    async handlePreview(file) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
       this.previewVisible = true;
-      this.previewImage = this.fileList[0].carouselimgurl;
     },
     // 上传之前判断文件类型
     beforeUpload(file) {
@@ -286,6 +315,11 @@ export default {
       } else {
         return "";
       }
+    },
+    // 切换轮播图的点击跳转方式
+    radioChange(e) {
+      // console.log(e.target.value);
+      this.jumpWay = e.target.value;
     },
   },
 };
