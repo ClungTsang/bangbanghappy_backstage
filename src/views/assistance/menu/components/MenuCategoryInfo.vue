@@ -31,6 +31,9 @@
           <a-icon slot="unCheckedChildren" type="close" />
         </a-switch>
       </span>
+      <span slot="dishprice" slot-scope="text, record">{{ text }}元</span>
+      <span slot="memberprice" slot-scope="text, record">{{ text }}元</span>
+      <span slot="purchaselimit" slot-scope="text, record">{{ text }}个</span>
       <!-- 操作控制 -->
       <span slot="action" slot-scope="text, record">
         <a @click="onOpenMenuChangeModal(record)">修改</a>
@@ -91,29 +94,41 @@ const columns = [
     title: "商品名称",
     dataIndex: "dishname",
     width: 100,
+    ellipsis: true,
     align: "center",
   },
   {
     title: "商品价格",
-    width: 100,
+    width: 50,
     dataIndex: "dishprice",
     align: "center",
+    scopedSlots: { customRender: "dishprice" },
+  },
+
+  {
+    title: "会员价格",
+    width: 50,
+    dataIndex: "memberprice",
+    align: "center",
+    scopedSlots: { customRender: "memberprice" },
   },
   {
     title: "限购数量",
-    width: 100,
+    width: 50,
     dataIndex: "purchaselimit",
     align: "center",
+    scopedSlots: { customRender: "purchaselimit" },
   },
   {
     title: "商品介绍",
-    width: 100,
+    width: 150,
     dataIndex: "description",
     align: "center",
+    ellipsis: true,
   },
   {
     title: "是否显示",
-    width: 100,
+    width: 50,
     dataIndex: "dishstatus",
     align: "center",
     scopedSlots: { customRender: "dishstatus" },
@@ -132,7 +147,7 @@ import MenuDishInfo from "./MenuDishInfo.vue";
 import MenuDishCopy from "./MenuDishCopy.vue";
 import event from "@/utils/event";
 export default {
-  components: { MenuDishChange, MenuDishInfo,MenuDishCopy },
+  components: { MenuDishChange, MenuDishInfo, MenuDishCopy },
   data() {
     return {
       columns,
@@ -141,7 +156,7 @@ export default {
       loading: false,
       switchLoading: false,
       show: false,
-      // storeId: 0,
+      // storeid: 0,
       // 菜品信息展示控制
       menuShowVisible: false,
       // 修改菜品控制
@@ -166,15 +181,15 @@ export default {
     event.$on("transferCategory", async (res) => {
       console.log(`接收到下拉选项老哥传来的`, res);
       // 网络查询
-      let result = await this.getMenuCategoryList(res.storeId);
+      let result = await this.getMenuCategoryList(res.storeid);
       // 显示全部
-      if (res.category == "显示全部") {
+      if (res.dishclassificationname == "显示全部") {
         this.showAllCategoryList();
         return;
       }
       // 渲染分类数据
-      if (result.data.data[res.category] !== "空") {
-        this.dataSource = result.data.data[res.category];
+      if (result.data.data[res.dishclassificationname] !== "空") {
+        this.dataSource = result.data.data[res.dishclassificationname];
       } else {
         this.dataSource = [];
       }
@@ -183,10 +198,10 @@ export default {
   },
   methods: {
     // 网络获取分类信息
-    getMenuCategoryList(storeId) {
+    getMenuCategoryList(storeid) {
       this.loading = true;
       const params = {
-        storeid: storeId,
+        storeid: storeid,
       };
       // 根据storeid全查菜品分类
       return this.$get(
@@ -273,8 +288,23 @@ export default {
       this.showData = record;
       this.menuChangeVisible = true;
     },
-    onCloseMenuChangeModal() {
+    async onCloseMenuChangeModal() {
+      // console.log(payload);
+      // console.log(this.showData.dishclassificationid);
+      // 网络查询
+      // let result = await this.getMenuCategoryList(payload.storeid);
+      // 渲染分类数据
+      // this.dataSource = [];
+      // if (result.data.data[payload.dishclassificationname] !== "空") {
+      //   this.dataSource = result.data.data[payload.dishclassificationname];
+      // }
+      this.loading = false;
       this.menuChangeVisible = false;
+      // const dataSource = [...this.dataSource];
+      // dataSource.filter((item) => {
+      //   item.id != record.id;
+      // });
+      // this.dataSource = dataSource;
     },
     onCancelMenuChangeModal() {
       this.menuChangeVisible = false;

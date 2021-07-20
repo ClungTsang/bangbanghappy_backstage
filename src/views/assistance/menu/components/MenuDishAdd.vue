@@ -74,7 +74,7 @@
   </div>
 </template>
 <script>
-import MenuDishUpload from "./MenuDishUpload";
+import MenuDishUpload from "./MenuDishUpload.vue";
 import { mapState } from "vuex";
 import event from "@/utils/event";
 export default {
@@ -122,7 +122,7 @@ export default {
       res.forEach((item) => {
         list.push(item.url);
       });
-      console.log(1, list);
+      // console.log(1, list);
       this.dishUrl = JSON.stringify(list);
     });
     event.$on("addUserInfoDone", () => {

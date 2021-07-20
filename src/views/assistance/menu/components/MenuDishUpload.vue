@@ -27,6 +27,14 @@
 import event from "@/utils/event.js";
 import COS from "cos-js-sdk-v5";
 import uuid from "@/utils/uuid";
+function getBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+}
 export default {
   props: {
     files: {
@@ -59,8 +67,29 @@ export default {
     },
   },
   watch: {
-    files(list) {
-      this.fileList = list;
+    files: {
+      handler(list) {
+        // let params = {
+        //   url: JSON.parse(list.dishurl[0]),
+        // };
+        // let arr = [params];
+        // this.fileList = arr;
+        let arr = JSON.parse(list[0].dishurl);
+        console.log(arr[0]);
+        let params = [
+          {
+            uid: "-1",
+            name: "xxx.png",
+            status: "done",
+            url: arr[0],
+          },
+        ];
+        this.fileList = params;
+
+        // this.previewImage = arr[0];
+        // this.previewVisible = true;
+      },
+      immediate: true,
     },
   },
   async created() {
@@ -93,8 +122,12 @@ export default {
       this.previewVisible = false;
     },
     // 图片预览开启
-    handlePreview() {
-      this.previewImage = this.bannerUrl;
+    async handlePreview(file) {
+      console.log(file);
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj);
+      }
+      this.previewImage = file.url || file.preview;
       this.previewVisible = true;
     },
     // 上传之前判断文件类型

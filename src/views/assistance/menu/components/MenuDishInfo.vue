@@ -29,9 +29,9 @@
         <a-descriptions-item label="菜品价格">
           {{ menu.dishprice }}
         </a-descriptions-item>
-        <a-descriptions-item label="活动价格">
+        <!-- <a-descriptions-item label="活动价格">
           {{ menu.activityprice }}
-        </a-descriptions-item>
+        </a-descriptions-item> -->
         <a-descriptions-item label="会员价格">
           {{ menu.memberprice }}
         </a-descriptions-item>

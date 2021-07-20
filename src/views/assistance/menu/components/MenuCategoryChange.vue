@@ -27,7 +27,7 @@
       @close="onClose"
       @cancel="onCancel"
       :addVisible="menuCategoryVisible"
-      :storeId="storeId"
+      :storeid="storeid"
     ></menu-category-add>
     <!-- 删除分类 -->
     <a-modal
@@ -62,7 +62,7 @@ export default {
       items: [],
       menuCategoryVisible: false,
       deleteVisibel: false,
-      storeId: 0,
+      storeid: 0,
       category: {
         item: "",
       },
@@ -72,8 +72,8 @@ export default {
     async "category.text"(val) {
       // 传输门店id和选择的分类
       let res = {
-        storeId: this.storeId,
-        category: val,
+        storeid: this.storeid,
+        dishclassificationname: val,
       };
       event.$emit("transferCategory", res);
     },
@@ -105,9 +105,9 @@ export default {
       this.setUserInfo(res.data.data);
       // 通知加载分类信息
       event.$emit("addUserInfoDone");
-      this.storeId = res.data.data.id;
+      this.storeid = res.data.data.id;
       const params = {
-        storeid: this.storeId,
+        storeid: this.storeid,
       };
       // 通过门店 storeid 全查菜品分类
       this.$get(
@@ -129,7 +129,7 @@ export default {
     setMenuCategoryInfo(category) {
       if (category) {
         this.items = category;
-        this.items.push({ id: 999, storeid: this.storeId, text: "显示全部" });
+        this.items.push({ id: 999, storeid: this.storeid, text: "显示全部" });
         console.log("items", this.items);
       }
     },

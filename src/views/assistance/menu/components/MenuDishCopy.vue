@@ -26,6 +26,9 @@
         <a-form-item label="限购数量"
           ><a-input-number v-model="menu.purchaselimit"></a-input-number
         ></a-form-item>
+        <a-form-item label="菜品图片">
+          <menu-dish-upload :files="files">上传菜品图片</menu-dish-upload>
+        </a-form-item>
         <a-form-item label="所属分类">
           <a-select
             @select="select"
@@ -42,9 +45,14 @@
   </div>
 </template>
 <script>
+import MenuDishUpload from "./MenuDishUpload.vue";
+
 import { mapState } from "vuex";
 import event from "@/utils/event";
 export default {
+  components: {
+    MenuDishUpload,
+  },
   data() {
     return {
       formLayout: "horizontal",
@@ -54,6 +62,8 @@ export default {
       },
       items: [],
       form: this.$form.createForm(this),
+      files: [],
+      dishUrl: null,
     };
   },
   props: {
@@ -71,6 +81,17 @@ export default {
       this.getMenuCategoryInfo();
     });
   },
+  mounted() {
+    event.$on("dishUrl", (res) => {
+      // console.log(res);
+      let list = [];
+      res.forEach((item) => {
+        list.push(item.url);
+      });
+      this.dishUrl = JSON.stringify(list);
+      // console.log('dishurl',this.dishUrl);
+    });
+  },
   computed: {
     visible() {
       return this.copyVisible;
@@ -81,14 +102,9 @@ export default {
   },
   watch: {
     data(val) {
-      // console.log(val);
+      this.files = [];
+      this.files.push(val);
       this.menu = val;
-    },
-    menu: {
-      deep: true,
-      handle(val) {
-        console.log(val);
-      },
     },
   },
   methods: {
@@ -98,24 +114,21 @@ export default {
           return;
         }
         let params = this.menu;
-        console.log(params);
-
+        if (this.dishUrl != null) {
+          params["dishurl"] = this.dishUrl;
+        }
         this.$post("/backend/business/LantianDishmanagement", {
           ...params,
-          // dishurl: this.dishUrl,
-          // storeid: this.category.item.storeid,
-          // dishclassificationid: this.category.item.id,
-          // dishclassificationname: this.category.item.text,
         }).then(() => {
-          this.$message.success("复制成功");
+          event.$emit("transferCategory", params);
           this.$emit("close");
           this.form.resetFields();
+          this.$message.success("复制成功");
         });
       });
     },
     handleCancel() {
       // 清除表单
-      // this.form.resetFields();
       this.$emit("cancel");
     },
     select(e) {

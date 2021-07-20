@@ -26,6 +26,9 @@
         <a-form-item label="限购数量"
           ><a-input-number v-model="menu.purchaselimit"></a-input-number
         ></a-form-item>
+        <a-form-item label="菜品图片">
+          <menu-dish-upload :files="files">上传菜品图片</menu-dish-upload>
+        </a-form-item>
         <a-form-item label="所属分类">
           <a-select
             @select="select"
@@ -51,8 +54,14 @@
   </div>
 </template>
 <script>
+import MenuDishUpload from "./MenuDishUpload.vue";
+
+import event from "@/utils/event";
 import { mapState } from "vuex";
 export default {
+  components: {
+    MenuDishUpload,
+  },
   data() {
     return {
       formLayout: "horizontal",
@@ -62,13 +71,27 @@ export default {
       },
       items: [],
       form: this.$form.createForm(this),
-
+      files: [],
+      dishUrl: null,
       // 会员价格限制弹窗
       priceNoticeVisible: false,
     };
   },
   created() {
-    // this.getMenuCategoryInfo();
+    event.$on("addUserInfoDone", () => {
+      this.getMenuCategoryInfo();
+    });
+  },
+  mounted() {
+    event.$on("dishUrl", (res) => {
+      // console.log(res);
+      let list = [];
+      res.forEach((item) => {
+        list.push(item.url);
+      });
+      this.dishUrl = JSON.stringify(list);
+      // console.log('dishurl',this.dishUrl);
+    });
   },
   props: {
     changeVisible: {
@@ -90,14 +113,9 @@ export default {
   },
   watch: {
     data(val) {
-      // TODO:渲染图片
+      this.files = [];
+      this.files.push(val);
       this.menu = val;
-    },
-    menu: {
-      deep: true,
-      handle(val) {
-        console.log(val);
-      },
     },
   },
   methods: {
@@ -113,18 +131,20 @@ export default {
           return;
         }
         let params = this.menu;
-        console.log(params);
+        if (this.dishUrl != null) {
+          params["dishurl"] = this.dishUrl;
+        }
         this.$put(`/backend/business/LantianDishmanagement`, {
           ...params,
         }).then(() => {
           this.$emit("close");
+          event.$emit("transferCategory", params);
           this.$message.success("修改成功");
         });
       });
     },
     handleCancel() {
       // 清除表单
-      // this.form.resetFields();
       this.$emit("cancel");
     },
     select(e) {
@@ -160,7 +180,6 @@ export default {
         }
       ).then((res) => {
         this.items = res.data.data;
-        console.log(this.items);
       });
     },
     priceNoticeOk() {
