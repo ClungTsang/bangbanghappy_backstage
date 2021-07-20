@@ -6,7 +6,10 @@
       :pagination="pagination"
       :loading="loading"
       @change="handleTableChange"
-      :row-selection="rowSelection"
+      :row-selection="{
+        selectedRowKeys: selectedRowKeys,
+        onChange: onSelectChange,
+      }"
     >
       <span slot="storestatus" slot-scope="text, record">
         {{
@@ -43,21 +46,6 @@
   </div>
 </template>
 <script>
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    // console.log(1,`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-    // console.log(1.1,selectedRows);
-  },
-  onSelect: (record, selected, selectedRows) => {
-    // console.log(2,record, selected, selectedRows);
-    // console.log(2.1,selectedRows);
-    event.$emit("selectedRows", selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    // console.log(3,selected, selectedRows, changeRows);
-    event.$emit("selectedRows", selectedRows);
-  },
-};
 const columns = [
   // {
   //   title: "门店编号",
@@ -71,7 +59,7 @@ const columns = [
     width: 200,
     ellipsis: true,
     align: "center",
-    // fixed:"left"
+    fixed: "left",
   },
   {
     title: "门店地址",
@@ -119,12 +107,11 @@ const columns = [
   },
 ];
 import event from "@/utils/event.js";
-import EditableCell from "../../../../../components/editablecell/EditableCell.vue";
+import EditableCell from "@/components/editablecell/EditableCell.vue";
 import DistributionStoreInfo from "./DistributionStoreInfo.vue";
 import DistributionAdd from "./DistributionAdd.vue";
 export default {
   components: { EditableCell, DistributionStoreInfo, DistributionAdd },
-
   data() {
     return {
       dataSource: [],
@@ -132,25 +119,19 @@ export default {
       selectedRowKeys: [],
       pagination: {},
       loading: false,
-      storeInfoVisible: false,
       id: null,
-      changeVisible: false,
       changeTarget: 0,
-      rowSelection,
+      storeInfoVisible: false,
+      changeVisible: false,
     };
-  },
-  computed: {
-    hasSelected() {
-      return this.selectedRowKeys.length > 0;
-    },
   },
   created() {
     this.fetch();
   },
-  mounted() {
+  updated() {
     // 被告知已经修改抽成完成
     event.$on("cleanSelectedRow", () => {
-      // 延迟执行
+      // 延迟执行 等待同步服务器
       setTimeout(() => {
         this.fetch();
       }, 600);
@@ -161,24 +142,18 @@ export default {
     });
   },
   methods: {
-    // 选择列
-    // onSelectChange(selectedRowKeys) {
-    //   // console.log(selectedRowKeys);
-    //   this.selectedRowKeys = selectedRowKeys;
-    //   event.$emit("selectedRowKeys", this.selectedRowKeys);
-    // },
-    // onSelectedRows(selectedRows) {
-    //   console.log(selectedRows);
-    // },
+    // 选择的列
+    onSelectChange(selectedRowKeys, selectedRows) {
+      event.$emit("selectedRows", selectedRows);
+      this.selectedRowKeys = selectedRowKeys;
+    },
     // 切换店铺状态
     changeStatus(e, record) {
       const params = { storestatus: e, id: record.id };
       this.$put("/business/LantianStore", { ...params }).then(() => {
         this.$message.success("切换成功");
       });
-      //用record.key来确定门店id，从而改变门店的店铺状态
     },
-    onStatusChange(key) {},
     // 分页切换
     handleTableChange(pagination, filters, sorter) {
       const pager = { ...this.pagination };
@@ -219,8 +194,6 @@ export default {
           }
         );
       } else {
-        // this.dataSource = [];
-        // this.selectedRowKeys = [];
         this.$get("/business/LantianStore/MapAll", {
           Authentication: token,
           pageSize: 10,
@@ -228,13 +201,14 @@ export default {
         }).then((res) => {
           let pagination = { ...this.pagination };
           pagination.total = res.data.data.total;
-          // this.loading = false;
           this.dataSource = res.data.data.rows;
           this.pagination = pagination;
         });
       }
+      this.selectedRowKeys = [];
       this.loading = false;
     },
+    // 查看门店信息
     showInfoModal(record) {
       this.storeInfoVisible = true;
       this.id = record.id;

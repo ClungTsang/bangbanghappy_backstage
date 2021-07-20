@@ -104,11 +104,10 @@ export default {
       this.fileList[0].url = list[0].carouselimgurl;
       this.ordernum = list[0].ordernum;
       if (list[0].carouselurl) {
-        if(list[0].carouselstatus == 2){
-
+        if (list[0].carouselstatus == 2) {
           this.carouselurl = list[0].carouselurl;
-        }else{
-          this.MTE = JSON.parse(list[0].carouselurl)
+        } else {
+          this.MTE = JSON.parse(list[0].carouselurl);
         }
       }
       console.log(this.fileList);
@@ -169,30 +168,32 @@ export default {
     },
     // 删除图片
     remove(file) {
-      // console.log("remove", file.name);
+      console.log("remove", file);
       // console.log("fileList", this.fileList);
       // debugger;
       let fileList = this.fileList.filter((item) => {
         return item.uid != file.uid;
       });
       //TODO: cos端云删除
-      // this.cos.deleteObject(
-      //   {
-      //     Bucket: this.$config.Bucket,
-      //     Region: this.$config.Region,
-      //     Key: file.name,
-      //   },
-      //   (err, data) => {
-      //     if (err) {
-      //       this.$message.success(err);
-      //       return false;
-      //     }
-      //     if (data) {
-      //       this.$message.success("删除成功");
-      //       return false;
-      //     }
-      //   }
-      // );
+      // let key = file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13);
+      console.log(key);
+      this.cos.deleteObject(
+        {
+          Bucket: this.$config.Bucket,
+          Region: this.$config.Region,
+          Key: file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13),
+        },
+        (data, err) => {
+          if (data) {
+            this.$message.error("删除成功");
+            return false;
+          }
+          if (err) {
+            this.$message.success(err);
+            return false;
+          }
+        }
+      );
       this.fileList = fileList;
       console.log(this.fileList);
       this.$emit("change", fileList);
@@ -260,7 +261,7 @@ export default {
           console.log("未添加任何网址或自定义内容");
         }
         return this.$put("backend/carousel", {
-          id:this.files[0].id,
+          id: this.files[0].id,
           ...params,
         }).then((res) => {
           this.$emit("uploadImage", res.data.data);
