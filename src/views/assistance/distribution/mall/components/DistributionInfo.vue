@@ -117,12 +117,20 @@ export default {
       dataSource: [],
       columns,
       selectedRowKeys: [],
-      pagination: {},
       loading: false,
       id: null,
       changeTarget: 0,
       storeInfoVisible: false,
       changeVisible: false,
+      pagination: {
+        pageSizeOptions: ["10", "20", "30", "40", "100"],
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        showTotal: (total, range) =>
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
+      },
     };
   },
   created() {

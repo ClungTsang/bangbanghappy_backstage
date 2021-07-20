@@ -1,6 +1,12 @@
 <template>
   <div>
-    <a-table :columns="columns" :data-source="dataSource">
+    <a-table
+      :columns="columns"
+      :pagination="pagination"
+      :data-source="dataSource"
+      :loading="loading"
+      @change="handleTableChange"
+    >
       <span slot="action" slot-scope="text, record">
         <a-popconfirm
           title="确定删除该申请"
@@ -93,7 +99,15 @@ export default {
       columns,
       dataSource: [],
 
-      pagination: {},
+      pagination: {
+        pageSizeOptions: ["10", "20", "30", "40", "100"],
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        showTotal: (total, range) =>
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
+      },
       loading: false,
       form: this.$form.createForm(this),
       question: null,

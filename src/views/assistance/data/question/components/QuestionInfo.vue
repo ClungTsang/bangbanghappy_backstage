@@ -1,11 +1,17 @@
 <template>
   <div>
-    <a-table :columns="columns" :data-source="dataSource">
+    <a-table
+      :columns="columns"
+      :data-source="dataSource"
+      :pagination="pagination"
+      :loading="loading"
+      @change="handleTableChange"
+    >
       <span slot="isDelete" slot-scope="text, record">
         <!-- {{text ==0?显示:不显示}} -->
         <a-select
           :default-value="text == 0 ? '显示' : '不显示'"
-          style="width: 80px"
+          style="width: 100px"
           @change="
             (e) => {
               onChange(e, record);
@@ -87,6 +93,16 @@ export default {
     return {
       columns,
       dataSource: [],
+      pagination: {
+        pageSizeOptions: ["10", "20", "30", "40", "100"],
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        showTotal: (total, range) =>
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
+      },
+      loading: false,
       changeVisible: false,
       form: this.$form.createForm(this),
       question: null,
@@ -96,6 +112,7 @@ export default {
     this.getQuestion();
   },
   mounted() {
+    this.fetch();
     event.$on("addCompleted", () => {
       this.dataSource = [];
       this.getQuestion();
@@ -119,8 +136,9 @@ export default {
       let id = this.question.id;
       this.$post("/question/update", { ...value, id: id }).then(() => {
         this.changeVisible = false;
-        this.dataSource = [];
-        this.getQuestion();
+        this.fetch()
+        // this.dataSource = [];
+        // this.getQuestion();
       });
     },
     // 切换显示状态
@@ -135,11 +153,38 @@ export default {
       this.changeVisible = false;
     },
     // 获取所有问题
-    getQuestion() {
-      this.$get("/question").then((res) => {
-        this.dataSource = res.data.data;
+
+    // 分页切换
+    handleTableChange(pagination, filters, sorter) {
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch({
+        pageSize: pagination.pageSize,
+        pageNum: pagination.current,
       });
     },
+    // 网络请求
+    fetch(params = {}) {
+      this.loading = true;
+      // 设定1000个对象，不够后期再加
+      this.$get("/question", {
+        pageSize: 10000,
+        ...params,
+      }).then((res) => {
+        let pagination = { ...this.pagination };
+        // pagination.total = res.data.data.total;
+        this.dataSource = res.data.data;
+        this.loading = false;
+        this.pagination = pagination;
+      });
+    },
+
+    // getQuestion() {
+    //   this.$get("/question").then((res) => {
+    //     this.dataSource = res.data.data;
+    //   });
+    // },
     // 删除问题
     confirmDelete(record) {
       this.$get("/question/delete", { id: record.id }).then(() => {

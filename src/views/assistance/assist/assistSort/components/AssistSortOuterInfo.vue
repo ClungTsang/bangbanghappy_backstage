@@ -4,7 +4,13 @@
       <a-button class="editable-add-btn" @click="handleAddOuter"
         >新增自定义区服务分类</a-button
       >
-      <a-table bordered :data-source="outerDataSource" :columns="columns">
+      <a-table
+        bordered
+        :data-source="outerDataSource"
+        :defaultExpandAllRows="true"
+        :pagination="false"
+        :columns="columns"
+      >
         <template slot="service" slot-scope="text, record">
           <editable-cell
             :text="text"

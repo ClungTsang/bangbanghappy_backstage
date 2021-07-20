@@ -4,7 +4,13 @@
       <a-button class="editable-add-btn" @click="handleAddInner"
         >新增校园社区服务分类</a-button
       >
-      <a-table bordered :data-source="innerDataSource" :columns="columns">
+      <a-table
+        bordered
+        :data-source="innerDataSource"
+        :defaultExpandAllRows="true"
+        :pagination="false"
+        :columns="columns"
+      >
         <template slot="service" slot-scope="text, record">
           <editable-cell
             :text="text"
