@@ -22,5 +22,8 @@
 super收益中心展示 done
 无收益loading结束判定 done
 super隐藏两个页面 done
- bug
- 菜品修改分类成功，数据库没有更改
+用户协议富文本
+bug
+菜品修改分类成功，数据库没有更改
+删除云端cos
+图片回显

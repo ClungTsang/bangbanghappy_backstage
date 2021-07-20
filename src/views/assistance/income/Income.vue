@@ -40,7 +40,7 @@
         <!-- 平台收益流水 -->
         <admin-info></admin-info>
       </div>
-      <div v-else="status">
+      <div v-else>
         <!-- 商家收益流水 -->
         <store-info></store-info>
       </div>
@@ -93,12 +93,13 @@ export default {
   },
   methods: {
     judge() {
-      let user = this.$db.get("USER");
+      // let user = this.$db.get("USER");
+      let roles = this.$db.get("ROLES");
 
-      if (user.roleName == "平台运营者" || user.roleName == "管理员") {
+      if (roles[0] == "平台运营者" || roles[0] == "管理员") {
         this.status = true;
       }
-      console.log(user.roleName);
+      console.log(roles[0]);
     },
     // 超管和平台控制援助抽成
     onOpenAssistModal() {

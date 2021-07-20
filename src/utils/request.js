@@ -102,11 +102,11 @@ const request = {
     })
   },
   put(url, params) {
-    let contentType = (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1 || url.indexOf('business/LantianStore') > -1|| (url.indexOf('backend/carousel') > -1) || url.indexOf('business/LantianDishmanagement') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
+    let contentType = (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1|| (url.indexOf('/backend/notice') > -1) || url.indexOf('business/LantianStore') > -1|| (url.indexOf('backend/carousel') > -1) || url.indexOf('business/LantianDishmanagement') > -1) ? 'application/x-www-form-urlencoded' : 'application/json'
     return FEBS_REQUEST.put(url, params, {
       transformRequest: [(params) => {
         let result = ''
-        if (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1 || (url.indexOf('business/LantianStore') > -1) || url.indexOf('backend/carousel') > -1 || url.indexOf('business/LantianDishmanagement') > -1) {
+        if (url.indexOf('login') > -1 || url.indexOf('avatar') > -1 || url.indexOf('password') > -1 || url.indexOf('password/reset') > -1|| (url.indexOf('/backend/notice') > -1) || (url.indexOf('business/LantianStore') > -1) || url.indexOf('backend/carousel') > -1 || url.indexOf('business/LantianDishmanagement') > -1) {
           Object.keys(params).forEach((key) => {
             if (!Object.is(params[key], undefined) && !Object.is(params[key], null)) {
               result += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'

@@ -21,7 +21,6 @@ export default {
         noticestatus: 1,
         ...params
       }).then((res) => {
-        console.log(res.data.data);
         total = res.data.data.total;
         window.location.href = `https://javabangbanghappy.lanfriend.cn/backend/notice/excel?pageNum=1&pageSize=${total}`;
       });
