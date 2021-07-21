@@ -48,7 +48,7 @@
           :allowClear="true"
           :dropdownStyle="{ maxHeight: '220px', overflow: 'auto' }"
           :treeData="deptTreeData"
-          v-decorator="['deptId']">
+          v-decorator="['deptId',{rules: [{ required: true, message: '请选择部门' }]}]">
         </a-tree-select>
       </a-form-item>
       <a-form-item label='状态' v-bind="formItemLayout">
