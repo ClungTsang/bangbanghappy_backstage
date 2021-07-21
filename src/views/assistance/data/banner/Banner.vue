@@ -58,9 +58,9 @@
           <a>删除</a>
         </a-popconfirm>
         <a-divider type="vertical"></a-divider>
-        <a @click="changeInfoModal(record)">修改</a>
+        <a @click="openChangeModal(record)">修改</a>
         <!-- <a-divider type="vertical"></a-divider>
-        <a @click="changeInfoModal(record)">跳转页面</a> -->
+        <a @click="openChangeModal(record)">跳转页面</a> -->
       </span>
     </a-table>
     <banner-upload-modal
@@ -75,11 +75,7 @@
     <banner-change-modal
       :isVisible="isModalChange"
       :targetId="targetId"
-      @changeIsVisible="
-        () => {
-          this.isModalChange = false;
-        }
-      "
+      @closeChangeModal="closeChangeModal"
       @changeImage="onUploadImage"
     ></banner-change-modal>
   </div>
@@ -207,10 +203,14 @@ export default {
         this.$message.success("删除成功");
       });
     },
-    // 修改轮播图
-    changeInfoModal(record) {
+    // 轮播图modal显示控制
+    openChangeModal(record) {
       this.targetId = record.key;
       this.isModalChange = true;
+    },
+    closeChangeModal() {
+      this.isModalChange = false;
+      this.getBanner();
     },
   },
 };

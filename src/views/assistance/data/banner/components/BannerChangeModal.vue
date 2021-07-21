@@ -5,21 +5,21 @@
       title="填写相关内容"
       :destroyOnClose="true"
       :maskClosable="false"
-      @ok="confirmToUpload"
       :confirm-loading="confirmLoading"
+      @ok="confirmToUpload"
       @cancel="cancelToUpload"
     >
       <banner-change-image
         ref="UploadImage"
         v-on="$listeners"
         :files="files"
+        @uploadImage="uploadImage"
       ></banner-change-image>
     </a-modal>
   </div>
 </template>
 <script>
 import BannerChangeImage from "./BannerChangeImage.vue";
-
 export default {
   data() {
     return {
@@ -53,15 +53,15 @@ export default {
   methods: {
     // 通知父组件关闭modal
     cancelToUpload() {
-      this.$emit("changeIsVisible");
+      this.$emit("closeChangeModal");
     },
     confirmToUpload() {
       // 调用节点方法，上传图片至数据库
       this.$refs.UploadImage.afterUpload();
-      // 关闭modal
-      this.$emit("changeIsVisible");
     },
-    //从子组件中获取腾讯云存储信息
+    uploadImage() {
+      this.$emit("closeChangeModal");
+    },
     //改变上传限制数量
     changeNum(val) {
       this.$refs.UploadImage.changeNum(val);

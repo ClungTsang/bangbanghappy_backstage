@@ -131,34 +131,31 @@ export default {
     },
     // 删除图片
     remove(file) {
-      const that = this;
-
-      // console.log("remove", file.name);
-      // console.log("fileList", this.fileList);
-      console.log(file);
+      console.info("remove", file);
       let fileList = this.fileList.filter((item) => {
         return item.uid != file.uid;
       });
-      //TODO: cos端云删除
-      this.cos.deleteObject(
-        {
-          Bucket: that.$config.Bucket,
-          Region: that.$config.Region,
-          Key: file.name,
-        },
-        (err, data) => {
-          if (err) {
-            this.$message.success(err);
-            return false;
-          }
-          if (data) {
-            this.$message.success("删除成功");
-            return false;
-          }
-        }
-      );
       this.fileList = fileList;
       this.$emit("storeLogoUrl", fileList);
+      return new Promise(() => {
+        this.cos.deleteObject(
+          {
+            Bucket: this.$config.Bucket,
+            Region: this.$config.Region,
+            Key: file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13),
+          },
+          (err, data) => {
+            if (err) {
+              this.$message.error(err);
+              return false;
+            }
+            if (data) {
+              this.$message.success("删除成功");
+            }
+          }
+        );
+      });
+
     },
     // 上传文件 返回腾讯云信息，通过事件将存储信息返回到父组件
     handleUpload(info) {

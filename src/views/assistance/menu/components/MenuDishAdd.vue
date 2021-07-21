@@ -67,13 +67,15 @@
       :visible="priceNoticeVisible"
       @ok="priceNoticeOk"
       @cancel="priceNoticeOk"
-      :width=240
+      :width="240"
     >
       <p>会员价格不能超过商品价格</p>
     </a-modal>
   </div>
 </template>
 <script>
+import COS from "cos-js-sdk-v5";
+
 import MenuDishUpload from "./MenuDishUpload.vue";
 import { mapState } from "vuex";
 import event from "@/utils/event";
@@ -90,7 +92,7 @@ export default {
       },
       items: [],
       // 菜品照片
-      dishUrl: "",
+      dishurl: "",
       // 会员价格限制弹窗
       priceNoticeVisible: false,
     };
@@ -117,13 +119,13 @@ export default {
 
       this.getMenuCategoryInfo();
     });
-    event.$on("dishUrl", (res) => {
+    event.$on("dishurl", (res) => {
       let list = [];
       res.forEach((item) => {
         list.push(item.url);
       });
-      // console.log(1, list);
-      this.dishUrl = JSON.stringify(list);
+      console.log(1, list);
+      this.dishurl = JSON.stringify(list);
     });
     event.$on("addUserInfoDone", () => {
       console.log("mounted:addUserInfoDone");
@@ -161,14 +163,14 @@ export default {
           return;
         }
         if (parseFloat(value.memberprice) > parseFloat(value.dishprice)) {
-          this.priceNoticeVisible = true
+          this.priceNoticeVisible = true;
           return;
         }
         this.setMenuFields();
         let params = this.menu;
         this.$post("/backend/business/LantianDishmanagement", {
           ...params,
-          dishurl: this.dishUrl,
+          dishurl: this.dishurl,
           storeid: this.category.item.storeid,
           dishclassificationid: this.category.item.id,
           dishclassificationname: this.category.item.text,
@@ -181,19 +183,55 @@ export default {
       });
     },
     // 取消回调
-    handleCancel() {
-      // this.$message.error("取消增加");
-      //TODO:取消新增菜品 则要清除cos的图片
-      // this.$refs.UploadImage.remove();
-
+    async handleCancel() {
       this.$emit("cancel");
       this.form.resetFields();
+      // if (typeof this.dishurl !== "undefined") {
+      //   console.log("remove", this.dishurl);
+      //   this.$emit("cancel");
+      //   this.form.resetFields();
+      //   // 获取随机key和id
+      //   let res = await this.$get("backend/TemKeyAndID");
+      //   // 初始化cos
+      //   const cos = new COS({
+      //     getAuthorization: (options, callback) => {
+      //       const result = JSON.parse(res.data.data);
+      //       callback({
+      //         TmpSecretId: result.credentials.tmpSecretId,
+      //         TmpSecretKey: result.credentials.tmpSecretKey,
+      //         XCosSecurityToken: result.credentials.sessionToken,
+      //         ExpiredTime: result.expiredTime,
+      //       });
+      //     },
+      //   });
+
+      // return new Promise(() => {
+      //   cos.deleteObject(
+      //     {
+      //       Bucket: this.$config.Bucket,
+      //       Region: this.$config.Region,
+      //       Key: this.dishurl.substr(
+      //         this.dishurl.lastIndexOf("myqcloud.com/") + 13
+      //       ),
+      //     },
+      //     (err, data) => {
+      //       if (err) {
+      //         console.error(err);
+      //         return false;
+      //       }
+      //       if (data) {
+      //         console.info("取消新增图片，自动清除cos对象信息");
+      //       }
+      //     }
+      //   );
+      // });
+      // }
     },
     // 上传图片到后台数据库
-    uploadImage() {
-      // 调用节点方法，上传图片至数据库
-      this.$refs.UploadImage.afterUpload();
-    },
+    // uploadImage() {
+    // 调用节点方法，上传图片至数据库
+    // this.$refs.UploadImage.afterUpload();
+    // },
     // 获取表单内容
     setMenuFields() {
       let values = this.form.getFieldsValue([

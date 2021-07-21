@@ -7,10 +7,10 @@
       listType="picture-card"
       :fileList="fileList"
       :multiple="false"
-      @preview="handlePreview"
       :remove="remove"
       :beforeUpload="beforeUpload"
       :customRequest="handleUpload"
+      @preview="handlePreview"
     >
       <div v-if="fileList.length < maxNum">
         <a-icon type="plus" />
@@ -198,40 +198,34 @@ export default {
     // 删除图片
     remove(file) {
       console.log("remove", file);
-      // console.log("fileList", this.fileList);
-      // debugger;
       let fileList = this.fileList.filter((item) => {
         return item.uid != file.uid;
       });
-      //TODO: cos端云删除
-      // let key = file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13);
-      console.log(key);
-      this.cos.deleteObject(
-        {
-          Bucket: this.$config.Bucket,
-          Region: this.$config.Region,
-          Key: file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13),
-        },
-        (data, err) => {
-          if (data) {
-            this.$message.error("删除成功");
-            return false;
-          }
-          if (err) {
-            this.$message.success(err);
-            return false;
-          }
-        }
-      );
       this.fileList = fileList;
       console.log(this.fileList);
-      this.$emit("change", fileList);
+      return new Promise(() => {
+        this.cos.deleteObject(
+          {
+            Bucket: this.$config.Bucket,
+            Region: this.$config.Region,
+            Key: file.url.substr(file.url.lastIndexOf("myqcloud.com/") + 13),
+          },
+          (err, data) => {
+            if (err) {
+              this.$message.error(err);
+              return false;
+            }
+            if (data) {
+              this.$message.success("删除成功");
+            }
+          }
+        );
+      });
     },
     // 上传文件 返回腾讯云信息，通过事件将存储信息返回到父组件
     handleUpload(info) {
       const that = this;
       const { file } = info;
-      // console.log("file", file);
       const uid = uuid();
       // const extName = that.getExtName(file.name);
       const fileName = file.name;
@@ -251,9 +245,7 @@ export default {
               description: err.Message,
             });
           } else {
-            // console.log(data);
             // 图片上传至腾讯cos云 返回图片地址
-            // that.carouselimgurl = `http://${data["Location"]}`;
             that.fileList.push({
               uid,
               name: file.name,
@@ -261,9 +253,7 @@ export default {
               url: `http://${data["Location"]}`,
             });
             // 调用父组件方法，并传递参数
-            console.log(that.fileList);
-
-            event.$emit("change", that.fileList);
+            console.info(that.fileList);
           }
         }
       );
@@ -287,18 +277,13 @@ export default {
           params["carouselurl"] = JSON.stringify(this.MTE);
           params["carouselstatus"] = 3;
         } else {
-          console.log("未添加任何网址或自定义内容");
+          console.error("未添加任何网址或自定义内容");
         }
         return this.$put("backend/carousel", {
           id: this.files[0].id,
           ...params,
         }).then((res) => {
           this.$emit("uploadImage", res.data.data);
-          // this.previewImage = "";
-          // this.ordernum = 0;
-          // this.carouselimgurl = "";
-          // this.carouselstatus = 0;
-          // this.carouselurl = "";
           this.$message.success("更新轮播图成功");
         });
       } else {

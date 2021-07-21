@@ -53,12 +53,6 @@ export default {
     changeNum(val) {
       this.$refs.UploadImage.changeNum(val);
     },
-    // 获取图片本地url
-    // getBase64(img, callback) {
-    //   const reader = new FileReader();
-    //   reader.addEventListener("load", () => callback(reader.result));
-    //   reader.readAsDataURL(img);
-    // },
   },
 };
 </script>
