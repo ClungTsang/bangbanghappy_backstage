@@ -217,25 +217,7 @@ export default {
         }
       );
     },
-    // 父组件后置上传
-    // 轮播图地址上传至后台数据库服务器
-    // afterUpload() {
-    //   let params = {
-    //     carouselimgurl: this.bannerUrl,
-    //     carouselstatus: 0,
-    //     ordernum: this.rank.number,
-    //   };
-    //   return this.$post("backend/carousel", {
-    //     ...params,
-    //   }).then((res) => {
-    //     this.$emit("uploadImage", res.data.data);
-    //     this.previewImage = "";
-    //     this.rank.number = 0;
-    //   });
-    // },
-    /**
-     * 获取后缀名
-     */
+    // 获取后缀名
     getExtName(fileName) {
       const index = fileName.lastIndexOf(".");
       if (index > -1) {
