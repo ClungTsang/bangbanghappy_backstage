@@ -26,7 +26,7 @@
         }}
         <a-divider type="vertical"></a-divider>
         <!-- 超级管理作弊快捷切换 -->
-        <a-select
+        <!-- <a-select
           v-hasPermission="['order:change']"
           style="width: 100px"
           default-value="快速切换"
@@ -43,7 +43,7 @@
           <a-select-option value="5">已完成</a-select-option>
           <a-select-option value="6">已取消</a-select-option>
           <a-select-option value="7">已关闭</a-select-option>
-        </a-select>
+        </a-select> -->
       </span>
       <!-- 操作控制 -->
       <span slot="action" slot-scope="text, record">

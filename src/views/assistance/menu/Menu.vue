@@ -13,7 +13,6 @@
         <a-col style="margin-left: 10px">
           <menu-category-change></menu-category-change>
         </a-col>
-
       </a-row>
       <menu-add
         :addVisible="menuAddVisible"
@@ -26,6 +25,7 @@
   </a-card>
 </template>
 <script>
+import { mapMutations } from "vuex";
 import MenuAdd from "./components/MenuDishAdd.vue";
 import MenuCategoryAdd from "./components/MenuCategoryAdd.vue";
 import MenuCategoryChange from "./components/MenuCategoryChange.vue";
@@ -44,7 +44,23 @@ export default {
       menuAddVisible: false,
     };
   },
+
+  created() {
+    this.getStoreInfo();
+  },
   methods: {
+    ...mapMutations({
+      setUserInfo: "account/setUserInfo",
+    }),
+    // 获取当前我的门店信息
+    async getStoreInfo() {
+      const user = this.$db.get("USER");
+      let res = await this.$get(
+        `/business/LantianStore/getByPhone/${user.username}`
+      );
+      // console.log(res.data.data);
+      this.setUserInfo(res.data.data);
+    },
     onCancel() {
       this.menuAddVisible = false;
     },

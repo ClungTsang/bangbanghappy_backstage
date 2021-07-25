@@ -42,10 +42,6 @@ export default {
       required: false,
       default: () => [],
     },
-    sort: {
-      type: Boolean,
-      default: true,
-    },
   },
   data() {
     return {
@@ -60,11 +56,6 @@ export default {
       },
       bannerUrl: "",
     };
-  },
-  computed: {
-    isShow() {
-      return this.sort;
-    },
   },
   watch: {
     files: {
@@ -212,7 +203,7 @@ export default {
               url: `http://${data["Location"]}`,
             });
             // 调用父组件方法，并传递参数
-            event.$emit("dishUrl", that.fileList);
+            this.$emit("getUploadImg", that.fileList);
           }
         }
       );

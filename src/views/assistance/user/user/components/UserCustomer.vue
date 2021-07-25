@@ -160,14 +160,13 @@ export default {
     fetch(params = {}) {
       this.loading = true;
       this.$get("/wechatcustomer/list", {
-        pageSize: 10,
         ...params,
       }).then((res) => {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
         this.dataSource = res.data.data.rows;
-        this.loading = false;
         this.pagination = pagination;
+        this.loading = false;
       });
     },
     // 切换交押金状态

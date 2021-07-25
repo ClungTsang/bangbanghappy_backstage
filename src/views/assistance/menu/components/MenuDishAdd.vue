@@ -24,7 +24,7 @@
             ]"
           />
         </a-form-item>
-        <a-form-item label="商品价格">
+        <a-form-item label="商品价格（元）">
           <a-input-number
             :min="1"
             v-decorator="[
@@ -33,7 +33,7 @@
             ]"
           />
         </a-form-item>
-        <a-form-item label="会员价格">
+        <a-form-item label="会员价格（元）">
           <a-input-number
             :min="1"
             v-decorator="[
@@ -42,11 +42,13 @@
             ]"
           />
         </a-form-item>
-        <a-form-item label="限购数量">
+        <a-form-item label="限购数量（个）">
           <a-input-number :min="1" v-decorator="['purchaselimit']" />
         </a-form-item>
         <a-form-item label="添加菜品图片">
-          <menu-dish-upload>上传菜品图片</menu-dish-upload>
+          <menu-dish-upload @getUploadImg="getUploadImg"
+            >上传菜品图片</menu-dish-upload
+          >
         </a-form-item>
         <a-form-item label="分类选择" style="margin-bottom: 2rem">
           <a-radio-group button-style="solid" v-model="category.item">
@@ -119,14 +121,6 @@ export default {
 
       this.getMenuCategoryInfo();
     });
-    event.$on("dishurl", (res) => {
-      let list = [];
-      res.forEach((item) => {
-        list.push(item.url);
-      });
-      console.log(1, list);
-      this.dishurl = JSON.stringify(list);
-    });
     event.$on("addUserInfoDone", () => {
       console.log("mounted:addUserInfoDone");
       this.getMenuCategoryInfo();
@@ -181,6 +175,14 @@ export default {
           this.form.resetFields();
         });
       });
+    },
+    getUploadImg(payload) {
+      let list = [];
+      payload.forEach((item) => {
+        list.push(item.url);
+      });
+      console.log(1, list);
+      this.dishurl = JSON.stringify(list);
     },
     // 取消回调
     async handleCancel() {

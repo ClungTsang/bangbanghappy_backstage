@@ -4,7 +4,7 @@
     <a-button
       @click="
         () => {
-          this.isModalShow = true;
+          isModalShow = true;
         }
       "
       type="primary"
@@ -16,7 +16,7 @@
     <a-button
       @click="
         () => {
-          this.deleteVisible = true;
+          deleteVisible = true;
         }
       "
       v-hasPermission="['banner:delete']"
@@ -28,7 +28,7 @@
       @ok="onBatchDelete"
       @cancel="
         () => {
-          this.deleteVisible = false;
+          deleteVisible = false;
         }
       "
     >
@@ -67,7 +67,7 @@
       :isVisible="isModalShow"
       @uploadIsVisible="
         () => {
-          this.isModalShow = false;
+          isModalShow = false;
         }
       "
       @uploadImage="onUploadImage"
@@ -75,8 +75,8 @@
     <banner-change-modal
       :isVisible="isModalChange"
       :targetId="targetId"
-      @closeChangeModal="closeChangeModal"
-      @changeImage="onUploadImage"
+      @closeChangeModal="() => (isModalChange = false)"
+      @changeImage="closeChangeModal"
     ></banner-change-modal>
   </div>
 </template>
@@ -184,10 +184,14 @@ export default {
     // 单选多选删除
     onBatchDelete() {
       this.selectedRowKeys.forEach((id) => {
-        this.$delete("backend/carousel", { id: id }).then(() => {
-          let dataSource = [...this.dataSource];
-          this.dataSource = dataSource.filter((item) => item.key !== id);
+        let dataSource = this.dataSource.filter((item) => {
+          return item.key !== id;
         });
+        this.dataSource = dataSource;
+      });
+
+      this.selectedRowKeys.forEach((id) => {
+        this.$delete("backend/carousel", { id: id });
       });
       this.selectedRowKeys = [];
       this.deleteVisible = false;
@@ -210,7 +214,9 @@ export default {
     },
     closeChangeModal() {
       this.isModalChange = false;
-      this.getBanner();
+      setTimeout(() => {
+        this.getBanner();
+      }, 1000);
     },
   },
 };

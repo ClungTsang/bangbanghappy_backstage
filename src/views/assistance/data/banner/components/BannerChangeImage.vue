@@ -31,31 +31,27 @@
     </div>
     <a-form>
       <a-form-item>
-        <a-radio-group
-          @change="radioChange"
-          v-decorator="[
-            'modifier',
-            {
-              initialValue: '0',
-            },
-          ]"
-        >
-          <a-radio value="0">url地址跳转</a-radio>
-          <a-radio value="1">富文本跳转</a-radio>
+        <a-radio-group @change="radioChange" v-model="carouselstatus">
+          <a-radio :value="0">不跳转</a-radio>
+          <!-- <a-radio :value="1">商户</a-radio> -->
+          <a-radio :value="2">跳转到指定网址</a-radio>
+          <a-radio :value="3">跳转自定义内容</a-radio>
         </a-radio-group>
       </a-form-item>
     </a-form>
 
-    <div style="margin-top: 10px" v-if="jumpWay == 0">
+    <div style="margin-top: 10px" v-if="jumpWay == 0"></div>
+    <!-- <div style="margin-top: 10px" v-if="jumpWay == 1"></div> -->
+    <div style="margin-top: 10px" v-else-if="jumpWay == 2">
       <a-form>
-        <a-form-item label="url地址">
+        <a-form-item label="跳转到指定网址">
           <a-input v-model="carouselurl" />
         </a-form-item>
       </a-form>
     </div>
-    <div style="margin-top: 10px" v-else-if="jumpWay == 1">
+    <div style="margin-top: 10px" v-else-if="jumpWay == 3">
       <a-form>
-        <a-form-item label="富文本内容">
+        <a-form-item label="跳转自定义内容">
           <editor-bar
             v-model="MTE"
             :isClear="isClear"
@@ -121,6 +117,8 @@ export default {
       MTE: "",
       // 跳转方式
       jumpWay: 0,
+      // 选择跳转方式
+      // radioValue: 0,
     };
   },
   watch: {
@@ -129,13 +127,32 @@ export default {
       this.fileList[0].uid = list[0].id;
       this.fileList[0].url = list[0].carouselimgurl;
       this.ordernum = list[0].ordernum;
-      if (list[0].carouselurl) {
-        if (list[0].carouselstatus == 2) {
+      this.carouselstatus = parseInt(list[0].carouselstatus);
+      this.jumpWay = parseInt(list[0].carouselstatus);
+
+      switch (this.carouselstatus) {
+        case 0:
+          this.carouselurl = "";
+          break;
+        case 1:
           this.carouselurl = list[0].carouselurl;
-        } else {
+          break;
+        case 2:
+          this.carouselurl = list[0].carouselurl;
+          break;
+        case 3:
           this.MTE = JSON.parse(list[0].carouselurl);
-        }
+          break;
+        default:
+          this.carouselurl = "";
       }
+      // if (list[0].carouselurl) {
+      //   if (list[0].carouselstatus == 2) {
+      //     this.carouselurl = list[0].carouselurl;
+      //   } else {
+      //     this.MTE = JSON.parse(list[0].carouselurl);
+      //   }
+      // }
       console.log(this.fileList);
     },
   },
@@ -263,24 +280,30 @@ export default {
     afterUpload() {
       if (this.fileList.length > 0) {
         let params = {
+          id: this.files[0].id,
           carouselimgurl: this.fileList[0].url,
-          carouselstatus: this.carouselstatus,
+          carouselstatus: this.jumpWay,
           ordernum: this.ordernum,
         };
-        // 图片跳转地址
-        if (this.carouselurl != "") {
-          params["carouselurl"] = this.carouselurl;
-          params["carouselstatus"] = 2;
-        }
-        // 自定义跳转内容
-        else if (this.MTE != "") {
-          params["carouselurl"] = JSON.stringify(this.MTE);
-          params["carouselstatus"] = 3;
-        } else {
-          console.error("未添加任何网址或自定义内容");
+        switch (this.jumpWay) {
+          case 0:
+            delete params["carouselurl"];
+            break;
+          case 1:
+            params["carouselurl"] = this.carouselurl;
+            break;
+          case 2:
+            params["carouselurl"] = this.carouselurl;
+            break;
+          case 3:
+            params["carouselurl"] = JSON.stringify(this.MTE);
+            break;
+          default:
+            delete params["carouselurl"];
+            console.warn("未添加任何网址或自定义内容");
+            break;
         }
         return this.$put("backend/carousel", {
-          id: this.files[0].id,
           ...params,
         }).then((res) => {
           this.$emit("uploadImage", res.data.data);

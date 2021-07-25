@@ -36,6 +36,7 @@
 </template>
 <script>
 import event from "@/utils/event";
+import { mapState } from "vuex";
 
 export default {
   data() {
@@ -53,14 +54,17 @@ export default {
       type: Boolean,
       default: false,
     },
-    storeId: {
-      type: Number,
-    },
   },
   computed: {
     visible() {
       return this.addVisible;
     },
+    ...mapState({
+      storeInfo: (state) => state.account.storeInfo,
+    }),
+  },
+  created() {
+    this.getStoreInfo();
   },
   methods: {
     handleOk() {
@@ -80,13 +84,14 @@ export default {
     handleCancel() {
       this.$emit("cancel");
     },
+
     onAddMenu(menuInfo) {
       // console.log(menuInfo);
       // 获取当前用户信息
       // const user = this.$db.get("USER");
       const params = {
         // id: user.userId,
-        storeid: this.storeId,
+        storeid: this.storeInfo.id,
         text: menuInfo.text,
       };
       this.$post("backend/business/LantianDishesclassificationtable", {
