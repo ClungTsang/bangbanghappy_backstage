@@ -37,12 +37,12 @@
 
       <!-- 根据当前用户渲染不同收益情况 -->
       <div v-if="status">
-        <!-- 平台收益流水 -->
-        <admin-info></admin-info>
-      </div>
-      <div v-else>
         <!-- 商家收益流水 -->
         <store-info></store-info>
+      </div>
+      <div v-else>
+        <!-- 平台收益流水 -->
+        <admin-info></admin-info>
       </div>
     </div>
     <!-- 查看商家收益情况 -->
@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       // 判断用户角色
-      status: false,
+      status: true,
       // 控制援助抽成信息展示
       assistVisible: false,
       // 控制商家收益信息展示
@@ -88,18 +88,16 @@ export default {
     StoreInfoModal,
     AdminInfoModal,
   },
-  mounted() {
+  created() {
     this.judge();
   },
   methods: {
     judge() {
-      // let user = this.$db.get("USER");
       let roles = this.$db.get("ROLES");
-
-      if (roles[0] == "平台运营者" || roles[0] == "管理员") {
-        this.status = true;
+      console.info(roles);
+      if (roles[0] == "平台运营员" || roles[0] == "管理员") {
+        this.status = false;
       }
-      console.log(roles[0]);
     },
     // 超管和平台控制援助抽成
     onOpenAssistModal() {
