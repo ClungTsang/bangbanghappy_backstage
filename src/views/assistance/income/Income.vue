@@ -78,7 +78,7 @@ export default {
       // 控制商家收益信息展示
       storeIncomeVisible: false,
       // 控制超管和平台收益信息展示
-      adminIncomeVisible: false,
+      adminIncomeVisible: false
     };
   },
   components: {
@@ -86,7 +86,7 @@ export default {
     StoreInfo,
     AdminInfo,
     StoreInfoModal,
-    AdminInfoModal,
+    AdminInfoModal
   },
   created() {
     this.judge();
@@ -95,7 +95,11 @@ export default {
     judge() {
       let roles = this.$db.get("ROLES");
       console.info(roles);
-      if (roles[0] == "平台运营员" || roles[0] == "管理员") {
+      if (
+        roles[0] == "平台运营员" ||
+        roles[0] == "管理员" ||
+        roles[0] == "开发人员"
+      ) {
         this.status = false;
       }
     },
@@ -119,9 +123,8 @@ export default {
     },
     openStoreIncomeVisible() {
       this.storeIncomeVisible = true;
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

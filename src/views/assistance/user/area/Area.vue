@@ -1,6 +1,5 @@
 <template>
-
-<a-card :bordered="false">
+  <a-card :bordered="false">
     <div :class="advanced ? 'search' : null">
       <!-- 搜索区域 -->
       <a-form>
@@ -18,13 +17,12 @@
               <a-space>
                 <a-button type="primary" @click="search">查询</a-button>
 
+                <a-button type="primary" @click="() => (areaAddVisible = true)"
+                  >新增区域代理</a-button
+                >
                 <a-button style="margin-left: 3px" @click="reset"
                   >重置</a-button
                 >
-                <!-- 升级会员金额 -->
-    <a-button type="danger" ghost @click="openVipPriceModal"
-      >调整升级会员所需金额</a-button
-    >
                 <!-- <a-dropdown>
                   <a-menu slot="overlay">
                     <a-menu-item key="export-data" @click="exportExcel"
@@ -74,61 +72,54 @@
         }"
         @change="handleTableChange"
       >
-        <span slot="headimgurl" slot-scope="text, record">
-          <img style="width: 60px; heigth: 60px" :src="record.headimgurl" />
-        </span>
-         <span slot="viplevel" slot-scope="text, record">
-           {{text == 0 ? '非会员' : '会员'}}
-          </a-select>
-        </span>
-        <span slot="wechatcustomerStatus" slot-scope="text, record">
-          <a-select
-            :defaultValue="text == 0 ? '不限制' : '限制'"
-            style="width: 100px"
-            @change="
-              (e) => {
-                onChangeStatus(e, record);
-              }
-            "
-          >
-            <a-select-option value="0">不限制</a-select-option>
-            <a-select-option value="1">限制</a-select-option>
-          </a-select>
-        </span>
-
-        <span slot="needdeposit" slot-scope="text, record">
-          <a-select
-            :defaultValue="text == 1 ? '需要' : '不需要'"
-            style="width: 100px"
-            @change="
-              (e) => {
-                onChangeMoney(e, record);
-              }
-            "
-          >
-            <a-select-option value="1">需要</a-select-option>
-            <a-select-option value="0">不需要</a-select-option>
-          </a-select>
-        </span>
+        <!-- 半径  -->
+        <span slot="radius" slot-scope="text, record"> {{ text }}米 </span>
+        <!-- 操作 -->
         <span slot="action" slot-scope="text, record">
-        <a-popconfirm
-          title="确定删除该用户"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="confirmDelete(record)"
-        >
-          <a>删除用户</a>
-        </a-popconfirm>
-      </span>
+          <a-button
+            type="primary"
+            @click="
+              () => {
+                areaVisible = true;
+                targetAreaId = record.id;
+              }
+            "
+          >
+            编辑
+          </a-button>
+          <a-popconfirm
+            title="确认删除该代理区域"
+            @confirm="deleteArea(record)"
+          >
+            <a-button type="danger">删除代理区域</a-button>
+          </a-popconfirm>
+        </span>
       </a-table>
     </div>
-    <vip-price-modal
-      :vipPriceVisible="vipPriceVisible"
-      @close="closeVipPriceModal"
-    ></vip-price-modal>
+    <!-- 编辑代理区域 -->
+    <area-setting-modal
+      :areaVisible="areaVisible"
+      :targetAreaId="targetAreaId"
+      @close="() => (areaVisible = false)"
+      @changeDone="
+        () => {
+          fetch();
+          areaVisible = false;
+        }
+      "
+    ></area-setting-modal>
+    <!-- 新增代理区域 -->
+    <area-add-modal
+      :areaAddVisible="areaAddVisible"
+      @addDone="
+        () => {
+          fetch();
+          areaAddVisible = false;
+        }
+      "
+      @close="() => (areaAddVisible = false)"
+    ></area-add-modal>
   </a-card>
-
-
 </template>
 <script>
 const areaTree = [
@@ -137,77 +128,46 @@ const areaTree = [
 ];
 const columns = [
   {
-    title: "头像",
-    dataIndex: "headimgurl",
-    scopedSlots: { customRender: "headimgurl" },
+    title: "id",
+    dataIndex: "id",
+    width: 50,
+    align: "center",
+    ellipsis: true
+  },
+  {
+    title: "代理区域名称描述",
+    width: 300,
+    dataIndex: "agentinformationdescription",
+    align: "center",
+    ellipsis: true
+  },
+  {
+    title: "半径",
     width: 100,
+    dataIndex: "radius",
     align: "center",
+    scopedSlots: { customRender: "radius" }
   },
   {
-    title: "用户姓名",
-    dataIndex: "realname",
-    width: 150,
+    title: "创建时间",
+    width: 130,
+    dataIndex: "createtime",
     align: "center",
-  },
-  {
-    title: "用户昵称",
-    dataIndex: "customername",
-    width: 150,
-    align: "center",
-  },
-  {
-    title: "性别",
-    dataIndex: "sex",
-    width: 100,
-    align: "center",
-  },
-  {
-    title: "电话号码",
-    dataIndex: "phonenum",
-    width: 200,
-    align: "center",
-  },
-  {
-    title: "会员等级",
-    dataIndex: "viplevel",
-    width: 100,
-    align: "center",
-    scopedSlots: { customRender: "viplevel" },
-  },
-  {
-    title: "更新时间",
-    dataIndex: "updatetime",
-    width: 200,
-    align: "center",
-  },
-  {
-    title: "是否限制援助他人",
-    dataIndex: "wechatcustomerStatus",
-    align: "center",
-    width: 150,
-    scopedSlots: { customRender: "wechatcustomerStatus" },
-  },
-  {
-    title: "是否需要交押金",
-    dataIndex: "needdeposit",
-    align: "center",
-    width: 150,
-    scopedSlots: { customRender: "needdeposit" },
+    ellipsis: true
   },
   {
     title: "操作",
-    width: 100,
+    width: 200,
     dataIndex: "action",
     align: "center",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
-import VipPriceModal from './components/VipPriceModal.vue';
+import AreaSettingModal from "./components/AreaSettingModal.vue";
+import AreaAddModal from "./components/AreaAddModal.vue";
 import DefaultInputTree from "~/tool/DefaultInputTree.vue";
 export default {
-  components:{
-    DefaultInputTree,VipPriceModal
-  },
+  components: { AreaSettingModal, AreaAddModal, DefaultInputTree },
   data() {
     return {
       dataSource: [],
@@ -228,10 +188,11 @@ export default {
         showTotal: (total, range) =>
           `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      areaTree,
-      vipPriceVisible: false,
-
-
+      areaVisible: false,
+      areaAddVisible: false,
+      targetAreaId: 0,
+      // 筛选
+      areaTree
     };
   },
   mounted() {
@@ -243,7 +204,7 @@ export default {
       console.info("选择了: ", selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
     },
-     // 展开更多筛选
+    // 展开更多筛选
     // toggleAdvanced() {
     //   this.advanced = !this.advanced;
     // },
@@ -254,6 +215,7 @@ export default {
         delete this.queryParams["isattributes"];
       }
     },
+    // 筛查推荐方式
     // 重置筛选条件
     reset() {
       // 取消选中
@@ -297,7 +259,7 @@ export default {
       this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize;
       params.pageSize = this.pagination.defaultPageSize;
       params.pageNum = this.pagination.defaultCurrent;
-      this.$get("/wechatcustomer/list", {
+      this.$get("/agentInformation/list", {
         ...params
       }).then(res => {
         const pagination = { ...this.pagination };
@@ -323,7 +285,7 @@ export default {
     // 网络请求
     fetch(params = {}) {
       this.loading = true;
- if (this.paginationInfo) {
+      if (this.paginationInfo) {
         // 如果分页信息不为空，则设置表格当前第几页，每页条数，并设置查询分页参数
         this.$refs.TableInfo.pagination.current = this.paginationInfo.current;
         this.$refs.TableInfo.pagination.pageSize = this.paginationInfo.pageSize;
@@ -335,61 +297,35 @@ export default {
         params.pageNum = this.pagination.defaultCurrent;
       }
 
-      this.$get("/wechatcustomer/list", {
-        ...params,
-      }).then((res) => {
+      this.$get("/agentInformation/list", {
+        ...params
+      }).then(res => {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
         this.dataSource = res.data.data.rows;
-        this.pagination = pagination;
         this.loading = false;
       });
     },
-    // 导表
-exportExcel() {
+    //TODO: 接口未完善导出excel表
+    exportExcel() {
       const params = {
         pageNum: 1,
         pageSize: 10
       };
-      this.$get("/wechatcustomer/excel", { ...params }).then(res => {
+      this.$get("/agentInformation/excel", { ...params }).then(res => {
         const total = res.data.data.total;
-        window.location.href = `https://javabangbanghappy.lanfriend.cn/wechatcustomer/excel?pageNum=1&pageSize=${total}`;
+        window.location.href = `https://javabangbanghappy.lanfriend.cn/agentInformation/excel?pageNum=1&pageSize=${total}`;
       });
     },
-    // 切换交押金状态
-    onChangeMoney(e, record) {
-      console.log(e, record);
-      const params = { needdeposit: e, id: record.id };
-      this.$post("/wechatcustomer/update", { ...params }).then(() => {
-        this.$message.success("切换成功");
+    // 删除代理区域
+    deleteArea(record) {
+      let dataSource = this.dataSource.filter(item => {
+        return item.id !== record.id;
       });
-    },
-    // 切换用户援助状态
-    onChangeStatus(e, record) {
-      console.log(e, record);
-      const params = { wechatcustomerStatus: e, id: record.id };
-      this.$post("/wechatcustomer/update", { ...params }).then(() => {
-        this.$message.success("切换成功");
-      });
-    },
-    // 删除用户
-    // 删除问题
-    confirmDelete(record) {
-      this.$get("/wechatcustomer/delete", { id: record.id }).then(() => {
-        let dataSource = this.dataSource.filter((item) => {
-          return item.id !== record.id;
-        });
-        this.$message.success("删除用户成功");
-        this.dataSource = dataSource;
-      });
-    },
-    // 调整会员费用
-    openVipPriceModal() {
-      this.vipPriceVisible = true;
-    },
-    closeVipPriceModal() {
-      this.vipPriceVisible = false;
-    },
-  },
+      this.dataSource = dataSource;
+      this.$message.success("删除成功");
+      this.$get("/agentInformation/deletebyID", { id: record.id });
+    }
+  }
 };
 </script>
