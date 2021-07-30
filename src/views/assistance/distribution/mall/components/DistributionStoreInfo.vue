@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-modal :visible="visible" :width="800" title="该门店详细信息" @ok="handleOk" @cancel="handleCancel">
+    <a-modal :visible="visible" :width="900" title="该门店详细信息" @ok="handleOk" @cancel="handleCancel">
     <a-descriptions title="我的门店" bordered>
     <a-descriptions-item label="门店名称">
       <!-- <a-input defaultValue="内容" v-model="storeInfo.companyname"></a-input> -->
@@ -23,6 +23,9 @@
     </a-descriptions-item>
     <a-descriptions-item label="结束营业">
       {{storeInfo.closinghours}}
+    </a-descriptions-item>
+    <a-descriptions-item label="安全秘钥" :span="3">
+      {{storeInfo.pwdkey}}
     </a-descriptions-item>
 <a-descriptions-item label="公告内容" :span="3">
       {{storeInfo.detailedintroduction}}

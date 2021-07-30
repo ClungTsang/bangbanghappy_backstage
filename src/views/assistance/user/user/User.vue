@@ -9,12 +9,28 @@
             <a-col :span="4">
               <a-form-item :wrapperCol="{ span: 20 }">
                 <a-input
-                  placeholder="代理区域名称"
-                  v-model="queryParams.agentinformationdescription"
+                  placeholder="用户姓名"
+                  v-model="queryParams.realname"
                 />
               </a-form-item>
             </a-col>
-            <a-col :span="8">
+            <a-col :span="4">
+              <a-form-item :wrapperCol="{ span: 20 }">
+                <a-input
+                  placeholder="用户昵称"
+                  v-model="queryParams.customername"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="4">
+              <a-form-item :wrapperCol="{ span: 20 }">
+                <a-input
+                  placeholder="用户联系方式"
+                  v-model="queryParams.phonenum"
+                />
+              </a-form-item>
+            </a-col>
+            <a-col :span="10">
               <a-space>
                 <a-button type="primary" @click="search">查询</a-button>
 
@@ -22,9 +38,9 @@
                   >重置</a-button
                 >
                 <!-- 升级会员金额 -->
-    <a-button type="danger" ghost @click="openVipPriceModal"
-      >调整升级会员所需金额</a-button
-    >
+    <a-button type="danger" ghost @click="openVipPriceModal">
+      调整升级会员所需金额
+      </a-button>
                 <!-- <a-dropdown>
                   <a-menu slot="overlay">
                     <a-menu-item key="export-data" @click="exportExcel"
@@ -36,28 +52,38 @@
                     <a-icon type="down" />
                   </a-button>
                 </a-dropdown> -->
-                <!-- <a @click="toggleAdvanced">
+                <a @click="toggleAdvanced">
                   {{ advanced ? "收起" : "展开" }}
                   <a-icon :type="advanced ? 'up' : 'down'" />
-                </a> -->
+                </a>
               </a-space>
             </a-col>
           </div>
         </a-row>
-        <!-- <a-row>
+        <a-row>
           <template v-if="advanced">
             <a-col :span="4">
               <a-form-item :wrapperCol="{ span: 20 }">
                 <default-input-tree
-                  @change="handleAreaChange"
-                  ref="areaTree"
-                  :treePlaceholder="'候补'"
-                  :treeData="areaTree"
+                  @change="wechatcustomerstatusChange"
+                  ref="wechatcustomerstatusTree"
+                  :treePlaceholder="'援助限制'"
+                  :treeData="wechatcustomerstatusTree"
+                ></default-input-tree>
+              </a-form-item>
+            </a-col>
+            <a-col :span="4">
+              <a-form-item :wrapperCol="{ span: 20 }">
+                <default-input-tree
+                  @change="needdepositChange"
+                  ref="needdepositTree"
+                  :treePlaceholder="'押金限制'"
+                  :treeData="needdepositTree"
                 ></default-input-tree>
               </a-form-item>
             </a-col>
           </template>
-        </a-row> -->
+        </a-row>
       </a-form>
     </div>
     <div>
@@ -81,7 +107,7 @@
            {{text == 0 ? '非会员' : '会员'}}
           </a-select>
         </span>
-        <span slot="wechatcustomerStatus" slot-scope="text, record">
+        <span slot="wechatcustomerstatus" slot-scope="text, record">
           <a-select
             :defaultValue="text == 0 ? '不限制' : '限制'"
             style="width: 100px"
@@ -131,9 +157,13 @@
 
 </template>
 <script>
-const areaTree = [
-  { title: "候补1", value: 0 },
-  { title: "候补2", value: 1 }
+const wechatcustomerstatusTree = [
+  { title: "不限制", value: 0 },
+      { title: "限制", value: 1 },
+];
+const needdepositTree = [
+  { title: "需要", value:1 },
+      { title: "不需要", value: 0 },
 ];
 const columns = [
   {
@@ -182,10 +212,11 @@ const columns = [
   },
   {
     title: "是否限制援助他人",
-    dataIndex: "wechatcustomerStatus",
+    dataIndex: "wechatcustomerstatus",
     align: "center",
-    width: 150,
-    scopedSlots: { customRender: "wechatcustomerStatus" },
+    width: 160,
+    scopedSlots: { customRender: "wechatcustomerstatus" },
+
   },
   {
     title: "是否需要交押金",
@@ -193,6 +224,7 @@ const columns = [
     align: "center",
     width: 150,
     scopedSlots: { customRender: "needdeposit" },
+
   },
   {
     title: "操作",
@@ -228,9 +260,8 @@ export default {
         showTotal: (total, range) =>
           `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
-      areaTree,
       vipPriceVisible: false,
-
+wechatcustomerstatusTree,needdepositTree
 
     };
   },
@@ -244,16 +275,24 @@ export default {
       this.selectedRowKeys = selectedRowKeys;
     },
      // 展开更多筛选
-    // toggleAdvanced() {
-    //   this.advanced = !this.advanced;
-    // },
-    // 筛查方式
-    handleAreaChange(value) {
-      this.queryParams.isattributes = value;
+    toggleAdvanced() {
+      this.advanced = !this.advanced;
+    },
+    // 筛查援助限制方式
+    wechatcustomerstatusChange(value) {
+      this.queryParams.wechatcustomerstatus = value;
       if (value == undefined) {
-        delete this.queryParams["isattributes"];
+        delete this.queryParams["wechatcustomerstatus"];
       }
     },
+    // 筛查方式
+    needdepositChange(value) {
+      this.queryParams.needdeposit = value;
+      if (value == undefined) {
+        delete this.queryParams["needdeposit"];
+      }
+    },
+
     // 重置筛选条件
     reset() {
       // 取消选中
@@ -270,7 +309,8 @@ export default {
       this.sortedInfo = null;
       // 重置查询参数
       this.queryParams = {};
-      // this.$refs.areaTree.reset();
+      this.$refs.wechatcustomerstatusTree.reset();
+      this.$refs.needdepositTree.reset();
       this.fetch();
     },
     // 搜索
@@ -367,7 +407,7 @@ exportExcel() {
     // 切换用户援助状态
     onChangeStatus(e, record) {
       console.log(e, record);
-      const params = { wechatcustomerStatus: e, id: record.id };
+      const params = { wechatcustomerstatus: e, id: record.id };
       this.$post("/wechatcustomer/update", { ...params }).then(() => {
         this.$message.success("切换成功");
       });

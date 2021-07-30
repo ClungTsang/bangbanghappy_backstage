@@ -1,6 +1,8 @@
 <template>
   <div>
     <a-modal
+      :destroyOnClose="true"
+      :maskClosable="false"
       :visible="visible"
       :title="this.judge == 0 ? '新建门店' : '更新门店'"
       @ok="handleSubmit"
@@ -15,10 +17,10 @@
                 rules: [
                   {
                     required: true,
-                    message: '请输入门店名称',
-                  },
-                ],
-              },
+                    message: '请输入门店名称'
+                  }
+                ]
+              }
             ]"
           ></a-input>
         </a-form-item>
@@ -30,10 +32,10 @@
               {
                 rules: [
                   {
-                    required: true,
-                  },
-                ],
-              },
+                    required: true
+                  }
+                ]
+              }
             ]"
           ></a-input>
         </a-form-item>
@@ -45,10 +47,10 @@
                 rules: [
                   {
                     required: true,
-                    message: '请输入本店电话',
-                  },
-                ],
-              },
+                    message: '请输入本店电话'
+                  }
+                ]
+              }
             ]"
           ></a-input>
         </a-form-item>
@@ -62,10 +64,10 @@
                     {
                       required: true,
 
-                      message: '请谨慎填写公众号的绑定电话',
-                    },
-                  ],
-                },
+                      message: '请谨慎填写公众号的绑定电话'
+                    }
+                  ]
+                }
               ]"
             ></a-input>
           </a-form-item>
@@ -81,10 +83,10 @@
                   {
                     required: true,
                     whitespace: true,
-                    message: '请输入门店名称',
-                  },
-                ],
-              },
+                    message: '请输入门店名称'
+                  }
+                ]
+              }
             ]"
           >
             <a-select
@@ -145,10 +147,10 @@
                 rules: [
                   {
                     required: true,
-                    message: '请输入详细介绍',
-                  },
-                ],
-              },
+                    message: '请输入详细介绍'
+                  }
+                ]
+              }
             ]"
           ></a-textarea>
         </a-form-item>
@@ -230,14 +232,12 @@ export default {
     StoreInfoUpload,
     BmLocalSearch,
     BaiduMap,
-    BmView,
+    BmView
   },
   data() {
     return {
       config: {
-        rules: [
-          { type: "object", required: false, message: "请选择营业时间!" },
-        ],
+        rules: [{ type: "object", required: false, message: "请选择营业时间!" }]
       },
       form: this.$form.createForm(this),
       openinghours: null,
@@ -246,14 +246,12 @@ export default {
       isShowSort: false,
       // 滑动设定抽成比例
       slider: {
-        value: 20,
+        value: 20
       },
-      // 上传页面中的排序是否展示
-      inputValue1: 1,
       baiduMap: {
         mapAK: "QAVv9hnYBI89yS8eHYVBw3hh1boX4uiD",
         keyword: "",
-        location: "",
+        location: ""
       },
       center: { lng: 116.404, lat: 39.915 },
       // 地图逆向解析方法实例
@@ -277,31 +275,31 @@ export default {
         { id: "1", text: "关店" },
         { id: "2", text: "休店" },
         { id: "3", text: "开店" },
-        { id: "4", text: "异常" },
-      ],
+        { id: "4", text: "异常" }
+      ]
     };
   },
   props: {
     addVisible: {
       type: Boolean,
-      default: false,
+      default: false
     },
     id: {
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   mounted() {
-    event.$on("storeLogoUrl", (res) => {
+    event.$on("storeLogoUrl", res => {
       let list = [];
-      res.forEach((item) => {
+      res.forEach(item => {
         list.push(item.url);
       });
       this.storeLogo = JSON.stringify(list);
     });
-    event.$on("storeInfoUrl", (res) => {
+    event.$on("storeInfoUrl", res => {
       let list = [];
-      res.forEach((item) => {
+      res.forEach(item => {
         list.push(item.url);
       });
       // TODO: 再删除之后，需要将数组中的内容也删除
@@ -317,7 +315,7 @@ export default {
     },
     location() {
       return this.baiduMap.location;
-    },
+    }
   },
   watch: {
     judge: {
@@ -326,8 +324,8 @@ export default {
           this.getMallInfo(id);
         }
       },
-      immediate: true,
-    },
+      immediate: true
+    }
   },
   methods: {
     // 取消按钮
@@ -349,7 +347,7 @@ export default {
             ...fieldsValue,
             openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
-            spendpercent: this.slider.value,
+            spendpercent: this.slider.value
           };
           await this.onUploadData(value);
         });
@@ -366,11 +364,11 @@ export default {
             storestatus: this.storestatus,
             // openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             // closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
-            spendpercent: this.slider.value,
+            spendpercent: this.slider.value
           };
           // console.log(this.storestatus);
 
-          this.$put("/business/LantianStore", { ...value }).then((res) => {
+          this.$put("/business/LantianStore", { ...value }).then(res => {
             if (res.data.code == 200) {
               this.$message.success("更新门店成功");
               this.$emit("close");
@@ -383,7 +381,7 @@ export default {
     },
     // 网络请求商铺信息
     getMallInfo(id) {
-      this.$get(`/business/LantianStore/${id}`).then((res) => {
+      this.$get(`/business/LantianStore/${id}`).then(res => {
         return this.onUpdateQuestion(res.data.data);
       });
     },
@@ -406,7 +404,7 @@ export default {
         detailedintroduction: storeInfo.detailedintroduction,
         // openinghours: storeInfo.openinghours,
         // closinghours: storeInfo.closinghours,
-        storeAddress: storeInfo.address,
+        storeAddress: storeInfo.address
       });
       this.slider.value = storeInfo.spendpercent;
       this.storestatus = storeInfo.storestatus;
@@ -433,20 +431,20 @@ export default {
         openinghours: formData.openinghours,
         closinghours: formData.closinghours,
         spendpercent: formData.slider + "",
-        localxy: this.point.lat + "," + this.point.lng,
+        localxy: this.point.lat + "," + this.point.lng
       };
 
       let user = this.$db.get("USER");
       if (user.description == "一级代理" || user.roleName == "一级代理") {
         await this.$get(
           `/business/LantianStore/getByPhone/${user.username}`
-        ).then((res) => {
+        ).then(res => {
           // 自己门店ID当做旗下代理的父亲ID
           params["parentid"] = res.data.data.id;
         });
       }
 
-      this.$post("/business/LantianStore", { ...params }).then((res) => {
+      this.$post("/business/LantianStore", { ...params }).then(res => {
         if (res.data.code == 200) {
           this.$message.success("新增门店成功");
           this.$emit("close");
@@ -467,7 +465,7 @@ export default {
       this.point = point;
       const _this = this;
       // 根据坐标逆解析获取地址详细描述
-      this.myGeo.getLocation(point, function (result) {
+      this.myGeo.getLocation(point, function(result) {
         if (result) {
           _this.city = result.addressComponents.city;
           _this.province = result.addressComponents.province;
@@ -480,7 +478,7 @@ export default {
                 result.surroundingPois[0].title
               : result.address;
           _this.form.setFieldsValue({
-            storeAddress: _this.storeAddress,
+            storeAddress: _this.storeAddress
           });
         }
       });
@@ -494,14 +492,14 @@ export default {
       this.myGeo = new BMap.Geocoder();
       // 获取自动定位获取的坐标信息
       geolocation.getCurrentPosition(
-        function (r) {
+        function(r) {
           _this.center = {
             lng: r.point.lng,
-            lat: r.point.lat,
+            lat: r.point.lat
           };
           _this.point = {
             lng: r.point.lng,
-            lat: r.point.lat,
+            lat: r.point.lat
           };
         },
         { enableHighAccuracy: true }
@@ -520,8 +518,8 @@ export default {
       this.center.lng = lng;
       this.center.lat = lat;
       this.zoom = e.target.getZoom();
-    },
-  },
+    }
+  }
 };
 </script>
 <style scoped>

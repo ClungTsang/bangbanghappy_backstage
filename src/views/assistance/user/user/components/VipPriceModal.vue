@@ -1,8 +1,10 @@
 <template>
   <div>
     <a-modal
-      :visible="visible"
       title="会员缴费金额"
+      :visible="visible"
+      :destroyOnClose="true"
+      :maskClosable="false"
       @ok="handleOk"
       @cancel="handleCancel"
     >
@@ -31,20 +33,20 @@ export default {
   data() {
     return {
       slider: {
-        value: 0,
-      },
+        value: 0
+      }
     };
   },
   props: {
     vipPriceVisible: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   computed: {
     visible() {
       return this.vipPriceVisible;
-    },
+    }
   },
   mounted() {
     this.setData();
@@ -53,7 +55,7 @@ export default {
     // 渲染数据
     async setData() {
       let res = await this.$get("/business/rootData");
-      let arr = res.data.data.filter((item) => {
+      let arr = res.data.data.filter(item => {
         return item.id == 9;
       });
       this.slider.value = `${arr[0].valuedata}`;
@@ -62,16 +64,15 @@ export default {
     handleOk() {
       this.$post("/business/rootData/update", {
         id: 9,
-        valuedata: this.slider.value,
+        valuedata: this.slider.value
       });
       this.$message.success("修改成功");
       this.$emit("close");
     },
     handleCancel() {
       this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>
