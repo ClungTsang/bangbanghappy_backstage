@@ -32,7 +32,8 @@
               {
                 rules: [
                   {
-                    required: true
+                    required: true,
+                    message: '请输入门店老板姓名'
                   }
                 ]
               }
@@ -223,7 +224,7 @@
 </template>
 <script>
 import event from "@/utils/event.js";
-import { BmLocalSearch, BaiduMap, BmView } from "vue-baidu-map";
+import { BmLocalSearch, BaiduMap, BmMarker, BmView } from "vue-baidu-map";
 import StoreInfoUpload from "./StoreInfoUpload.vue";
 import StoreLogoUpload from "./StoreLogoUpload.vue";
 export default {
@@ -232,7 +233,8 @@ export default {
     StoreInfoUpload,
     BmLocalSearch,
     BaiduMap,
-    BmView
+    BmView,
+    BmMarker
   },
   data() {
     return {
@@ -343,6 +345,14 @@ export default {
             console.log(err);
             return;
           }
+          if (this.storeLogo == "") {
+            this.$message.error("未上传门店图标");
+            return;
+          }
+          if (this.storeurl == "") {
+            this.$message.error("未上传门店图片");
+            return;
+          }
           const value = {
             ...fieldsValue,
             openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
@@ -356,6 +366,14 @@ export default {
         this.form.validateFields(async (err, fieldsValue) => {
           if (err) {
             console.log(err);
+            return;
+          }
+          if (this.storeLogo == "") {
+            this.$message.error("未上传门店图标");
+            return;
+          }
+          if (this.storeurl == "") {
+            this.$message.error("未上传门店图片");
             return;
           }
           const value = {
@@ -430,7 +448,7 @@ export default {
         // slogan: formData.storeSlogan,
         openinghours: formData.openinghours,
         closinghours: formData.closinghours,
-        spendpercent: formData.slider + "",
+        spendpercent: formData.spendpercent,
         localxy: this.point.lat + "," + this.point.lng
       };
 

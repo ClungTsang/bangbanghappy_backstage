@@ -3,7 +3,7 @@
     <a-modal
       title="新建区域代理"
       :visible="visible"
-      :width="800"
+      :width="900"
       :destroyOnClose="true"
       :maskClosable="false"
       @ok="handleOk"

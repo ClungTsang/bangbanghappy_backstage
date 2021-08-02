@@ -82,6 +82,16 @@
                 ></default-input-tree>
               </a-form-item>
             </a-col>
+            <a-col :span="4">
+              <a-form-item :wrapperCol="{ span: 20 }">
+                <default-input-tree
+                  @change="agentChange"
+                  ref="agentTree"
+                  :treePlaceholder="'代理状态'"
+                  :treeData="agentTree"
+                ></default-input-tree>
+              </a-form-item>
+            </a-col>
           </template>
         </a-row>
       </a-form>
@@ -105,6 +115,10 @@
         </span>
          <span slot="viplevel" slot-scope="text, record">
            {{text == 0 ? '非会员' : '会员'}}
+          </a-select>
+        </span>
+        <span slot="agent" slot-scope="text, record">
+           {{text == 0 ? '非代理' : '代理'}}
           </a-select>
         </span>
         <span slot="wechatcustomerstatus" slot-scope="text, record">
@@ -165,6 +179,10 @@ const needdepositTree = [
   { title: "需要", value:1 },
       { title: "不需要", value: 0 },
 ];
+const agentTree = [
+  { title: "代理", value:1 },
+      { title: "非代理", value: 0 },
+];
 const columns = [
   {
     title: "头像",
@@ -205,11 +223,19 @@ const columns = [
     scopedSlots: { customRender: "viplevel" },
   },
   {
+    title: "代理状态",
+    dataIndex: "agent",
+    width: 100,
+    align: "center",
+    scopedSlots: { customRender: "agent" },
+  },
+  {
     title: "更新时间",
     dataIndex: "updatetime",
     width: 200,
     align: "center",
   },
+
   {
     title: "是否限制援助他人",
     dataIndex: "wechatcustomerstatus",
@@ -261,7 +287,7 @@ export default {
           `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       vipPriceVisible: false,
-wechatcustomerstatusTree,needdepositTree
+wechatcustomerstatusTree,needdepositTree,agentTree
 
     };
   },
@@ -285,14 +311,20 @@ wechatcustomerstatusTree,needdepositTree
         delete this.queryParams["wechatcustomerstatus"];
       }
     },
-    // 筛查方式
+    // 筛查押金状态方式
     needdepositChange(value) {
       this.queryParams.needdeposit = value;
       if (value == undefined) {
         delete this.queryParams["needdeposit"];
       }
     },
-
+// 筛查代理状态方式
+    agentChange(value) {
+      this.queryParams.agent = value;
+      if (value == undefined) {
+        delete this.queryParams["agent"];
+      }
+    },
     // 重置筛选条件
     reset() {
       // 取消选中
@@ -311,6 +343,7 @@ wechatcustomerstatusTree,needdepositTree
       this.queryParams = {};
       this.$refs.wechatcustomerstatusTree.reset();
       this.$refs.needdepositTree.reset();
+      this.$refs.agentTree.reset();
       this.fetch();
     },
     // 搜索

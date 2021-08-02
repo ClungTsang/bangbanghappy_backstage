@@ -1,34 +1,55 @@
 <template>
   <div>
-    <a-modal :visible="visible" title="代理配置" @ok="confirm" @cancel="cancel">
-      <a-form :form="form" layout="inline">
-        <a-form-item label="代理人订单保护时间（分）">
+    <a-modal
+      title="代理配置"
+      :visible="visible"
+      :width="500"
+      :destroyOnClose="true"
+      :maskClosable="false"
+      @ok="confirm"
+      @cancel="
+        () => {
+          $emit('close');
+        }
+      "
+    >
+      <a-form :form="form" :label-col="labelCol" :wrapper-col="wrapperCol">
+        <a-form-item label="代理人订单保护时间（分钟）">
           <a-input-number v-decorator="['agentTime']"></a-input-number>
-        </a-form-item>
-        <a-form-item label="代理人订单保护路程（米）">
-          <a-input-number v-decorator="['agentDistance']"></a-input-number>
         </a-form-item>
       </a-form>
     </a-modal>
   </div>
 </template>
 <script>
+const labelCol = {
+  xl: { span: 10 },
+  xs: { span: 24 },
+  sm: { span: 10 }
+};
+const wrapperCol = {
+  xl: { span: 14 },
+  xs: { span: 24 },
+  sm: { span: 14 }
+};
 export default {
   data() {
     return {
       form: this.$form.createForm(this),
+      labelCol,
+      wrapperCol
     };
   },
   props: {
     agentVisible: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   computed: {
     visible() {
       return this.agentVisible;
-    },
+    }
   },
   mounted() {
     this.setData();
@@ -37,35 +58,25 @@ export default {
     // 数据渲染
     async setData() {
       let res = await this.$get("/business/rootData");
-      let arrtemp = res.data.data;
-      let arr = arrtemp.filter((item) => {
-        return item.id == 7 || item.id == 8;
+      let arr = res.data.data.filter(item => {
+        return item.id == 7;
       });
       this.form.getFieldDecorator("agentTime");
-      this.form.getFieldDecorator("agentDistance");
       this.form.setFieldsValue({
-        agentTime: `${arr[0].valuedata}`,
-        agentDistance: `${arr[1].valuedata}`,
+        agentTime: `${arr[0].valuedata}`
       });
     },
     confirm() {
-      this.form.validateFields((err,values) => {
+      this.form.validateFields((err, values) => {
         this.$post("/business/rootData/update", {
           id: 7,
-          valuedata: values.agentTime,
-        });
-        this.$post("/business/rootData/update", {
-          id: 8,
-          valuedata: values.agentDistance,
+          valuedata: values.agentTime
         });
         this.$message.success("修改成功");
         this.$emit("close");
         // this.form.resetFields();
       });
-    },
-    cancel() {
-      this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>

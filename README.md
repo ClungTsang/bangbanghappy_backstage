@@ -28,7 +28,14 @@ super隐藏两个页面 done
 图片回显 done
 商家门店：新增菜品分类错误 done
 门店申请：显示多张图片 done
-区域代理：划定圆圈来显示区域代理 coding
-区域订单：代理区域内不存在代理则显示所有订单 coding
-安全秘钥：改为随机秘钥，后台生成时间内有效秘钥 coding
-用户搜索：搜索框 coding
+区域代理：划定半径来显示区域代理 done
+区域订单：代理只能看到区域代理内的订单 过了安全时间就会公布出去 done
+安全秘钥：新增门店后会产生随机秘钥 done
+用户搜索：搜索框 done
+
+# recoding
+当组件是modal或者存在显示隐藏的判断时，使用antdv的form验证表单组件
+  this.form.getFieldDecorator("xxx");
+  this.form.setFieldValues({
+    xxx:xxx
+  })

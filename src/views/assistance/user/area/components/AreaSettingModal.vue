@@ -3,13 +3,11 @@
     <a-modal
       title="编辑区域代理"
       :visible="visible"
-      :width="800"
+      :width="900"
       :destroyOnClose="true"
-      :confirm-loading="confirmLoading"
       :maskClosable="false"
       @ok="handleOk"
-      @cancel="() => {$emit('close')
-      }"
+      @cancel="() => {$emit('close')}"
     >
       <a-form
         :form="form"
@@ -102,7 +100,6 @@ export default {
       labelCol,
       wrapperCol,
       form: this.$form.createForm(this, { name: 'area_add_form' }),
-      confirmLoading: false,
       baiduMap: {
         mapAK: 'QAVv9hnYBI89yS8eHYVBw3hh1boX4uiD',
         keyword: '',

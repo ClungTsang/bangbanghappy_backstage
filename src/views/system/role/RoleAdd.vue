@@ -2,45 +2,47 @@
   <a-drawer
     title="新增角色"
     :maskClosable="false"
-    width=650
+    width="650"
     placement="right"
     :closable="false"
     @close="onClose"
     :visible="roleAddVisiable"
-    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;">
+    style="height: calc(100% - 55px);overflow: auto;padding-bottom: 53px;"
+  >
     <a-form :form="form">
-      <a-form-item label='角色名称'
-                   v-bind="formItemLayout"
-                   :validateStatus="validateStatus"
-                   :help="help">
-        <a-input @blur="handleRoleNameBlur" v-decorator="['roleName']"/>
+      <a-form-item
+        label="角色名称"
+        v-bind="formItemLayout"
+        :validateStatus="validateStatus"
+        :help="help"
+      >
+        <a-input @blur="handleRoleNameBlur" v-decorator="['roleName']" />
       </a-form-item>
-      <a-form-item label='角色描述' v-bind="formItemLayout">
+      <a-form-item label="角色描述" v-bind="formItemLayout">
         <a-textarea
           :rows="4"
           v-decorator="[
-          'remark',
-          {rules: [
-            { max: 50, message: '长度不能超过50个字符'}
-          ]}]">
+            'remark',
+            { rules: [{ max: 50, message: '长度不能超过50个字符' }] }
+          ]"
+        >
         </a-textarea>
       </a-form-item>
-      <a-form-item label='数据权限' v-bind="formItemLayout">
+      <a-form-item label="数据权限" v-bind="formItemLayout">
         <a-radio-group
           name="dataScope"
           :options="options"
-          v-decorator="[
-          'dataScope',
-          {rules: [
-            { required: true }
-          ]}]">
+          v-decorator="['dataScope', { rules: [{ required: true }] }]"
+        >
         </a-radio-group>
       </a-form-item>
-      <a-form-item label='权限选择'
-                   style="margin-bottom: 2rem"
-                   :validateStatus="menuSelectStatus"
-                   :help="menuSelectHelp"
-                   v-bind="formItemLayout">
+      <a-form-item
+        label="权限选择"
+        style="margin-bottom: 2rem"
+        :validateStatus="menuSelectStatus"
+        :help="menuSelectHelp"
+        v-bind="formItemLayout"
+      >
         <a-tree
           :key="menuTreeKey"
           ref="menuTree"
@@ -49,26 +51,36 @@
           @check="handleCheck"
           @expand="handleExpand"
           :expandedKeys="expandedKeys"
-          :treeData="menuTreeData">
+          :treeData="menuTreeData"
+        >
         </a-tree>
       </a-form-item>
     </a-form>
     <div class="drawer-bootom-button">
-      <a-dropdown style="float: left" :trigger="['click']" placement="topCenter">
+      <a-dropdown
+        style="float: left"
+        :trigger="['click']"
+        placement="topCenter"
+      >
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="expandAll">展开所有</a-menu-item>
           <a-menu-item key="2" @click="closeAll">合并所有</a-menu-item>
           <a-menu-item key="3" @click="enableRelate">父子关联</a-menu-item>
           <a-menu-item key="4" @click="disableRelate">取消关联</a-menu-item>
         </a-menu>
-        <a-button>
-          树操作 <a-icon type="up" />
-        </a-button>
+        <a-button> 树操作 <a-icon type="up" /> </a-button>
       </a-dropdown>
-      <a-popconfirm title="确定放弃编辑？" @confirm="onClose" okText="确定" cancelText="取消">
+      <a-popconfirm
+        title="确定放弃编辑？"
+        @confirm="onClose"
+        okText="确定"
+        cancelText="取消"
+      >
         <a-button style="margin-right: .8rem">取消</a-button>
       </a-popconfirm>
-      <a-button @click="handleSubmit" type="primary" :loading="loading">提交</a-button>
+      <a-button @click="handleSubmit" type="primary" :loading="loading"
+        >提交</a-button
+      >
     </div>
   </a-drawer>
 </template>
@@ -76,9 +88,9 @@
 const formItemLayout = {
   labelCol: { span: 3 },
   wrapperCol: { span: 18 }
-}
+};
 export default {
-  name: 'RoleAdd',
+  name: "RoleAdd",
   props: {
     roleAddVisiable: {
       default: false
@@ -89,21 +101,21 @@ export default {
       default: () => []
     }
   },
-  data () {
+  data() {
     return {
       menuTreeKey: +new Date(),
       loading: false,
       formItemLayout,
       form: this.$form.createForm(this),
-      validateStatus: '',
-      menuSelectStatus: '',
-      help: '',
-      menuSelectHelp: '',
+      validateStatus: "",
+      menuSelectStatus: "",
+      help: "",
+      menuSelectHelp: "",
       role: {
-        roleName: '',
-        remark: '',
-        menuId: '',
-        dataScope: ''
+        roleName: "",
+        remark: "",
+        menuId: "",
+        dataScope: ""
       },
       checkedKeys: [],
       expandedKeys: [],
@@ -111,124 +123,152 @@ export default {
       allTreeKeys: [],
       checkStrictly: true,
       options: []
-    }
+    };
   },
-  mounted () {
-    this.daraScopeOptions()
+  mounted() {
+    this.daraScopeOptions();
+    this.$get("/business/rootData");
   },
   methods: {
-    reset () {
-      this.menuTreeKey = +new Date()
-      this.expandedKeys = this.checkedKeys = []
-      this.validateStatus = this.help = ''
-      this.loading = false
-      this.form.resetFields()
+    reset() {
+      this.menuTreeKey = +new Date();
+      this.expandedKeys = this.checkedKeys = [];
+      this.validateStatus = this.help = "";
+      this.loading = false;
+      this.form.resetFields();
     },
-    onClose () {
-      this.reset()
-      this.$emit('close')
+    onClose() {
+      this.reset();
+      this.$emit("close");
     },
-    expandAll () {
-      this.expandedKeys = this.allTreeKeys
+    expandAll() {
+      this.expandedKeys = this.allTreeKeys;
     },
-    closeAll () {
-      this.expandedKeys = []
+    closeAll() {
+      this.expandedKeys = [];
     },
-    enableRelate () {
-      this.checkStrictly = false
+    enableRelate() {
+      this.checkStrictly = false;
     },
-    disableRelate () {
-      this.checkStrictly = true
+    disableRelate() {
+      this.checkStrictly = true;
     },
-    handleCheck (checkedKeys) {
-      this.checkedKeys = checkedKeys
-      let checkedArr = Object.is(checkedKeys.checked, undefined) ? checkedKeys : checkedKeys.checked
+    handleCheck(checkedKeys) {
+      this.checkedKeys = checkedKeys;
+      let checkedArr = Object.is(checkedKeys.checked, undefined)
+        ? checkedKeys
+        : checkedKeys.checked;
       if (checkedArr.length) {
-        this.menuSelectStatus = ''
-        this.menuSelectHelp = ''
+        this.menuSelectStatus = "";
+        this.menuSelectHelp = "";
       } else {
-        this.menuSelectStatus = 'error'
-        this.menuSelectHelp = '请选择相应的权限'
+        this.menuSelectStatus = "error";
+        this.menuSelectHelp = "请选择相应的权限";
       }
     },
-    handleExpand (expandedKeys) {
-      this.expandedKeys = expandedKeys
+    handleExpand(expandedKeys) {
+      this.expandedKeys = expandedKeys;
     },
-    handleSubmit () {
-      let checkedArr = Object.is(this.checkedKeys.checked, undefined) ? this.checkedKeys : this.checkedKeys.checked
-      if (this.validateStatus !== 'success') {
-        this.handleRoleNameBlur()
+    handleSubmit() {
+      let checkedArr = Object.is(this.checkedKeys.checked, undefined)
+        ? this.checkedKeys
+        : this.checkedKeys.checked;
+      if (this.validateStatus !== "success") {
+        this.handleRoleNameBlur();
       } else if (checkedArr.length === 0) {
-        this.menuSelectStatus = 'error'
-        this.menuSelectHelp = '请选择相应的权限'
+        this.menuSelectStatus = "error";
+        this.menuSelectHelp = "请选择相应的权限";
       } else {
-        this.form.validateFields((err, values) => {
+        this.form.validateFields(async (err, values) => {
           if (!err) {
-            this.setRoleFields()
-            this.loading = true
-            this.role.menuId = checkedArr.join(',')
-            this.$post('role', {
+            this.setRoleFields();
+            this.loading = true;
+            this.role.menuId = checkedArr.join(",");
+            let res = await this.$post("role", {
               ...this.role
-            }).then((r) => {
-              this.reset()
-              this.$emit('success')
-            }).catch(() => {
-              this.loading = false
-            })
+            });
+            let rootData = await this.$get("/business/rootData");
+            let value = rootData.data.data.filter(item => {
+              return item.id == 12;
+            });
+            let data = [];
+            console.info("valuedata", value[0].valuedata);
+            value[0].valuedata.split(",").forEach(item => {
+              data.push(item);
+            });
+            console.log(`当前与平台运营员拥有同等权限的id集合${data}`);
+            console.info(
+              "平台运营员新增角色，角色id为：",
+              res.data.data.roleId
+            );
+            data.push(res.data.data.roleId);
+            this.reset();
+            this.$emit("success");
+            this.$post("/business/rootData/update", {
+              id: 12,
+              valuedata: data.join(",")
+            });
+            this.loading = false;
           }
-        })
+        });
       }
     },
-    handleRoleNameBlur () {
-      let roleName = this.form.getFieldValue('roleName')
-      roleName = typeof roleName === 'undefined' ? '' : roleName.trim()
+    handleRoleNameBlur() {
+      let roleName = this.form.getFieldValue("roleName");
+      roleName = typeof roleName === "undefined" ? "" : roleName.trim();
       if (roleName.length) {
         if (roleName.length > 10) {
-          this.validateStatus = 'error'
-          this.help = '角色名称不能超过10个字符'
+          this.validateStatus = "error";
+          this.help = "角色名称不能超过10个字符";
         } else {
-          this.validateStatus = 'validating'
-          this.$get(`role/check/${roleName}`).then((r) => {
+          this.validateStatus = "validating";
+          this.$get(`role/check/${roleName}`).then(r => {
             if (r.data) {
-              this.validateStatus = 'success'
-              this.help = ''
+              this.validateStatus = "success";
+              this.help = "";
             } else {
-              this.validateStatus = 'error'
-              this.help = '抱歉，该角色名称已存在'
+              this.validateStatus = "error";
+              this.help = "抱歉，该角色名称已存在";
             }
-          })
+          });
         }
       } else {
-        this.validateStatus = 'error'
-        this.help = '角色名称不能为空'
+        this.validateStatus = "error";
+        this.help = "角色名称不能为空";
       }
     },
-    setRoleFields () {
-      let values = this.form.getFieldsValue(['roleName', 'remark', 'dataScope'])
-      if (typeof values !== 'undefined') {
-        Object.keys(values).forEach(_key => { this.role[_key] = values[_key] })
+    setRoleFields() {
+      let values = this.form.getFieldsValue([
+        "roleName",
+        "remark",
+        "dataScope"
+      ]);
+      if (typeof values !== "undefined") {
+        Object.keys(values).forEach(_key => {
+          this.role[_key] = values[_key];
+        });
       }
     },
-    daraScopeOptions () {
-      let options = []
+    daraScopeOptions() {
+      let options = [];
       for (let ind in this.$props.dataScope) {
-        let option = {}
-        option.label = this.$props.dataScope[ind].valuee
-        option.value = Number(this.$props.dataScope[ind].keyy)
-        options.push(option)
+        let option = {};
+        option.label = this.$props.dataScope[ind].valuee;
+        option.value = Number(this.$props.dataScope[ind].keyy);
+        options.push(option);
       }
-      this.options = options
+      this.options = options;
     }
   },
   watch: {
-    roleAddVisiable () {
+    roleAddVisiable() {
       if (this.roleAddVisiable) {
-        this.$get('menu').then((r) => {
-          this.menuTreeData = r.data.rows.children
-          this.allTreeKeys = r.data.ids
-        })
+        this.$get("menu").then(r => {
+          this.menuTreeData = r.data.rows.children;
+          this.allTreeKeys = r.data.ids;
+        });
       }
     }
   }
-}
+};
 </script>

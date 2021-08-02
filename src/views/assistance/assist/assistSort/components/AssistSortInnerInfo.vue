@@ -14,26 +14,26 @@
         <template slot="service" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeInner(record.key, 'service', $event)"
+            @change="onCellChangeInner(record.id, 'service', $event)"
           />
         </template>
         <template slot="cost" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeInner(record.key, 'cost', $event)"
+            @change="onCellChangeInner(record.id, 'cost', $event)"
           />
         </template>
         <template slot="suggestionTime" slot-scope="text, record">
           <editable-cell
             :text="text"
-            @change="onCellChangeInner(record.key, 'suggestionTime', $event)"
+            @change="onCellChangeInner(record.id, 'suggestionTime', $event)"
           />
         </template>
         <template slot="operation" slot-scope="text, record">
           <a-popconfirm
             v-if="innerDataSource.length"
             title="确认删除?"
-            @confirm="() => onDeleteInner(record.key)"
+            @confirm="() => onDeleteInner(record.id)"
           >
             <a href="javascript:;">删除该分类</a>
           </a-popconfirm>
@@ -46,7 +46,7 @@
 import EditableCell from "@/components/editablecell/EditableCell";
 export default {
   components: {
-    EditableCell,
+    EditableCell
   },
   created() {
     this.getAssistSort();
@@ -61,65 +61,68 @@ export default {
           dataIndex: "service",
           width: 300,
           align: "center",
-          scopedSlots: { customRender: "service" },
+          scopedSlots: { customRender: "service" }
         },
         {
           title: "服务费用（元）",
           dataIndex: "cost",
           align: "center",
           width: 170,
-          scopedSlots: { customRender: "cost" },
+          scopedSlots: { customRender: "cost" }
         },
         {
           title: "建议服务时间（分钟）",
           dataIndex: "suggestionTime",
           align: "center",
           width: 130,
-          scopedSlots: { customRender: "suggestionTime" },
+          scopedSlots: { customRender: "suggestionTime" }
         },
         {
           title: "操作",
           dataIndex: "operation",
           align: "center",
           width: 130,
-          scopedSlots: { customRender: "operation" },
-        },
-      ],
+          scopedSlots: { customRender: "operation" }
+        }
+      ]
     };
   },
   methods: {
     // 获取援助分类列表
     getAssistSort() {
       this.innerDataSource = [];
-      this.$get("aidServiceType").then((res) => {
+      this.$get("aidServiceType").then(res => {
         const data = res.data.data;
-        data.forEach((item) => {
+        data.forEach(item => {
           if (item.oncampus == 1) {
             this.innerDataSource.push({
-              key: item.id,
+              id: item.id,
               service: item.service,
               cost: item.cost,
-              suggestionTime: item.suggestionTime,
+              suggestionTime: item.suggestionTime
             });
           }
         });
       });
     },
-    onCellChangeInner(key, dataIndex, value) {
+    onCellChangeInner(id, dataIndex, value) {
       const innerDataSource = [...this.innerDataSource];
-      const target = innerDataSource.find((item) => item.key === key);
+      const target = innerDataSource.find(item => item.id === id);
+
       if (target) {
         target[dataIndex] = value;
         this.innerDataSource = innerDataSource;
-        this.onChangeInfo(key);
+        this.onChangeInfo(id);
       }
     },
-    onDeleteInner(key) {
-      this.$get("/aidServiceType/delete", { id: key }).then(() => {
+    onDeleteInner(id) {
+      if (id == 294) {
+        this.$message.error("该分类为必需分类，不能删除！");
+        return;
+      }
+      this.$get("/aidServiceType/delete", { id: id }).then(() => {
         const innerDataSource = [...this.innerDataSource];
-        this.innerDataSource = innerDataSource.filter(
-          (item) => item.key !== key
-        );
+        this.innerDataSource = innerDataSource.filter(item => item.id !== id);
       });
     },
     handleAddInner() {
@@ -127,7 +130,7 @@ export default {
         service: `校园社区服务${this.innerCount}`,
         cost: 2,
         oncampus: 1,
-        suggestionTime: 10,
+        suggestionTime: 10
       };
       this.$post("/aidServiceType", { ...newData }).then(
         () => {
@@ -139,19 +142,24 @@ export default {
         }
       );
     },
-    onChangeInfo(key) {
+    onChangeInfo(id) {
+      if (id == 294) {
+        this.$message.error("该分类为系统固定分类，不能编辑该分类名称！");
+        this.getAssistSort();
+        return;
+      }
       const innerDataSource = [...this.innerDataSource];
-      const target = innerDataSource.find((item) => item.key === key);
+      const target = innerDataSource.find(item => item.id === id);
       this.$post("/aidServiceType/update", {
-        id: target.key,
+        id: target.id,
         service: target.service,
         cost: target.cost,
-        suggestionTime: target.suggestionTime,
+        suggestionTime: target.suggestionTime
       }).then(() => {
         this.$message.success("更新成功");
       });
-    },
-  },
+    }
+  }
 };
 </script>
 <style>
