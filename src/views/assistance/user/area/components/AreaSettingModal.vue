@@ -192,7 +192,7 @@ export default {
         //  console.info(this.point)
       this.form.setFieldsValue({
         agentinformationdescription: result.agentinformationdescription,
-        radius: result.radius,
+        radius: parseFloat(result.radius)/1000,
         agentinformationname: result.agentinformationname,
       })
     },

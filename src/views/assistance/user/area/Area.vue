@@ -73,7 +73,7 @@
         @change="handleTableChange"
       >
         <!-- 半径  -->
-        <span slot="radius" slot-scope="text, record"> {{ text }}米 </span>
+        <span slot="radius" slot-scope="text, record"> {{ text }}千米 </span>
         <!-- 操作 -->
         <span slot="action" slot-scope="text, record">
           <a-button
