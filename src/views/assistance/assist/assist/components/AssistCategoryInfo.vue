@@ -7,6 +7,10 @@
       :loading="loading"
       @change="handleTableChange"
     >
+      <span slot="publishUserNamemobile" slot-scope="text, record">
+        联系人：{{ text.split(",")[0] }}<br /><br />
+        联系方式：{{ text.split(",")[0] }}
+      </span>
       <!-- 订单状态变更 -->
       <span slot="aidorderstatus" slot-scope="text, record">
         {{
@@ -83,33 +87,34 @@ const columns = [
     dataIndex: "outTradeNo",
     width: 150,
     align: "center",
-    ellipsis: true,
+    ellipsis: true
   },
 
   {
-    title: "客户电话",
+    title: "客户信息",
     width: 100,
     dataIndex: "publishUserNamemobile",
     align: "center",
+    scopedSlots: { customRender: "publishUserNamemobile" }
   },
   {
     title: "订单分类",
-    width: 100,
+    width: 50,
     dataIndex: "classifyName",
-    align: "center",
+    align: "center"
   },
   {
     title: "订单标题",
     dataIndex: "title",
     align: "center",
-    width: 150,
-    ellipsis: true,
+    width: 100,
+    ellipsis: true
   },
   {
     title: "订单创建时间",
     width: 100,
     dataIndex: "createtime",
-    align: "center",
+    align: "center"
   },
   {
     title: "状态",
@@ -122,19 +127,19 @@ const columns = [
       { text: "处理中", value: "4" },
       { text: "已完成", value: "5" },
       { text: "已取消", value: "6" },
-      { text: "已关闭", value: "7" },
+      { text: "已关闭", value: "7" }
     ],
     filterMultiple: false,
     align: "center",
-    scopedSlots: { customRender: "aidorderstatus" },
+    scopedSlots: { customRender: "aidorderstatus" }
   },
   {
     title: "操作",
     width: 120,
     dataIndex: "action",
     align: "center",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 import AssistInfoModal from "./AssistInfoModal";
 export default {
@@ -150,12 +155,12 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) =>
-          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       loading: false,
       selectedRowKeys: [],
       assistInfoShow: false,
-      id: null,
+      id: null
     };
   },
   mounted() {
@@ -171,7 +176,7 @@ export default {
       this.fetch({
         pageSize: pagination.pageSize,
         pageNum: pagination.current,
-        ...filters,
+        ...filters
       });
     },
     // 网络请求
@@ -182,8 +187,8 @@ export default {
       this.$get("/aidOrder/list", {
         Authentication: token,
         pageSize: 10,
-        ...params,
-      }).then((res) => {
+        ...params
+      }).then(res => {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
         this.loading = false;
@@ -216,7 +221,7 @@ export default {
     // 删除问题
     confirmDelete(record) {
       this.$get("/aidOrder/delete", { id: record.id }).then(() => {
-        let dataSource = this.dataSource.filter((item) => {
+        let dataSource = this.dataSource.filter(item => {
           return item.id !== record.id;
         });
         this.dataSource = dataSource;
@@ -247,9 +252,8 @@ export default {
         this.$message.success("完成订单成功");
         // return this.fetch();
       });
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

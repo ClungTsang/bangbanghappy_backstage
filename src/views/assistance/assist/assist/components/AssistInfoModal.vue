@@ -58,10 +58,10 @@
           />
         </a-descriptions-item>
         <a-descriptions-item label="客户名字">
-          {{ orderUser.realname }}
+          {{ assistInfo.publishUserNamemobile.split(",")[0] }}
         </a-descriptions-item>
         <a-descriptions-item label="客户电话">
-          {{ assistInfo.publishUserNamemobile }}
+          {{ assistInfo.publishUserNamemobile.split(",")[1] }}
         </a-descriptions-item>
         <a-descriptions-item label="收货地址">
           {{ assistInfo.addressDetail }}
@@ -147,11 +147,11 @@ export default {
   props: {
     infoVisible: {
       type: Boolean,
-      default: false,
+      default: false
     },
     id: {
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     return {
@@ -162,13 +162,13 @@ export default {
       // 援助者信息
       assistor: {},
       // 商铺信息
-      mallInfo: {},
+      mallInfo: {}
     };
   },
   computed: {
     visible() {
       return this.infoVisible;
-    },
+    }
   },
   watch: {
     id(id) {
@@ -178,7 +178,7 @@ export default {
       this.getAssistorInfo();
       this.getOrderUserInfo();
       this.getMallInfo();
-    },
+    }
   },
   methods: {
     // 控制开关
@@ -190,14 +190,14 @@ export default {
     },
     // 获取订单信息
     getOrderInfo(id) {
-      this.$get("/aidOrderById", { id: id }).then((res) => {
+      this.$get("/aidOrderById", { id: id }).then(res => {
         this.assistInfo = res.data.data;
       });
     },
     // 获取求助者信息
     getOrderUserInfo() {
       const params = { openid: this.assistInfo.publishUserOpenid };
-      this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
+      this.$get("/wechatcustomerByopenId", { ...params }).then(res => {
         if (res.data.data) {
           this.orderUser = res.data.data;
         }
@@ -208,7 +208,7 @@ export default {
       console.log(this.assistInfo.aidUserOpenid);
       if (this.assistInfo.aidUserOpenid) {
         const params = { openid: this.assistInfo.aidUserOpenid };
-        this.$get("/wechatcustomerByopenId", { ...params }).then((res) => {
+        this.$get("/wechatcustomerByopenId", { ...params }).then(res => {
           if (res.data.data) {
             this.assistor = res.data.data;
           }
@@ -221,7 +221,7 @@ export default {
     getMallInfo() {
       if (this.assistInfo.blackboardId) {
         let id = this.assistInfo.blackboardId;
-        this.$get(`/business/LantianStore/${id}`).then((res) => {
+        this.$get(`/business/LantianStore/${id}`).then(res => {
           if (res.data.data) {
             this.mallInfo = res.data.data;
           }
@@ -229,7 +229,7 @@ export default {
       } else {
         this.mallInfo = {};
       }
-    },
-  },
+    }
+  }
 };
 </script>
