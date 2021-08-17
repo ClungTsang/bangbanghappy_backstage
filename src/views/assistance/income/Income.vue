@@ -71,7 +71,7 @@ import AdminInfoModal from "./components/AdminInfoModal.vue";
 export default {
   data() {
     return {
-      // 判断用户角色
+      // 判断用户角色 true为代理角色
       status: true,
       // 控制援助抽成信息展示
       assistVisible: false,
@@ -96,9 +96,11 @@ export default {
       let roles = this.$db.get("ROLES");
       console.info(roles);
       if (
-        roles[0] == "平台运营员" ||
-        roles[0] == "管理员" ||
-        roles[0] == "开发人员"
+        // roles[0] == "平台运营员" ||
+        // roles[0] == "管理员" ||
+        // roles[0] == "开发人员"
+        roles[0] !== "一级代理" ||
+        roles[0] !== "二级代理"
       ) {
         this.status = false;
       }

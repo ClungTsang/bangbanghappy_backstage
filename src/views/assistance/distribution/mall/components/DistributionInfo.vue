@@ -8,7 +8,7 @@
       @change="handleTableChange"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
+        onChange: onSelectChange
       }"
     >
       <span slot="storestatus" slot-scope="text, record">
@@ -59,52 +59,52 @@ const columns = [
     width: 200,
     ellipsis: true,
     align: "center",
-    fixed: "left",
+    fixed: "left"
   },
   {
     title: "门店地址",
     dataIndex: "address",
     width: 300,
     ellipsis: true,
-    align: "center",
+    align: "center"
   },
   {
     title: "联系人",
     dataIndex: "storeowner",
     width: 150,
-    align: "center",
+    align: "center"
   },
   {
     title: "老板电话",
     dataIndex: "bossmobilenumber",
     width: 150,
-    align: "center",
+    align: "center"
   },
   {
     title: "门店电话",
     dataIndex: "storephone",
     width: 150,
-    align: "center",
+    align: "center"
   },
   {
     title: "抽成比例",
     dataIndex: "spendpercent",
-    align: "center",
+    align: "center"
   },
   {
     title: "门店状态",
     dataIndex: "storestatus",
     align: "center",
     width: 100,
-    scopedSlots: { customRender: "storestatus" },
+    scopedSlots: { customRender: "storestatus" }
   },
   {
     title: "操作",
     dataIndex: "showInfo",
     align: "center",
     scopedSlots: { customRender: "showInfo" },
-    fixed: "right",
-  },
+    fixed: "right"
+  }
 ];
 import event from "@/utils/event.js";
 import EditableCell from "@/components/editablecell/EditableCell.vue";
@@ -129,20 +129,17 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) =>
-          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
-      },
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
+      }
     };
   },
   created() {
     this.fetch();
   },
-  updated() {
+  mounted() {
     // 被告知已经修改抽成完成
     event.$on("cleanSelectedRow", () => {
-      // 延迟执行 等待同步服务器
-      setTimeout(() => {
-        this.fetch();
-      }, 600);
+      this.fetch();
     });
     // 被告知需要刷新页面
     event.$on("mallChangeDone", () => {
@@ -172,7 +169,7 @@ export default {
         pageNum: pagination.current,
         sortField: sorter.field,
         sortOrder: sorter.order,
-        ...filters,
+        ...filters
       });
     },
     // 网络请求
@@ -183,14 +180,14 @@ export default {
       if (user.description == "一级代理" || user.roleName == "一级代理") {
         //根据不同的角色请求旗下门店
         this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
-          (result) => {
+          result => {
             if (result.data.data && result.data.code == 200) {
               return this.$get("/business/LantianStore/MapAllByStoreid", {
                 Authentication: token,
                 pageSize: 10,
                 Parentid: result.data.data.id,
-                ...params,
-              }).then((res) => {
+                ...params
+              }).then(res => {
                 if (res.data.data) {
                   let pagination = { ...this.pagination };
                   pagination.total = res.data.data.total;
@@ -205,8 +202,8 @@ export default {
         this.$get("/business/LantianStore/MapAll", {
           Authentication: token,
           pageSize: 10,
-          ...params,
-        }).then((res) => {
+          ...params
+        }).then(res => {
           let pagination = { ...this.pagination };
           pagination.total = res.data.data.total;
           this.dataSource = res.data.data.rows;
@@ -230,9 +227,8 @@ export default {
     changeMallModal(record) {
       this.changeTarget = record.id;
       this.changeVisible = true;
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

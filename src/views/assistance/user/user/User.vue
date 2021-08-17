@@ -287,7 +287,9 @@ export default {
           `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       vipPriceVisible: false,
-wechatcustomerstatusTree,needdepositTree,agentTree
+wechatcustomerstatusTree,
+needdepositTree,
+agentTree
 
     };
   },
@@ -341,9 +343,12 @@ wechatcustomerstatusTree,needdepositTree,agentTree
       this.sortedInfo = null;
       // 重置查询参数
       this.queryParams = {};
-      this.$refs.wechatcustomerstatusTree.reset();
-      this.$refs.needdepositTree.reset();
-      this.$refs.agentTree.reset();
+      if (this.advanced) {
+
+        this.$refs.wechatcustomerstatusTree.reset();
+        this.$refs.needdepositTree.reset();
+        this.$refs.agentTree.reset();
+        }
       this.fetch();
     },
     // 搜索
@@ -370,7 +375,7 @@ wechatcustomerstatusTree,needdepositTree,agentTree
       this.$refs.TableInfo.pagination.pageSize = this.pagination.defaultPageSize;
       params.pageSize = this.pagination.defaultPageSize;
       params.pageNum = this.pagination.defaultCurrent;
-      this.$get("/wechatcustomer/list", {
+      this.$get("/wechatcustomer/ListLike", {
         ...params
       }).then(res => {
         const pagination = { ...this.pagination };

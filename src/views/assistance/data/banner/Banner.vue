@@ -1,84 +1,109 @@
 <template>
-  <div>
-    <!-- 新增轮播图按钮 -->
-    <a-button
-      @click="
-        () => {
-          isModalShow = true;
-        }
-      "
-      type="primary"
-      ghost
-      v-hasPermission="['banner:add']"
-      >新增图片</a-button
-    >
-    <!-- 删除轮播图按钮 -->
-    <a-button
-      @click="
-        () => {
-          deleteVisible = true;
-        }
-      "
-      v-hasPermission="['banner:delete']"
-      >多选删除</a-button
-    >
-    <a-modal
-      title="提示"
-      :visible="deleteVisible"
-      @ok="onBatchDelete"
-      @cancel="
-        () => {
-          deleteVisible = false;
-        }
-      "
-    >
-      <p>确定删除选中轮播图吗?此操作不可逆</p>
-    </a-modal>
-    <!-- 轮播图展示信息 -->
-    <a-table
-      :columns="columns"
-      :data-source="dataSource"
-      :row-selection="{
-        selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
-      }"
-      :scroll="{ x: 1000 }"
-    >
-      <span slot="banner" slot-scope="text, record">
-        <img style="width: 300px; heigth: auto" :src="record.banner" />
-      </span>
-      <span slot="action" slot-scope="text, record">
-        <a-divider type="vertical"></a-divider>
-        <a-popconfirm
-          title="确定删除该轮播图"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="confirmDelete(record)"
-        >
-          <a>删除</a>
-        </a-popconfirm>
-        <a-divider type="vertical"></a-divider>
-        <a @click="openChangeModal(record)">修改</a>
-        <!-- <a-divider type="vertical"></a-divider>
-        <a @click="openChangeModal(record)">跳转页面</a> -->
-      </span>
-    </a-table>
-    <banner-upload-modal
-      :isVisible="isModalShow"
-      @uploadIsVisible="
-        () => {
+  <a-card :bordered="false">
+    <a-row>
+      <a-col :span="8">
+        <a-space>
+          <!-- 新增轮播图按钮 -->
+          <a-button
+            @click="
+              () => {
+                isModalShow = true;
+              }
+            "
+            type="primary"
+            ghost
+          >
+            新增图片
+          </a-button>
+          <!-- 删除轮播图按钮 -->
+          <!-- <a-button
+            @click="
+              () => {
+                batchDeleteVisible = true;
+              }
+            "
+          >
+            多选删除
+          </a-button> -->
+        </a-space>
+      </a-col>
+    </a-row>
+    <div>
+      <!-- 轮播图展示信息 -->
+      <a-table
+        ref="TableInfo"
+        :rowKey="record => record.id"
+        :columns="columns"
+        :data-source="dataSource"
+        :pagination="pagination"
+        :loading="loading"
+        :row-selection="{
+          selectedRowKeys: selectedRowKeys,
+          onChange: onSelectChange
+        }"
+        @change="handleTableChange"
+      >
+        <!-- 图片 -->
+        <span slot="carouselimgurl" slot-scope="text, record">
+          <img style="width: 300px; heigth: auto" :src="text" />
+        </span>
+        <!-- 跳转状态 -->
+        <span slot="carouselstatus" slot-scope="carouselstatus">
+          <a-tag
+            v-for="tag in carouselstatus"
+            :key="tag"
+            :color="tag == 0 ? 'blue' : tag > 2 ? 'orange' : 'green'"
+          >
+            {{
+              tag == 0
+                ? "不跳转"
+                : tag == 1
+                ? "跳转到指定产品"
+                : tag == 2
+                ? "跳转到指定网址"
+                : "跳转到自定义内容"
+            }}
+          </a-tag>
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <a-divider type="vertical"></a-divider>
+          <a-popconfirm
+            title="确定删除该轮播图"
+            ok-text="确定"
+            cancel-text="取消"
+            @confirm="confirmDelete(record)"
+          >
+            <a>删除</a>
+          </a-popconfirm>
+          <a-divider type="vertical"></a-divider>
+          <a @click="changeInfoModal(record)">修改</a>
+        </span>
+      </a-table>
+      <banner-upload-modal
+        :isVisible="isModalShow"
+        @uploadIsVisible="
           isModalShow = false;
-        }
-      "
-      @uploadImage="onUploadImage"
-    ></banner-upload-modal>
-    <banner-change-modal
-      :isVisible="isModalChange"
-      :targetId="targetId"
-      @closeChangeModal="() => (isModalChange = false)"
-      @changeImage="closeChangeModal"
-    ></banner-change-modal>
-  </div>
+          fetch();
+        "
+      ></banner-upload-modal>
+      <banner-change-modal
+        :isVisible="isModalChange"
+        :targetBanner="targetBanner"
+        @changeIsVisible="
+          isModalChange = false;
+          fetch();
+        "
+      ></banner-change-modal>
+    </div>
+    <!-- <a-modal
+      title="提示"
+      :visible="batchDeleteVisible"
+      @ok="onBatchDelete"
+      @cancel="batchDeleteVisible = false"
+    >
+      <p>确定删除选中轮播图吗?</p>
+    </a-modal> -->
+  </a-card>
 </template>
 <script>
 import BannerUploadModal from "./components/BannerUploadModal.vue";
@@ -89,28 +114,35 @@ const columns = [
     dataIndex: "ordernum",
     key: "ordernum",
     align: "center",
-    width: 100,
+    width: 100
   },
   {
     title: "轮播图",
     align: "center",
-    dataIndex: "banner",
-    scopedSlots: { customRender: "banner" },
-    width: 300,
+    dataIndex: "carouselimgurl",
+    scopedSlots: { customRender: "carouselimgurl" },
+    width: 300
+  },
+  {
+    title: "跳转状态",
+    align: "center",
+    dataIndex: "carouselstatus",
+    scopedSlots: { customRender: "carouselstatus" },
+    width: 100
   },
   {
     title: "创建时间",
     align: "center",
     dataIndex: "createtime",
     key: "createindex",
-    width: 250,
+    width: 250
   },
   {
     title: "修改时间",
     align: "center",
     dataIndex: "updatetime",
     key: "updatetime",
-    width: 250,
+    width: 250
   },
 
   {
@@ -118,106 +150,120 @@ const columns = [
     align: "center",
     key: "action",
     width: 300,
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
+import { formatUrl, restoreUrl } from "@/utils/urlTool";
+
 export default {
   components: { BannerUploadModal, BannerChangeModal },
   data() {
     return {
       dataSource: [],
       columns,
-      // 上传modal
+      selectedRowKeys: [],
+      queryParams: {},
+      filteredInfo: null,
+      sortedInfo: null,
+      paginationInfo: null,
+      loading: false,
+      pagination: {
+        pageSizeOptions: ["10", "20", "30", "40", "100"],
+        defaultCurrent: 1,
+        defaultPageSize: 10,
+        showQuickJumper: true,
+        showSizeChanger: true,
+        showTotal: (total, range) =>
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
+      },
+      // 上传moda
       isModalShow: false,
       // 修改modal
       isModalChange: false,
-      targetId: 0,
-      deleteVisible: false,
-      selectedRowKeys: [],
+      // 批量删除轮播图
+      batchDeleteVisible: false,
+      // 修改目标
+      targetBanner: null
     };
   },
-  created() {
-    this.getBanner();
+  mounted() {
+    this.fetch();
   },
   methods: {
-    // 网络获取轮播图
-    getBanner() {
-      let token = this.$db.get("USER_TOKEN");
-      this.$get("backend/carousel/all", {
-        Authentication: token,
-      }).then((r) => {
-        return this.setBanner(r.data.data);
-      });
-    },
-    // 渲染轮播图信息到浏览器
-    setBanner(banner) {
-      let dataSource = [];
-      banner.forEach((item) => {
-        dataSource.push({
-          key: item.id,
-          ordernum: item.ordernum,
-          banner: item.carouselimgurl,
-          createtime: item.createtime,
-          updatetime: item.updatetime,
-        });
-      });
-      this.dataSource = dataSource;
-    },
-
-    // 新增轮播图
-    onUploadImage(bannerInfo) {
-      const { dataSource } = this;
-      let newBanner = {
-        key: bannerInfo.id,
-        ordernum: bannerInfo.ordernum,
-        banner: bannerInfo.carouselimgurl,
-        createtime: bannerInfo.createtime,
-        updatetime: bannerInfo.updatetime,
-      };
-      this.dataSource = [...dataSource, newBanner];
-    },
     // 选择列
     onSelectChange(selectedRowKeys) {
-      console.log("selectedRowKeys changed: ", selectedRowKeys);
+      console.info("选择了: ", selectedRowKeys);
       this.selectedRowKeys = selectedRowKeys;
+    },
+    // 展开更多筛选
+    toggleAdvanced() {
+      this.advanced = !this.advanced;
+    },
+    // 分页切换
+    handleTableChange(pagination, filters, sorter) {
+      const pager = { ...this.pagination };
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.fetch({
+        pageSize: pagination.pageSize,
+        pageNum: pagination.current
+      });
+    },
+    // 网络请求
+    fetch(params = {}) {
+      this.loading = true;
+      this.$get(`/backend/carousel/page`, {
+        ...params
+      }).then(res => {
+        let pagination = { ...this.pagination };
+        pagination.total = res.data.data.total;
+        let dataSource = [];
+        if (res.data.data.rows) {
+          let result = res.data.data.rows;
+          for (let i = 0; i < result.length; i++) {
+            let item = result[i];
+            item["carouselimgurl"] = restoreUrl(
+              JSON.parse(result[i].carouselimgurl)
+            )[0];
+            dataSource.push(item);
+          }
+        }
+        this.dataSource = dataSource;
+        this.pagination = pagination;
+        this.loading = false;
+      });
     },
     // 单选多选删除
     onBatchDelete() {
-      this.selectedRowKeys.forEach((id) => {
-        let dataSource = this.dataSource.filter((item) => {
-          return item.key !== id;
+      this.selectedRowKeys.forEach(id => {
+        let dataSource = this.dataSource.filter(item => {
+          return item.id !== id;
         });
         this.dataSource = dataSource;
       });
-
-      this.selectedRowKeys.forEach((id) => {
-        this.$delete("backend/carousel", { id: id });
-      });
       this.selectedRowKeys = [];
-      this.deleteVisible = false;
+      this.batchDeleteVisible = false;
       this.$message.success("删除成功");
+      this.selectedRowKeys.forEach(async id => {
+        await this.$delete("/backend/carousel", { id: id });
+      });
     },
     // 删除轮播图
     confirmDelete(record) {
-      this.$delete("backend/carousel", { id: record.key }).then(() => {
-        let dataSource = this.dataSource.filter((item) => {
-          return item.key !== record.key;
-        });
-        this.dataSource = dataSource;
+      let dataSource = this.dataSource.filter(item => {
+        return item.id !== record.id;
+      });
+      this.dataSource = dataSource;
+      this.$delete("/backend/carousel", { id: record.id }).then(() => {
         this.$message.success("删除成功");
       });
     },
-    // 轮播图modal显示控制
-    openChangeModal(record) {
-      this.targetId = record.key;
+    // 修改轮播图
+    changeInfoModal(record) {
+      // console.info("修改轮播图假死");
+      this.targetBanner = record;
       this.isModalChange = true;
-    },
-    closeChangeModal() {
-      this.isModalChange = false;
-      setTimeout(() => {
-        this.getBanner();
-      }, 1000);
-    },
-  },
+    }
+  }
 };
 </script>

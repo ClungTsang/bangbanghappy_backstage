@@ -79,6 +79,7 @@ export default {
       return this.$get("backend/TemKeyAndID");
     },
     seteditor() {
+      // http://192.168.2.125:8080/admin/storage/create
       this.editor = new E(this.$refs.toolbar, this.$refs.editor);
       this.editor.config.uploadImgShowBase64 = false; // base 64 存储图片
       this.editor.config.uploadImgHeaders = {}; // 自定义 header

@@ -43,17 +43,17 @@ export default {
   data() {
     return {
       distributionAdd: {
-        visible: false,
+        visible: false
       },
       distributionChange: {
-        visible: false,
-      },
+        visible: false
+      }
     };
   },
   components: {
     DistributionInfo,
     DistributionAdd,
-    DistributionChange,
+    DistributionChange
   },
   methods: {
     // 增加门户控制
@@ -74,19 +74,19 @@ export default {
       let total = 0;
       const params = {
         pageNum: 1,
-        pageSize: 10,
+        pageSize: 10
       };
       let user = this.$db.get("USER");
       // 甲方如果需要代理也能导表
       if (user.description == "一级代理" || user.roleName == "一级代理") {
         //根据不同的角色请求旗下门店
         this.$get(`/business/LantianStore/getByPhone/${user.username}`).then(
-          (result) => {
+          result => {
             if (result.data.data && result.data.code == 200) {
               return this.$get("/business/LantianStore/MapAllByStoreid", {
                 ...params,
-                Parentid: result.data.data.id,
-              }).then((res) => {
+                Parentid: result.data.data.id
+              }).then(res => {
                 if (res.data.data) {
                   total = res.data.data.total;
                 }
@@ -96,15 +96,14 @@ export default {
         );
       } else {
         this.$get("/business/LantianStore/MapAll", {
-          ...params,
-        }).then((res) => {
+          ...params
+        }).then(res => {
           total = res.data.data.total;
         });
       }
       window.location.href = `https://javabangbanghappy.lanfriend.cn/business/LantianStore/excel?pageNum=1&pageSize=${total}`;
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

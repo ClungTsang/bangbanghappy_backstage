@@ -11,16 +11,11 @@
       <a-form>
         <a-form-item label="滑动修改会员缴费金额（元）">
           <a-row>
-            <a-col :span="20">
+            <a-col :span="16">
               <a-slider v-model="slider.value" :min="1" :max="500" />
             </a-col>
-            <a-col :span="4">
-              <a-input-number
-                v-model="slider.value"
-                :min="1"
-                :max="500"
-                style="marginleft: 16px"
-              />
+            <a-col :span="4" offset="2">
+              <a-input-number v-model="slider.value" :min="1" :max="500" />
             </a-col>
           </a-row>
         </a-form-item>

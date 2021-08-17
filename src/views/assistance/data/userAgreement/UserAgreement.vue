@@ -40,10 +40,10 @@
   </a-card>
 </template>
 <script>
-import EditorBar from "../banner/components/wangEnduit.vue";
+import EditorBar from "~/tool/wangEnduit.vue";
 export default {
   components: {
-    EditorBar,
+    EditorBar
   },
   data() {
     return {
@@ -54,7 +54,7 @@ export default {
       // 富文本内容
       MTE: "",
       // 选择公告显示方式
-      jumpWay: 0,
+      jumpWay: 0
     };
   },
   created() {
@@ -72,11 +72,11 @@ export default {
     // 获取公告信息
     getUserAgreement() {
       this.$get("/backend/notice/selectAllByNoticeStatus", {
-        noticestatus: 4,
-      }).then((res) => {
-        let result = res.data.data.rows.filter(item=>{
-          return item.title == 'userAgreement'
-        })
+        noticestatus: 4
+      }).then(res => {
+        let result = res.data.data.rows.filter(item => {
+          return item.title == "userAgreement";
+        });
         console.log(result);
         this.MTE = JSON.parse(result[0].content);
       });
@@ -85,7 +85,7 @@ export default {
     saveUserAgreement() {
       let params = {
         title: "userAgreement",
-        noticestatus: 4,
+        noticestatus: 4
       };
       // if (this.jumpWay == 0) {
       //   params["content"] = this.carouselurl;
@@ -96,13 +96,12 @@ export default {
 
       this.$put("/backend/notice", {
         id: 82,
-        ...params,
+        ...params
       }).then(() => {
         this.$message.success("保存成功");
       });
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

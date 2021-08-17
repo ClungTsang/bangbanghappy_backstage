@@ -32,25 +32,25 @@ export default {
   data() {
     return {
       slider: {
-        value: 20,
+        value: 20
       },
-      rowList: [],
+      rowList: []
     };
   },
   props: {
     changeVisible: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   computed: {
     visible() {
       return this.changeVisible;
-    },
+    }
   },
   mounted() {
     // 接收到兄弟组件传值
-    event.$on("selectedRows", (res) => {
+    event.$on("selectedRows", res => {
       // console.log('selectedRows',res);
       this.rowList = res;
     });
@@ -58,10 +58,10 @@ export default {
   methods: {
     // 复选修改抽成比例方法
     handleOk() {
-      this.rowList.forEach((item) => {
-        this.$put("business/LantianStore", {
+      this.rowList.forEach(async item => {
+        await this.$put("business/LantianStore", {
           id: item.id,
-          spendpercent: this.slider.value + "",
+          spendpercent: this.slider.value + ""
         });
       });
       this.$message.success("批量修改抽成成功");
@@ -70,9 +70,8 @@ export default {
     },
     handleCancel() {
       this.$emit("close");
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

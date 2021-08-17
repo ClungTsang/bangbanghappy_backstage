@@ -145,21 +145,10 @@ export default {
     },
   },
   watch: {
-    // judge: {
-    //   handler(targetAreaId) {
-    //     if (targetAreaId != 0) {
-    //       this.getAgentInfo(targetAreaId);
-    //     }
-    //   },
-    //   immediate: true,
-    // },
-    targetAreaId: {
-      handler(targetAreaId) {
-        if (targetAreaId != 0) {
-          this.getAgentInfo(targetAreaId)
-        }
-      },
-      immediate: true,
+    visible(visible) {
+      if(visible){
+          this.getAgentInfo(this.targetAreaId)
+      }
     },
   },
   methods: {
@@ -174,6 +163,7 @@ export default {
           id: this.targetAreaId,
           ...values,
         }
+        params['radius']=  values.radius*1000
         this.$post('/agentInformation/update', { ...params }).then((res) => {
           if (res.data.code == 200) {
             this.$message.success('更新区域代理成功')
