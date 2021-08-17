@@ -106,6 +106,8 @@
   </a-card>
 </template>
 <script>
+import { formatUrl, restoreUrl } from "@/utils/urlTool";
+
 import BannerUploadModal from "./components/BannerUploadModal.vue";
 import BannerChangeModal from "./components/BannerChangeModal.vue";
 const columns = [
@@ -153,7 +155,6 @@ const columns = [
     scopedSlots: { customRender: "action" }
   }
 ];
-import { formatUrl, restoreUrl } from "@/utils/urlTool";
 
 export default {
   components: { BannerUploadModal, BannerChangeModal },
