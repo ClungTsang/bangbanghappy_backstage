@@ -38,9 +38,9 @@
                   >重置</a-button
                 >
                 <!-- 升级会员金额 -->
-    <a-button type="danger" ghost @click="openVipPriceModal">
+    <!-- <a-button type="danger" ghost @click="openVipPriceModal">
       调整升级会员所需金额
-      </a-button>
+      </a-button> -->
                 <!-- <a-dropdown>
                   <a-menu slot="overlay">
                     <a-menu-item key="export-data" @click="exportExcel"

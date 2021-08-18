@@ -94,17 +94,14 @@ const request = {
     let contentType =
       url.indexOf("login") > -1 ||
       url.indexOf("regist") > -1 ||
-      url.indexOf("/aidDataAnalysis") > -1 ||
-      url.indexOf("/agentInformation") > -1 ||
-      url.indexOf("/wechatcustomer") > -1 ||
-      url.indexOf("/backend/notice") > -1 ||
-      url.indexOf("/helpSensitiveWord") > -1 ||
+      url.indexOf("aidDataAnalysis") > -1 ||
+      url.indexOf("agentInformation") > -1 ||
+      url.indexOf("wechatcustomer") > -1 ||
+      url.indexOf("helpSensitiveWord") > -1 ||
       url.indexOf("aidOrder") > -1 ||
-      url.indexOf("/business/rootData") > -1 ||
+      url.indexOf("business") > -1 ||
+      url.indexOf("backend") > -1 ||
       url.indexOf("carousel") > -1 ||
-      url.indexOf("business/LantianStore") > -1 ||
-      url.indexOf("business/LantianDishesclassificationtable") > -1 ||
-      url.indexOf("business/LantianDishmanagement") > -1 ||
       url.indexOf("aidServiceType") > -1 ||
       url.indexOf("question") > -1
         ? "application/x-www-form-urlencoded"
@@ -117,16 +114,13 @@ const request = {
             url.indexOf("login") > -1 ||
             url.indexOf("regist") > -1 ||
             url.indexOf("carousel") > -1 ||
-            url.indexOf("/agentInformation") > -1 ||
-            url.indexOf("/aidDataAnalysis") > -1 ||
-            url.indexOf("/wechatcustomer") > -1 ||
-            url.indexOf("/backend/notice") > -1 ||
-            url.indexOf("/helpSensitiveWord") > -1 ||
-            url.indexOf("/business/rootData") > -1 ||
+            url.indexOf("agentInformation") > -1 ||
+            url.indexOf("aidDataAnalysis") > -1 ||
+            url.indexOf("wechatcustomer") > -1 ||
+            url.indexOf("backend") > -1 ||
+            url.indexOf("helpSensitiveWord") > -1 ||
+            url.indexOf("business") > -1 ||
             url.indexOf("aidOrder") > -1 ||
-            url.indexOf("business/LantianStore") > -1 ||
-            url.indexOf("business/LantianDishesclassificationtable") > -1 ||
-            url.indexOf("business/LantianDishmanagement") > -1 ||
             url.indexOf("aidServiceType") > -1 ||
             url.indexOf("question") > -1
           ) {
