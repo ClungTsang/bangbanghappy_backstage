@@ -44,27 +44,27 @@ const columns = [
     title: "申请人",
     width: 120,
     dataIndex: "name",
-    align: "center",
+    align: "center"
   },
   {
     title: "联系方式",
     width: 130,
     dataIndex: "phone",
-    align: "center",
+    align: "center"
   },
   {
     title: "申请理由",
     width: 200,
     dataIndex: "apply",
     align: "center",
-    ellipsis: true,
+    ellipsis: true
   },
   {
     title: "商家地址",
     width: 300,
     dataIndex: "address",
     align: "center",
-    ellipsis: true,
+    ellipsis: true
   },
   { title: "申请时间", width: 200, dataIndex: "createtime", align: "center" },
   {
@@ -72,8 +72,8 @@ const columns = [
     width: 200,
     dataIndex: "action",
     align: "center",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 export default {
   data() {
@@ -87,13 +87,13 @@ export default {
         showQuickJumper: true,
         showSizeChanger: true,
         showTotal: (total, range) =>
-          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`,
+          `显示 ${range[0]} ~ ${range[1]} 条记录，共 ${total} 条记录`
       },
       loading: false,
       form: this.$form.createForm(this),
       question: null,
       showPic: false,
-      picList: null,
+      picList: null
     };
   },
   mounted() {
@@ -107,7 +107,7 @@ export default {
       this.pagination = pager;
       this.fetch({
         pageSize: pagination.pageSize,
-        pageNum: pagination.current,
+        pageNum: pagination.current
       });
     },
     // 网络请求
@@ -117,31 +117,34 @@ export default {
       this.$get("/backend/notice/selectAllByNoticeStatus", {
         pageSize: 10,
         noticestatus: 1,
-        ...params,
-      }).then((res) => {
+        ...params
+      }).then(res => {
         let pagination = { ...this.pagination };
         pagination.total = res.data.data.total;
-        this.loading = false;
         // 遍历数组
-        let dataSource = res.data.data.rows;
-        dataSource.forEach((item) => {
-          let content = JSON.parse(item.content);
-          let title = item.title.split(" ");
-          item.apply = content[0];
-          item.address = content[1];
-          item.name = title[0];
-          item.phone = title[1];
-          this.dataSource.push(item);
-        });
+        let dataSource = [];
+        if (res.data.data.rows) {
+          res.data.data.rows.forEach(item => {
+            let content = JSON.parse(item.content);
+            let title = item.title.split(" ");
+            item.apply = content[0];
+            item.address = content[1];
+            item.name = title[0];
+            item.phone = title[1];
+            dataSource.push(item);
+          });
+        }
         this.pagination = pagination;
+        this.dataSource = dataSource;
       });
+      this.loading = false;
     },
 
     // 删除入驻申请
     confirmDelete(record) {
       this.$delete("/backend/notice", { id: record.id }).then(() => {
         const dataSource = [...this.dataSource];
-        this.dataSource = dataSource.filter((item) => item.id !== record.id);
+        this.dataSource = dataSource.filter(item => item.id !== record.id);
         this.$message.success("删除成功");
       });
     },
@@ -155,9 +158,8 @@ export default {
     closePicModal() {
       this.showPic = false;
       this.picList = null;
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -147,12 +147,15 @@ export default {
       }).then(res => {
         let pagination = { ...this.pagination };
         // pagination.total = res.data.data.total;
-        let dataSource = res.data.data.rows.filter(item => {
-          return item.agent == 1;
-        });
+        let dataSource = [];
+        if (res.data.data.rows) {
+          dataSource = res.data.data.rows.filter(item => {
+            return item.agent == 1;
+          });
+        }
         this.dataSource = dataSource;
-        this.loading = false;
         this.pagination = pagination;
+        this.loading = false;
       });
     },
     // 切换交押金状态
