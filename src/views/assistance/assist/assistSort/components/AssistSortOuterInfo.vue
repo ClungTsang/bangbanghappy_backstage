@@ -43,7 +43,7 @@
   </div>
 </template>
 <script>
-import EditableCell from "../../../../../components/editablecell/EditableCell";
+import EditableCell from "@/components/editablecell/EditableCell";
 export default {
   components: {
     EditableCell,
