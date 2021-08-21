@@ -115,20 +115,30 @@ export default {
               key: item.id,
               service: item.service,
               cost: item.cost,
-              suggestionTime: item.suggestionTime
-            });
+              suggestionTime: item.suggestionTime,
+            })
           }
         })
       })
     },
     onCellChangeInner(key, dataIndex, value) {
       const innerDataSource = [...this.innerDataSource]
-      const target = innerDataSource.find((item) => item.key === key)
-
-      if (target) {
-        target[dataIndex] = value
-        this.innerDataSource = innerDataSource
-        this.onChangeInfo(key)
+      // console.log(innerDataSource.some((item) => item.service === value))
+      if (innerDataSource.some((item) => item.service === value)) {
+        this.$message.error('修改失败，存在相同分类名称！')
+        this.getAssistSort()
+        return
+      } else if (innerDataSource.some((item) => item.service == 294)) {
+        this.$message.error('该分类为必需分类，不能编辑命名！')
+        this.getAssistSort()
+        return
+      } else {
+        const target = innerDataSource.find((item) => item.key === key)
+        if (target) {
+          target[dataIndex] = value
+          this.innerDataSource = innerDataSource
+          this.onChangeInfo(key)
+        }
       }
     },
     async onDeleteInner(key) {
@@ -136,7 +146,10 @@ export default {
         this.$message.error('该分类为必需分类，不能删除！')
         return
       }
-      let innerDataSource = this.innerDataSource.filter((item) =>{ return item.key !== key})
+      this.$message.success('删除成功')
+      let innerDataSource = this.innerDataSource.filter((item) => {
+        return item.key !== key
+      })
       this.innerDataSource = innerDataSource
       await this.$get('/aidServiceType/delete', { id: key })
     },
@@ -147,15 +160,19 @@ export default {
         oncampus: 1,
         suggestionTime: 10,
       }
-      this.$post('/aidServiceType', { ...newData }).then(
-        () => {
-          this.innerCount += 1
-          return this.getAssistSort()
-        },
-        () => {
+      this.$post('/aidServiceType', { ...newData })
+        .then(
+          () => {
+            this.innerCount += 1
+            return this.getAssistSort()
+          },
+          () => {
+            this.$message.error('存在相同分类名称')
+          }
+        )
+        .catch(() => {
           this.$message.error('存在相同分类名称')
-        }
-      )
+        })
     },
     onChangeInfo(key) {
       if (key == 294) {
@@ -172,6 +189,7 @@ export default {
         suggestionTime: target.suggestionTime,
       }).then(() => {
         this.$message.success('更新成功')
+        this.getAssistSort()
       })
     },
   },
