@@ -11,7 +11,7 @@
           <a-input
             v-decorator="[
               'text',
-              { rules: [{ required: true, message: '请输入分类名称' }] },
+              { rules: [{ required: true, message: '请输入分类名称' }] }
             ]"
             placeholder="请输入分类名称"
           ></a-input>
@@ -36,45 +36,55 @@
 </template>
 <script>
 import event from "@/utils/event";
-import { mapState } from "vuex";
-
+import { mapState, mapMutations } from "vuex";
 export default {
   data() {
     return {
       menu: {
         name: "",
         rank: 1,
-        isShow: 1,
+        isShow: 1
       },
       form: this.$form.createForm(this),
+      storeInfo: null
     };
   },
   props: {
     addVisible: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
   computed: {
     visible() {
       return this.addVisible;
-    },
-    ...mapState({
-      storeInfo: (state) => state.account.storeInfo,
-    }),
+    }
+    // ...mapState({
+    //   storeInfo: state => state.account.storeInfo
+    // })
   },
   created() {
     this.getStoreInfo();
   },
   methods: {
+    // ...mapMutations({
+    //   setUserInfo: "account/setUserInfo"
+    // }),
+    async getStoreInfo() {
+      const user = this.$db.get("USER");
+      let res = await this.$get(
+        `/business/LantianStore/getByPhone/${user.username}`
+      );
+      this.storeInfo = res.data.data;
+    },
     handleOk() {
       this.form.validateFields((err, fieldValue) => {
         if (err) {
           return;
         }
         const value = {
-          ...fieldValue,
-          show: this.menu.isShow,
+          ...fieldValue
+          // show: this.menu.isShow
           // 用 this.form.getFieldValue 获取 被v-decorator修饰的标签
           // text: this.form.getFieldValue("text"),
         };
@@ -92,11 +102,11 @@ export default {
       const params = {
         // id: user.userId,
         storeid: this.storeInfo.id,
-        text: menuInfo.text,
+        text: menuInfo.text
       };
       this.$post("backend/business/LantianDishesclassificationtable", {
-        ...params,
-      }).then((res) => {
+        ...params
+      }).then(res => {
         // 通知关闭并将分类名称返回给父类
         this.$emit("close", res.data.data);
         event.$emit("addCategroyOk");
@@ -104,9 +114,8 @@ export default {
 
         // this.$message.success("新增分类成功");
       });
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

@@ -5,7 +5,7 @@
       :columns="columns"
       :row-selection="{
         selectedRowKeys: selectedRowKeys,
-        onChange: onSelectChange,
+        onChange: onSelectChange
       }"
       :loading="loading"
     >
@@ -22,7 +22,7 @@
           v-model="record.dishstatus == 1 ? true : false"
           :loading="switchLoading"
           @change="
-            (checked) => {
+            checked => {
               onSwitch(checked, record);
             }
           "
@@ -88,21 +88,21 @@ const columns = [
     dataIndex: "dishurl",
     width: 100,
     align: "center",
-    scopedSlots: { customRender: "dishurl" },
+    scopedSlots: { customRender: "dishurl" }
   },
   {
     title: "商品名称",
     dataIndex: "dishname",
     width: 100,
     ellipsis: true,
-    align: "center",
+    align: "center"
   },
   {
     title: "商品价格",
     width: 50,
     dataIndex: "dishprice",
     align: "center",
-    scopedSlots: { customRender: "dishprice" },
+    scopedSlots: { customRender: "dishprice" }
   },
 
   {
@@ -110,36 +110,36 @@ const columns = [
     width: 50,
     dataIndex: "memberprice",
     align: "center",
-    scopedSlots: { customRender: "memberprice" },
+    scopedSlots: { customRender: "memberprice" }
   },
   {
     title: "限购数量",
     width: 50,
     dataIndex: "purchaselimit",
     align: "center",
-    scopedSlots: { customRender: "purchaselimit" },
+    scopedSlots: { customRender: "purchaselimit" }
   },
   {
     title: "商品介绍",
     width: 150,
     dataIndex: "description",
     align: "center",
-    ellipsis: true,
+    ellipsis: true
   },
   {
     title: "是否显示",
     width: 50,
     dataIndex: "dishstatus",
     align: "center",
-    scopedSlots: { customRender: "dishstatus" },
+    scopedSlots: { customRender: "dishstatus" }
   },
   {
     title: "操作",
     width: 150,
     dataIndex: "action",
     align: "center",
-    scopedSlots: { customRender: "action" },
-  },
+    scopedSlots: { customRender: "action" }
+  }
 ];
 import { mapState } from "vuex";
 import MenuDishChange from "./MenuDishChange.vue";
@@ -163,13 +163,13 @@ export default {
       menuChangeVisible: false,
       // 复制菜品控制
       menuCopyVisible: false,
-      showData: {},
+      showData: {}
     };
   },
   computed: {
     ...mapState({
-      userInfo: (state) => state.account.userInfo,
-    }),
+      userInfo: state => state.account.userInfo
+    })
   },
   created() {
     event.$on("addUserInfoDone", () => {
@@ -178,7 +178,7 @@ export default {
   },
   mounted() {
     // 接受下拉框的分类storeid
-    event.$on("transferCategory", async (res) => {
+    event.$on("transferCategory", async res => {
       console.log(`接收到下拉选项老哥传来的`, res);
       // 网络查询
       let result = await this.getMenuCategoryList(res.storeid);
@@ -199,42 +199,45 @@ export default {
   methods: {
     // 网络获取分类信息
     getMenuCategoryList(storeid) {
-      this.loading = true;
       const params = {
-        storeid: storeid,
+        storeid: storeid
       };
       // 根据storeid全查菜品分类
-      return this.$get(
-        `/backend/business/LantianDishmanagement/MapAllByStoreId`,
-        {
-          ...params,
-        }
-      );
+      return new Promise((resolve, reject) => {
+        this.$get(`/backend/business/LantianDishmanagement/MapAllByStoreId`, {
+          ...params
+        }).then(res => {
+          if (!res.data.data) {
+            reject("无菜品数据");
+          } else {
+            resolve(res);
+          }
+        });
+      });
     },
     // 显示全部
-    showAllCategoryList() {
-      this.getMenuCategoryList(this.userInfo.id).then((res) => {
-        // 获取对象中的key数组
+    async showAllCategoryList() {
+      const res = await this.getMenuCategoryList(this.userInfo.id);
+      if (res) {
         let keys = Object.keys(res.data.data);
-        // console.log(keys);
         let items = res.data.data;
         // 存放对象
         let itemsList = [];
         // 遍历键
-        keys.forEach((key) => {
+        keys.forEach(key => {
           // 如果该键的值为空，则删除该属性 并挑出该循环
           if (items[key] == "空") {
             delete items[key];
             return;
           }
           // 遍历该键中 值是数组的对象 并压入栈中
-          items[key].forEach((item) => {
+          items[key].forEach(item => {
             itemsList.push(item);
           });
         });
         this.dataSource = itemsList;
-      });
-      this.loading = false;
+      }
+      // 获取对象中的key数组
     },
     // 选择列
     onSelectChange(selectedRowKeys) {
@@ -248,12 +251,12 @@ export default {
       this.switchLoading = true;
       const params = {
         id: record.id,
-        dishstatus: checked ? 1 : 0,
+        dishstatus: checked ? 1 : 0
       };
       // console.log(params);
       this.$put("/backend/business/LantianDishmanagement", { ...params }).then(
         () => {
-          _this.dataSource.forEach((item) => {
+          _this.dataSource.forEach(item => {
             if (item.id === record.id) {
               item.dishstatus = checked ? 1 : 0;
             }
@@ -270,10 +273,10 @@ export default {
     // 控制删除菜品
     onDeleteMenuDish(record) {
       this.$delete(`/backend/business/LantianDishmanagement/${record.id}`).then(
-        (res) => {
+        res => {
           if (res.data.code == 200) {
             this.$message.success(`删除${record.dishname}成功`);
-            let item = this.dataSource.filter((item) => {
+            let item = this.dataSource.filter(item => {
               return item.id != record.id;
             });
             this.dataSource = item;
@@ -331,9 +334,8 @@ export default {
     },
     onCancelCopyMenuModal() {
       this.menuCopyVisible = false;
-    },
-  },
+    }
+  }
 };
 </script>
-<style>
-</style>
+<style></style>

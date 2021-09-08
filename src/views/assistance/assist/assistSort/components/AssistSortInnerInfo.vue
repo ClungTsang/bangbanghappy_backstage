@@ -49,10 +49,27 @@
           <a-popconfirm
             v-if="innerDataSource.length"
             title="确认删除?"
-            @confirm="() => onDeleteInner(record.key)"
+            @confirm="onDeleteInner(record.key)"
           >
             <a href="javascript:;">删除该分类</a>
           </a-popconfirm>
+          <div class="editable-row-operations">
+            <span v-if="record.editable">
+              <a @click="save(record.key)">保存</a>
+              <a-popconfirm
+                title="确认删除？"
+                @confirm="cancel(record.key)"
+              >
+                <a>取消</a>
+              </a-popconfirm>
+            </span>
+            <span v-else>
+              <a
+                :disabled="editingKey !== ''"
+                @click="edit(record.key)"
+              >编辑</a>
+            </span>
+          </div>
         </template>
       </a-table>
     </a-card>
@@ -191,6 +208,41 @@ export default {
         this.$message.success('更新成功')
         this.getAssistSort()
       })
+    },
+    edit(key) {
+      const newData = [...this.data]
+      const target = newData.filter((item) => key === item.key)[0]
+      this.editingKey = key
+      if (target) {
+        target.editable = true
+        this.data = newData
+      }
+    },
+    save(key) {
+      const newData = [...this.data]
+      const newCacheData = [...this.cacheData]
+      const target = newData.filter((item) => key === item.key)[0]
+      const targetCache = newCacheData.filter((item) => key === item.key)[0]
+      if (target && targetCache) {
+        delete target.editable
+        this.data = newData
+        Object.assign(targetCache, target)
+        this.cacheData = newCacheData
+      }
+      this.editingKey = ''
+    },
+    cancel(key) {
+      const newData = [...this.data]
+      const target = newData.filter((item) => key === item.key)[0]
+      this.editingKey = ''
+      if (target) {
+        Object.assign(
+          target,
+          this.cacheData.filter((item) => key === item.key)[0]
+        )
+        delete target.editable
+        this.data = newData
+      }
     },
   },
 }

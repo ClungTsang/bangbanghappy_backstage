@@ -36,72 +36,74 @@
         </a-form-item>
       </a-form>
     </div>
-    <a-button type="primary" @click="saveUserAgreement">点击保存</a-button>
+    <a-button
+      type="primary"
+      @click="saveUserAgreement"
+    >点击保存</a-button>
   </a-card>
 </template>
 <script>
-import EditorBar from "~/tool/wangEnduit.vue";
+import EditorBar from '~/tool/wangEnduit.vue'
 export default {
   components: {
-    EditorBar
+    EditorBar,
   },
   data() {
     return {
       // 跳转外链 非必传
-      carouselurl: "",
+      carouselurl: '',
       // 清除文本
       isClear: false,
       // 富文本内容
-      MTE: "",
-      // 选择公告显示方式
-      jumpWay: 0
-    };
+      MTE: '',
+      // 选择显示方式
+      jumpWay: 0,
+      notice: null,
+    }
   },
   created() {
-    this.getUserAgreement();
+    this.getUserAgreement()
   },
   methods: {
     // 富文本内容
     change(val) {
-      this.MTE = val;
+      this.MTE = val
     },
     // 切换轮播图的点击跳转方式
     radioChange(e) {
-      this.jumpWay = e.target.value;
+      this.jumpWay = e.target.value
     },
-    // 获取公告信息
+    // 获取信息
     getUserAgreement() {
-      this.$get("/backend/notice/selectAllByNoticeStatus", {
-        noticestatus: 4
-      }).then(res => {
-        let result = res.data.data.rows.filter(item => {
-          return item.title == "userAgreement";
-        });
-        console.log(result);
-        this.MTE = JSON.parse(result[0].content);
-      });
+      this.$get('/backend/notice/selectAllByNoticeStatus', {
+        noticestatus: 4,
+      }).then((res) => {
+        this.notice = res.data.data.rows.find(
+          (item) => item.title == 'userAgreement'
+        )
+        this.MTE = JSON.parse(this.notice.content)
+      })
     },
-    // 保存公告
+    // 保存
     saveUserAgreement() {
       let params = {
-        title: "userAgreement",
-        noticestatus: 4
-      };
+        title: 'userAgreement',
+        noticestatus: 4,
+      }
       // if (this.jumpWay == 0) {
       //   params["content"] = this.carouselurl;
       // } else {
       //   params["content"] = JSON.stringify(this.MTE);
       // }
-      params["content"] = JSON.stringify(this.MTE);
-
-      this.$put("/backend/notice", {
-        id: 82,
-        ...params
+      params['content'] = JSON.stringify(this.MTE)
+      this.$put('/backend/notice', {
+        id: this.notice.id,
+        ...params,
       }).then(() => {
-        this.$message.success("保存成功");
-      });
-    }
-  }
-};
+        this.$message.success('保存成功')
+      })
+    },
+  },
+}
 </script>
 <style></style>
