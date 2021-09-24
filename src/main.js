@@ -25,6 +25,7 @@ Vue.use({
   }
 })
 
+
 Vue.prototype.$config = Config
 Vue.prototype.$post = request.post
 Vue.prototype.$get = request.get
@@ -35,6 +36,7 @@ Vue.prototype.$download = request.download
 Vue.prototype.$upload = request.upload
 Vue.prototype.$originalGet = request.originalGet
 Vue.prototype.$aesEncrypt = AesEncrypt
+Vue.prototype.$bus = new Vue()
 
 /* eslint-disable no-new */
 new Vue({

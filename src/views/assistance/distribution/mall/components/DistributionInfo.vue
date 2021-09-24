@@ -145,6 +145,9 @@ export default {
     event.$on("mallChangeDone", () => {
       this.fetch();
     });
+    this.$bus.$on("addMallDonw", () => {
+      this.fetch();
+    });
   },
   methods: {
     // 选择的列

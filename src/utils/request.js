@@ -31,7 +31,7 @@ FEBS_REQUEST.interceptors.request.use(
           return new Promise((resolve, reject) => {
             db.clear();
             location.reload();
-          }).catch(function(reason) {
+          }).catch(function (reason) {
             console.log("catch:", reason);
           });
         }
@@ -93,17 +93,17 @@ const request = {
   post(url, params) {
     let contentType =
       url.indexOf("login") > -1 ||
-      url.indexOf("regist") > -1 ||
-      url.indexOf("aidDataAnalysis") > -1 ||
-      url.indexOf("agentInformation") > -1 ||
-      url.indexOf("wechatcustomer") > -1 ||
-      url.indexOf("helpSensitiveWord") > -1 ||
-      url.indexOf("aidOrder") > -1 ||
-      url.indexOf("business") > -1 ||
-      url.indexOf("backend") > -1 ||
-      url.indexOf("carousel") > -1 ||
-      url.indexOf("aidServiceType") > -1 ||
-      url.indexOf("question") > -1
+        url.indexOf("regist") > -1 ||
+        url.indexOf("aidDataAnalysis") > -1 ||
+        url.indexOf("agentInformation") > -1 ||
+        url.indexOf("wechatcustomer") > -1 ||
+        url.indexOf("helpSensitiveWord") > -1 ||
+        url.indexOf("aidOrder") > -1 ||
+        url.indexOf("business") > -1 ||
+        url.indexOf("backend") > -1 ||
+        url.indexOf("carousel") > -1 ||
+        url.indexOf("aidServiceType") > -1 ||
+        url.indexOf("question") > -1
         ? "application/x-www-form-urlencoded"
         : "application/json";
     return FEBS_REQUEST.post(url, params, {
@@ -150,13 +150,13 @@ const request = {
   put(url, params) {
     let contentType =
       url.indexOf("login") > -1 ||
-      url.indexOf("avatar") > -1 ||
-      url.indexOf("password") > -1 ||
-      url.indexOf("password/reset") > -1 ||
-      url.indexOf("/backend/notice") > -1 ||
-      url.indexOf("business/LantianStore") > -1 ||
-      url.indexOf("backend/carousel") > -1 ||
-      url.indexOf("business/LantianDishmanagement") > -1
+        url.indexOf("avatar") > -1 ||
+        url.indexOf("password") > -1 ||
+        url.indexOf("password/reset") > -1 ||
+        url.indexOf("/backend/notice") > -1 ||
+        url.indexOf("business/LantianStore") > -1 ||
+        url.indexOf("backend/carousel") > -1 ||
+        url.indexOf("business/LantianDishmanagement") > -1
         ? "application/x-www-form-urlencoded"
         : "application/json";
     return FEBS_REQUEST.put(url, params, {

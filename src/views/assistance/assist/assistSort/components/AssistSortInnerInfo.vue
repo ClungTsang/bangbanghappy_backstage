@@ -53,7 +53,7 @@
           >
             <a href="javascript:;">删除该分类</a>
           </a-popconfirm>
-          <div class="editable-row-operations">
+          <!-- <div class="editable-row-operations">
             <span v-if="record.editable">
               <a @click="save(record.key)">保存</a>
               <a-popconfirm
@@ -69,7 +69,7 @@
                 @click="edit(record.key)"
               >编辑</a>
             </span>
-          </div>
+          </div> -->
         </template>
       </a-table>
     </a-card>
@@ -118,6 +118,7 @@ export default {
           scopedSlots: { customRender: 'operation' },
         },
       ],
+      editingKey: '',
     }
   },
   methods: {

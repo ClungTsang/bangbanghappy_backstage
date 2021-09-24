@@ -126,14 +126,14 @@
             ></bm-local-search>
           </baidu-map>
         </a-form-item>
-        <div v-show="this.judge == 0">
+        <div>
           <a-form-item label="门店图标">
-            <store-logo-upload v-on="$listeners"
+            <store-logo-upload :files="logoFiles" v-on="$listeners"
               >上传门店logo</store-logo-upload
             >
           </a-form-item>
           <a-form-item label="门店照片">
-            <store-info-upload v-on="$listeners"
+            <store-info-upload :files="infoFiles" v-on="$listeners"
               >上传门店照片</store-info-upload
             >
           </a-form-item>
@@ -225,6 +225,7 @@
 <script>
 import event from "@/utils/event.js";
 import { BmLocalSearch, BaiduMap, BmMarker, BmView } from "vue-baidu-map";
+import uuid from "@/utils/uuid";
 import StoreInfoUpload from "./StoreInfoUpload.vue";
 import StoreLogoUpload from "./StoreLogoUpload.vue";
 export default {
@@ -278,7 +279,9 @@ export default {
         { id: "2", text: "休店" },
         { id: "3", text: "开店" },
         { id: "4", text: "异常" }
-      ]
+      ],
+      infoFiles: [],
+      logoFiles: []
     };
   },
   props: {
@@ -293,6 +296,7 @@ export default {
   },
   mounted() {
     event.$on("storeLogoUrl", res => {
+      console.log(res);
       let list = [];
       res.forEach(item => {
         list.push(item.url);
@@ -320,10 +324,12 @@ export default {
     }
   },
   watch: {
-    judge: {
-      handler(id) {
-        if (id != 0) {
-          this.getMallInfo(id);
+    visible: {
+      handler(visible) {
+        if (visible) {
+          if (this.id != 0) {
+            this.getMallInfo(this.id);
+          }
         }
       },
       immediate: true
@@ -355,6 +361,7 @@ export default {
           }
           const value = {
             ...fieldsValue,
+
             openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
             spendpercent: this.slider.value
@@ -382,7 +389,9 @@ export default {
             storestatus: this.storestatus,
             // openinghours: fieldsValue["openinghours"].format("HH:mm:ss"),
             // closinghours: fieldsValue["closinghours"].format("HH:mm:ss"),
-            spendpercent: this.slider.value
+            spendpercent: this.slider.value,
+            logo: this.storeLogo,
+            storeurl: this.storeurl
           };
           // console.log(this.storestatus);
 
@@ -405,7 +414,31 @@ export default {
     },
     // 修改门店信息
     onUpdateQuestion(storeInfo) {
-      console.log(storeInfo.storestatus);
+      console.log(storeInfo);
+      this.logoFiles = [];
+      this.infoFiles = [];
+      let storeLogo = [];
+      let storeurl = [];
+      JSON.parse(storeInfo.logo).forEach(item => {
+        storeLogo.push(item);
+        this.logoFiles.push({
+          uid: uuid(),
+          name: `${uuid()}.png`,
+          status: "done",
+          url: item
+        });
+      });
+      JSON.parse(storeInfo.storeurl).forEach(item => {
+        storeurl.push(item);
+        this.infoFiles.push({
+          uid: uuid(),
+          name: `${uuid()}.png`,
+          status: "done",
+          url: item
+        });
+      });
+      this.storeLogo = JSON.stringify(storeLogo);
+      this.storeurl = JSON.stringify(storeurl);
       this.form.getFieldDecorator("companyname");
       this.form.getFieldDecorator("storeowner");
       this.form.getFieldDecorator("storephone");
@@ -437,10 +470,10 @@ export default {
         bossmobilenumber: formData.bossmobilenumber,
         companyname: formData.companyname,
         logo: this.storeLogo,
+        storeurl: this.storeurl,
         storeowner: formData.storeowner,
         storephone: formData.storephone,
         address: formData.storeAddress,
-        storeurl: this.storeurl,
         detailedintroduction: formData.detailedintroduction,
         // 默认传递 0-不营业 的状态
         storestatus: 0,
@@ -466,6 +499,7 @@ export default {
         if (res.data.code == 200) {
           this.$message.success("新增门店成功");
           this.$emit("close");
+          this.$bus.$emit("addMallDonw");
           this.id = 0;
         } else {
           this.$message.error(res.data.message);
