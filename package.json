@@ -13,6 +13,7 @@
     "fix-memory-limit": "cross-env LIMIT=8096 increase-memory-limit"
   },
   "dependencies": {
+    "@amap/amap-vue": "^2.0.13",
     "ant-design-vue": "1.7.4",
     "axios": "^0.18.0",
     "babel-polyfill": "^6.26.0",
@@ -20,6 +21,7 @@
     "cos-js-sdk-v5": "^1.2.10",
     "crypto-js": "^3.1.9-1",
     "date-fns": "^1.29.0",
+    "dayjs": "^1.10.7",
     "echarts": "^4.5.0",
     "enquire.js": "^2.1.6",
     "vue": "2.6.10",

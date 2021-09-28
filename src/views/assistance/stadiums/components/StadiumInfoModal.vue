@@ -4,8 +4,11 @@
       :visible="visible"
       :width="1100"
       title="该门店详细信息"
+      :destroyOnClose="true"
+      :maskClosable="false"
+      :footer="null"
+      @cancel="$emit('close')"
       @ok="handleOk"
-      @cancel="handleCancel"
     >
       <a-descriptions title="我的门店" bordered>
         <a-descriptions-item label="门店名称">
@@ -98,8 +101,15 @@ export default {
     }
   },
   watch: {
-    id(val) {
-      this.getMallInfo(val);
+    infoVisible: {
+      handler(visible) {
+        if (visible) {
+          if (this.id != 0) {
+            this.getMallInfo(this.id);
+          }
+        }
+      },
+      immediate: true
     }
   },
   methods: {

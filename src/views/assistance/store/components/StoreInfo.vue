@@ -69,10 +69,12 @@ event.$on('changeStoreStatus',()=>{
       let user = this.$db.get("USER");
       //根据不同的角色请求旗下门店
 
-      let result = await this.$get("/wechatcustomerByBossmobilenumber", {
-        wechatcustomerByBossmobilenumber: user.username,
-      });
-      if (result.data.data.openid) {
+      // let result = await this.$get("/wechatcustomerByBossmobilenumber", {
+      //   wechatcustomerByBossmobilenumber: user.username,
+      // });
+      const result = await this.$get(`/business/LantianStore/getByPhone/${user.username}`);
+      console.log(result.data.data.gzhopenid);
+      if (result.data.data.gzhopenid) {
         this.bindingStatus = true;
       }
     },

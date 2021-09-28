@@ -28,6 +28,8 @@
         <a @click="showInfoModal(record)">查看</a>
         <a-divider type="vertical" />
         <a @click="changeMallModal(record)">修改</a>
+        <a-divider type="vertical" />
+        <a style="color:red" @click="deleteMall(record)">删除</a>
       </span>
     </a-table>
 
@@ -230,6 +232,12 @@ export default {
     changeMallModal(record) {
       this.changeTarget = record.id;
       this.changeVisible = true;
+    },
+    // 删除门店
+    deleteMall(record) {
+      this.dataSource = this.dataSource.filter(item => item.id !== record.id);
+      this.$delete(`/business/LantianStore/${record.id}`);
+      this.$message.success("删除成功");
     }
   }
 };

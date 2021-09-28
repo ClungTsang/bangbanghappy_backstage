@@ -6,26 +6,34 @@ import store from './store'
 import request from 'utils/request'
 import db from 'utils/localstorage'
 import AesEncrypt from 'utils/aesEncrypt'
+import echarts from 'echarts'
+import Config from '../config/system.config'
 import VueMeta from 'vue-meta'
 import 'ant-design-vue/dist/antd.css'
-import echarts from 'echarts'
 import 'utils/install'
-import Config from '../config/system.config'
+import AmapVue from '@amap/amap-vue'
+AmapVue.config.key = 'e608e577fc5a796b3febab16f5c8caaf'
+
+import { decode } from '@/utils/base64.js'
+import { formatUrl, restoreFiles, restoreUrl } from '@/utils/urlTool2'
 
 
-
-Vue.config.productionTip = false
+Vue.use(AmapVue)
 Vue.use(Antd)
 Vue.use(db)
 Vue.use(VueMeta)
-Vue.prototype.$echarts = echarts
 Vue.use({
   install(Vue) {
     Vue.prototype.$db = db
   }
 })
 
-
+Vue.config.productionTip = false
+Vue.prototype.$echarts = echarts
+Vue.prototype.$formatUrl = formatUrl
+Vue.prototype.$restoreFiles = restoreFiles
+Vue.prototype.$restoreUrl = restoreUrl
+Vue.prototype.$decode = decode
 Vue.prototype.$config = Config
 Vue.prototype.$post = request.post
 Vue.prototype.$get = request.get
