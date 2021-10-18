@@ -153,10 +153,8 @@ const request = {
         url.indexOf("avatar") > -1 ||
         url.indexOf("password") > -1 ||
         url.indexOf("password/reset") > -1 ||
-        url.indexOf("/backend/notice") > -1 ||
-        url.indexOf("business/LantianStore") > -1 ||
-        url.indexOf("backend/carousel") > -1 ||
-        url.indexOf("business/LantianDishmanagement") > -1
+        url.indexOf("backend") > -1 ||
+        url.indexOf("business") > -1
         ? "application/x-www-form-urlencoded"
         : "application/json";
     return FEBS_REQUEST.put(url, params, {
@@ -168,10 +166,8 @@ const request = {
             url.indexOf("avatar") > -1 ||
             url.indexOf("password") > -1 ||
             url.indexOf("password/reset") > -1 ||
-            url.indexOf("/backend/notice") > -1 ||
-            url.indexOf("business/LantianStore") > -1 ||
-            url.indexOf("backend/carousel") > -1 ||
-            url.indexOf("business/LantianDishmanagement") > -1
+            url.indexOf("backend") > -1 ||
+            url.indexOf("business") > -1
           ) {
             Object.keys(params).forEach(key => {
               if (

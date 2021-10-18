@@ -510,7 +510,6 @@ export default {
     },
     // 切换选择分类
     chooseCategory() {
-      console.log(this.dataSource);
       if (this.categoryValue == -1) {
         this.currentDataSource = this.dataSource;
       } else {
@@ -685,7 +684,13 @@ export default {
           dataSource = itemsList;
         }
         this.dataSource = dataSource;
-        this.currentDataSource = dataSource;
+        this.currentDataSource = dataSource.filter(item => {
+          if (this.categoryValue > 0) {
+            return item.dishclassificationid === this.categoryValue;
+          } else {
+            return item;
+          }
+        });
       });
       this.loading = false;
     },

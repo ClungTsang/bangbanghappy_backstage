@@ -1,7 +1,15 @@
 <template>
   <div class="coord-picker">
     <div class="map-container">
-      <amap cache-key="coord-picker-map" map-style="amap://styles/macaron" async :center.sync="center" :zoom.sync="zoom" is-hotspot @click="onMapClick">
+      <amap
+        cache-key="coord-picker-map"
+        map-style="amap://styles/macaron"
+        async
+        :center.sync="center"
+        :zoom.sync="zoom"
+        is-hotspot
+        @click="onMapClick"
+      >
         <amap-satellite-layer :visible="satellite" :opacity="opacity" />
         <amap-marker v-if="position" :position.sync="position" draggable />
         <a-card
@@ -15,28 +23,71 @@
           <template slot="title">
             <template v-if="mode === 'search'">
               <a-input-group compact style="display: flex">
-                <a-auto-complete v-model="query" :data-source="tips" placeholder="输入关键词" style="flex: 1" @search="autoComplete" />
-                <a-button @click="search(true)" :disabled="!query" type="primary">
+                <a-auto-complete
+                  v-model="query"
+                  :data-source="tips"
+                  placeholder="输入关键词"
+                  style="flex: 1"
+                  @search="autoComplete"
+                />
+                <a-button
+                  @click="search(true)"
+                  :disabled="!query"
+                  type="primary"
+                >
                   搜索
                 </a-button>
               </a-input-group>
             </template>
             <template v-if="mode === 'result'">
               <div class="search-bar">
-                <a-button icon="left" @click="reset" style="margin-right: 6px" />
-                <span class="text">搜索 {{ query }} 共 {{ searching ? '...' : total }} 条结果</span>
+                <a-button
+                  icon="left"
+                  @click="reset"
+                  style="margin-right: 2px"
+                />
+                <!-- <span class="text"
+                  >搜索 {{ query }} 共
+                  {{ searching ? "..." : total }} 条结果</span
+                > -->
               </div>
             </template>
           </template>
 
-          <a-list v-if="mode === 'result'" :data-source="results" :loading="searching" item-layout="vertical" size="small" class="result-list">
-            <a-pagination slot="header" v-if="total > 0" v-model="pageIndex" :page-size="pageSize" :total="total" size="small" />
+          <a-list
+            v-if="mode === 'result'"
+            :data-source="results"
+            :loading="searching"
+            item-layout="vertical"
+            size="small"
+            class="result-list"
+          >
+            <a-pagination
+              slot="header"
+              v-if="total > 0"
+              v-model="pageIndex"
+              :page-size="pageSize"
+              :total="total"
+              size="small"
+            />
             <a-list-item slot="renderItem" slot-scope="item" :key="item.id">
               <a-list-item-meta :description="item.address">
-                <span slot="title" style="cursor: pointer" @click="focus(item)">{{ item.name }}</span>
+                <span
+                  slot="title"
+                  style="cursor: pointer"
+                  @click="focus(item)"
+                  >{{ item.name }}</span
+                >
               </a-list-item-meta>
             </a-list-item>
-            <a-pagination slot="footer" v-if="total > 0" v-model="pageIndex" :page-size="pageSize" :total="total" size="small" />
+            <a-pagination
+              slot="footer"
+              v-if="total > 0"
+              v-model="pageIndex"
+              :page-size="pageSize"
+              :total="total"
+              size="small"
+            />
           </a-list>
         </a-card>
 
@@ -54,7 +105,13 @@
             <a-switch v-model="satellite" />
           </a-form-item>
           <a-form-item v-if="satellite" label="可视度">
-            <a-slider v-model="opacity" :min="0" :max="1" :step="0.01" style="width: 180px;" />
+            <a-slider
+              v-model="opacity"
+              :min="0"
+              :max="1"
+              :step="0.01"
+              style="width: 180px;"
+            />
           </a-form-item>
         </a-form>
       </amap>
@@ -63,15 +120,15 @@
 </template>
 
 <script>
-import { loadAmap, loadPlugins } from '@amap/amap-vue'
+import { loadAmap, loadPlugins } from "@amap/amap-vue";
 export default {
   data() {
     return {
-      mode: 'search',
+      mode: "search",
       center: [116.407393, 39.904126],
       position: [116.407393, 39.904126],
       zoom: 10,
-      query: '',
+      query: "",
       searching: false,
       tips: [],
       results: [],
@@ -80,111 +137,111 @@ export default {
       total: 0,
       satellite: false,
       opacity: 1
-    }
+    };
   },
   computed: {
     wrapper() {
-      return this.$refs.wrapper
+      return this.$refs.wrapper;
     },
     positionText() {
-      if (!this.position) return ''
-      this.$emit('choose_location', `${this.position[0]},${this.position[1]}`)
-      return `${this.position[0]}, ${this.position[1]}`
+      if (!this.position) return "";
+      this.$emit("choose_location", `${this.position[0]},${this.position[1]}`);
+      return `${this.position[0]}, ${this.position[1]}`;
     }
   },
   created() {
     this.$ready = new Promise(async resolve => {
-      const AMap = await loadAmap()
-      await loadPlugins(['AMap.PlaceSearch', 'AMap.AutoComplete'])
+      const AMap = await loadAmap();
+      await loadPlugins(["AMap.PlaceSearch", "AMap.AutoComplete"]);
 
       this.ps = new AMap.PlaceSearch({
         pageSize: this.pageSize
-      })
-      this.ac = new AMap.AutoComplete()
+      });
+      this.ac = new AMap.AutoComplete();
 
-      resolve()
-    })
+      resolve();
+    });
   },
   methods: {
     onMapClick(e) {
       if (e.lnglat) {
-        this.position = [e.lnglat.lng, e.lnglat.lat]
+        this.position = [e.lnglat.lng, e.lnglat.lat];
       } else {
-        this.position = [116.407393, 39.904126]
+        this.position = [116.407393, 39.904126];
       }
     },
     async search(clear = false) {
-      this.mode = 'result'
-      await this._ready
+      this.mode = "result";
+      await this._ready;
 
       if (clear) {
-        this.results = []
-        this.total = 0
-        this.pageIndex = 1
-        this.ps.setPageIndex(1)
+        this.results = [];
+        this.total = 0;
+        this.pageIndex = 1;
+        this.ps.setPageIndex(1);
       }
 
-      this.searching = true
-      const { query } = this
+      this.searching = true;
+      const { query } = this;
       this.ps.search(query, (status, result) => {
-        this.searching = false
-        if (query !== this.query) return
+        this.searching = false;
+        if (query !== this.query) return;
 
-        if (status === 'complete' && result.poiList) {
-          this.results = result.poiList.pois
-          this.total = result.poiList.count
+        if (status === "complete" && result.poiList) {
+          this.results = result.poiList.pois;
+          this.total = result.poiList.count;
         } else {
-          this.results = []
-          this.total = 0
+          this.results = [];
+          this.total = 0;
         }
-      })
+      });
     },
     async autoComplete(kw) {
       if (!kw) {
-        this.tips = []
+        this.tips = [];
       } else {
         this.ac.search(kw, (status, result) => {
-          if (kw !== this.query) return
-          if (status === 'complete' && result.tips) {
-            this.tips = Array.from(new Set(result.tips.map(tip => tip.name)))
+          if (kw !== this.query) return;
+          if (status === "complete" && result.tips) {
+            this.tips = Array.from(new Set(result.tips.map(tip => tip.name)));
           } else {
-            this.tips = []
+            this.tips = [];
           }
-        })
+        });
       }
     },
     focus(poi) {
-      this.$emit('origin_address', { name: poi.name, address: poi.address })
-      console.log('选取地址', poi)
-      const pos = [poi.location.lng, poi.location.lat]
-      this.position = [...pos]
-      this.center = [...pos]
+      this.$emit("origin_address", { name: poi.name, address: poi.address });
+      console.log("选取地址", poi);
+      const pos = [poi.location.lng, poi.location.lat];
+      this.position = [...pos];
+      this.center = [...pos];
     },
     setLocation(position) {
-      this.center = position
-      this.position = position
+      this.center = position;
+      this.position = position;
     },
     resetLocation() {
-      this.center = [116.407393, 39.904126]
-      this.position = [116.407393, 39.904126]
+      this.center = [116.407393, 39.904126];
+      this.position = [116.407393, 39.904126];
     },
     reset() {
-      this.ps.setPageIndex(1)
-      this.results = []
-      this.tips = []
-      this.total = 0
-      this.mode = 'search'
+      this.ps.setPageIndex(1);
+      this.results = [];
+      this.tips = [];
+      this.total = 0;
+      this.mode = "search";
     }
   },
   watch: {
     pageIndex(value) {
       this.$ready.then(() => {
-        this.ps.setPageIndex(value)
-        this.search(false)
-      })
+        this.ps.setPageIndex(value);
+        this.search(false);
+      });
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>

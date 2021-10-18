@@ -474,8 +474,8 @@ export default {
       this.closinghours = result.closinghours;
       // this.stars = parseFloat(result.stars) / 2;
       this.$refs.mapSelection.setLocation([
-        result.localxy.split(",")[1],
-        result.localxy.split(",")[0]
+        result.localxy.split(",")[0],
+        result.localxy.split(",")[1]
       ]);
       this.form.setFieldsValue({
         // category: result.category,
